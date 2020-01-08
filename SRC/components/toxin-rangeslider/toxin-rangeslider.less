@@ -1,0 +1,98 @@
+@slider-x-pos: 34px;
+
+* { box-sizing: border-box;}
+body {
+  display: flex;
+  justify-content: center;
+}
+.test1 {    
+  width: 304px;
+  border: 1px dashed brown;
+  
+}
+.caption {
+  display: flex;  
+  width: 100%;
+  justify-content: space-between;
+  color: gray;
+  margin-bottom: 5px;
+}
+.rangeslider {
+  position: relative;
+  height: 60px;
+  border: 1px dashed green;
+}
+.rangeslider__tip-from {
+  display: flex;
+  justify-content: center;
+  align-items: center;    
+  background: green;
+  position: absolute;
+  top: @slider-x-pos - 26;
+  left: 123px;
+  color: white;
+  padding: 0px 3px;  
+  border-radius: 3px;
+}
+.rangeslider__tip-to {
+  display: flex;
+  justify-content: center;
+  align-items: center;    
+  background: green;
+  position: absolute;
+  top: @slider-x-pos - 26;
+  left: 224px;
+  color: white;
+  padding: 0px 3px;
+  border-radius: 3px;
+}
+.rangeslider__line {
+  height: 6px;
+  border: 1px solid gray;
+  border-radius: 5px;
+  position: absolute;  
+  left: 0px;
+  top: @slider-x-pos;
+  width: 100%;
+  z-index: 10;
+}
+
+.rangeslider__line-selected {
+  background: green;
+  position: absolute;
+  left: 140px;
+  top: @slider-x-pos + 1;
+  width: 84px;
+  height: 4px;  
+}
+
+.rangeslider__line-selected_isOneHandle {
+   border-top-left-radius: 5px;
+   border-bottom-left-radius: 5px;
+}
+
+.rangeslider__handle-from {
+  cursor: pointer;
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid black;
+  position: absolute;
+  width: 17px;
+  height: 17px;
+  left: 123px;
+  top: @slider-x-pos - 5;
+  z-index: 11;      
+}
+
+.rangeslider__handle-to {
+  cursor: pointer;
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid teal;
+  position: absolute;
+  width: 17px;
+  height: 17px;
+  left: 224px;
+  top: @slider-x-pos - 5;
+  z-index: 11;  
+}

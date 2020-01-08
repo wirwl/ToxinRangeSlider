@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "rootDir": "./SRC",
+    "outDir": "./Result/",
+    "sourceMap": true,
+    "moduleResolution": "node",
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "noImplicitReturns": true,
+    "suppressImplicitAnyIndexErrors": false,
+    "module": "ES6",
+    "target": "ES5",
+    "allowSyntheticDefaultImports": true,
+    "removeComments": true,
+    // "strict": true,
+    // "alwaysStrict": true
+  },
+}
