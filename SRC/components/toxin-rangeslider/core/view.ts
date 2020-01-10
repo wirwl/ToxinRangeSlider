@@ -19,7 +19,7 @@ class TaskView {
         this.onRemoveTaskCb = this.onRemoveTaskCb || function() {};
         el.querySelector('a')!.addEventListener('click', e => {
             e.preventDefault();
-            this.onRemoveTaskCb(parseInt((e.target as HTMLUListElement).dataset.inx!, 10));
+            //this.onRemoveTaskCb(parseFloat((e.target as HTMLUListElement).dataset.inx!, 10));
         });
         return el;
     }
@@ -107,26 +107,26 @@ export default class TRSView {
     //     this.$handleFrom.css('left', e.pageX - shiftX + 'px');
     // }
     convertRelativeValueToPixelValue(min: number, val: number, max: number): number {
-        const lw = parseInt(this.$line.css('width')) - this.offsetLeft - this.offsetRight;
+        const lw = parseFloat(this.$line.css('width')) - this.offsetLeft - this.offsetRight;
         const percent = ((val - min) / (max - min)) * 100;
         return ~~((lw / 100) * percent);
     }
     convertPixelValueToRelativeValue(val: number): number {
-        let lw = parseInt(this.$line.css('width'));
+        let lw = parseFloat(this.$line.css('width'));
         lw = lw - this.offsetLeft - this.offsetRight;
         const percent = val / lw;
-        return ~~(this.min + percent * (this.max - this.min));
+        return this.min + percent * (this.max - this.min);
     }
     setTipXPos(tip: JQuery<HTMLElement>, handle: JQuery<HTMLElement>) {
-        const hl = parseInt(handle.css('left'));
-        const hw = parseInt(handle.css('width'));
-        const tl = parseInt(tip.css('left'));
-        const tw = parseInt(tip.css('width'));
+        const hl = parseFloat(handle.css('left'));
+        const hw = parseFloat(handle.css('width'));
+        const tl = parseFloat(tip.css('left'));
+        const tw = parseFloat(tip.css('width'));
         tip.css('left', tl + (hw - tw) / 2);
     }
     // improveTipWidth(tip: JQuery<HTMLElement>, handle: JQuery<HTMLElement>) {
-    //     const tw = parseInt(tip.css('width'));
-    //     const hw = parseInt(handle.css('width'));
+    //     const tw = parseFloat(tip.css('width'));
+    //     const hw = parseFloat(handle.css('width'));
     //     if (hw % 2) {
     //         console.log('нечётное число');
     //         tip.css('width', tw % 2 ? tw : tw + 1);
@@ -156,32 +156,32 @@ export default class TRSView {
         });
     }
     onHandleMove(e: JQuery.MouseMoveEvent | JQuery.MouseDownEvent, currentHandle: JQuery<HTMLElement>, shiftX: number) {
-        const hfx = parseInt(this.$handleFrom.css('left'));
-        const hfw = parseInt(this.$handleFrom.css('width'));
-        const htx = parseInt(this.$handleTo.css('left'));
-        const htw = parseInt(this.$handleTo.css('width'));
-        const chx = parseInt(currentHandle.css('left'));
-        const chw = parseInt(currentHandle.css('width'));
-        const lx = parseInt(this.$line.css('left'));
-        const lw = parseInt(this.$line.css('width'));
-        const lsx = parseInt(this.$lineSelected.css('left'));
-        const lsw = parseInt(this.$lineSelected.css('width'));
-        let tfx = parseInt(this.$tipFrom.css('left'));
-        let tfw = parseInt(this.$tipFrom.css('width'));
-        let ttx = parseInt(this.$tipTo.css('left'));
-        let ttw = parseInt(this.$tipTo.css('width'));
-        const tiw = parseInt(this.$tipMin.css('width'));
-        const taw = parseInt(this.$tipMax.css('width'));
+        const hfx = parseFloat(this.$handleFrom.css('left'));
+        const hfw = parseFloat(this.$handleFrom.css('width'));
+        const htx = parseFloat(this.$handleTo.css('left'));
+        const htw = parseFloat(this.$handleTo.css('width'));
+        const chx = parseFloat(currentHandle.css('left'));
+        const chw = parseFloat(currentHandle.css('width'));
+        const lx = parseFloat(this.$line.css('left'));
+        const lw = parseFloat(this.$line.css('width'));
+        const lsx = parseFloat(this.$lineSelected.css('left'));
+        const lsw = parseFloat(this.$lineSelected.css('width'));
+        let tfx = parseFloat(this.$tipFrom.css('left'));
+        let tfw = parseFloat(this.$tipFrom.css('width'));
+        let ttx = parseFloat(this.$tipTo.css('left'));
+        let ttw = parseFloat(this.$tipTo.css('width'));
+        const tiw = parseFloat(this.$tipMin.css('width'));
+        const taw = parseFloat(this.$tipMax.css('width'));
         const tax = lw - taw;
         const shift = shiftX + this.$line.offset().left;
 
         const isTwoHandles = this.$handleFrom.css('display') != 'none';
-
+        const isHandleFrom = currentHandle.is(this.$handleFrom);
         //this.$handleFrom.length > 0;
 
         const currentTip = currentHandle.is(this.$handleFrom) ? this.$tipFrom : this.$tipTo;
-        // const ctx = parseInt(currentTip.css('left'));
-        // const ctw = parseInt(currentTip.css('width'));
+        // const ctx = parseFloat(currentTip.css('left'));
+        // const ctw = parseFloat(currentTip.css('width'));
         // const distanceMin = tfx - tiw;
         // if (distanceMin < 1) this.$tipMin.hide();
         // else this.$tipMin.show();
@@ -225,7 +225,7 @@ export default class TRSView {
         }
         //-----------------------------------------------------------
         const newValue = this.convertPixelValueToRelativeValue(newLeft);
-        currentTip.text(newValue);
+        currentTip.text(Math.round(newValue));
         if (currentTip.is(this.$tipFrom)) tfw = parseFloat(this.$tipFrom.css('width'));
         else ttw = parseFloat(this.$tipTo.css('width'));
 
@@ -242,20 +242,16 @@ export default class TRSView {
         else this.valueTo = newValue;
 
         if (isTwoHandles) {
-            if (currentHandle.is(this.$handleFrom)) {
+            if (isHandleFrom) {
                 let distanceBetweenHandles;
                 if (this.isSplitTips) distanceBetweenHandles = ttx - (newLeft + (hfw - tfw) / 2) - this.oldTFW;
                 else distanceBetweenHandles = ttx - tfx - tfw;
-
-                if (distanceBetweenHandles < 1 && !this.isSplitTips) {
-                    console.log('Первое сцепление');
-                }
 
                 if (distanceBetweenHandles < 1) {
                     if (!this.isSplitTips) this.oldTFW = tfw;
                     this.isSplitTips = true;
                     this.$tipTo.hide();
-                    this.$tipFrom.text(this.valueFrom + ' - ' + this.valueTo);
+                    this.$tipFrom.text(Math.round(this.valueFrom) + ' - ' + Math.round(this.valueTo));
                     tfw = parseFloat(this.$tipFrom.css('width'));
                     this.$tipFrom.css('left', hfx + (htx - hfx + htw - tfw) / 2);
                     tfx = parseFloat(this.$tipFrom.css('left'));
@@ -272,8 +268,6 @@ export default class TRSView {
                     distanceBetweenHandles = ttx - (hfx + (hfw - this.oldTFW) / 2) - this.oldTFW;
                 else distanceBetweenHandles = ttx - tfx - tfw;
 
-                console.log(distanceBetweenHandles);
-
                 if (distanceBetweenHandles < 1) {
                     if (!this.isSplitTips) {
                         this.oldTFW = tfw;
@@ -281,14 +275,14 @@ export default class TRSView {
                     }
                     this.isSplitTips = true;
                     this.$tipTo.hide();
-                    this.$tipFrom.text(this.valueFrom + ' - ' + this.valueTo);
+                    this.$tipFrom.text(Math.round(this.valueFrom) + ' - ' + Math.round(this.valueTo));
                     tfw = parseFloat(this.$tipFrom.css('width'));
                     this.$tipFrom.css('left', hfx + (htx - hfx + htw - tfw) / 2);
                     tfx = parseFloat(this.$tipFrom.css('left'));
                 } else {
                     this.isSplitTips = false;
                     this.$tipTo.show();
-                    this.$tipFrom.text(this.valueFrom);
+                    this.$tipFrom.text(Math.round(this.valueFrom));
                     this.$tipFrom.css('left', hfx + (hfw - this.oldTFW) / 2);
                     //this.$tipTo.css('left', newLeft + (chw - this.oldTFW) / 2);
                     //ttx = parseFloat(this.$tipTo.css('left'));
@@ -318,22 +312,22 @@ export default class TRSView {
     drawSlider(oldSettings: ExamplePluginOptions, newSettings: ExamplePluginOptions, isFirstDraw = false) {
         this.min = newSettings.minValue;
         this.max = newSettings.maxValue;
-        let hfx = parseInt(this.$handleFrom.css('left'));
-        const hfw = parseInt(this.$handleFrom.css('width'));
-        const htx = parseInt(this.$handleTo.css('left'));
-        const htw = parseInt(this.$handleTo.css('width'));
-        let tfx = parseInt(this.$tipFrom.css('left'));
-        const tfw = parseInt(this.$tipFrom.css('width'));
-        const ttx = parseInt(this.$tipTo.css('left'));
-        let ttw = parseInt(this.$tipTo.css('width'));
-        const tix = parseInt(this.$tipMin.css('left'));
-        const tiw = parseInt(this.$tipMin.css('width'));
-        const tax = parseInt(this.$tipMax.css('left'));
-        const taw = parseInt(this.$tipMax.css('width'));
-        const lx = parseInt(this.$line.css('left'));
-        const lw = parseInt(this.$line.css('width'));
-        const lsx = parseInt(this.$lineSelected.css('left'));
-        let lsw = parseInt(this.$lineSelected.css('width'));
+        let hfx = parseFloat(this.$handleFrom.css('left'));
+        const hfw = parseFloat(this.$handleFrom.css('width'));
+        const htx = parseFloat(this.$handleTo.css('left'));
+        const htw = parseFloat(this.$handleTo.css('width'));
+        let tfx = parseFloat(this.$tipFrom.css('left'));
+        const tfw = parseFloat(this.$tipFrom.css('width'));
+        const ttx = parseFloat(this.$tipTo.css('left'));
+        let ttw = parseFloat(this.$tipTo.css('width'));
+        const tix = parseFloat(this.$tipMin.css('left'));
+        const tiw = parseFloat(this.$tipMin.css('width'));
+        const tax = parseFloat(this.$tipMax.css('left'));
+        const taw = parseFloat(this.$tipMax.css('width'));
+        const lx = parseFloat(this.$line.css('left'));
+        const lw = parseFloat(this.$line.css('width'));
+        const lsx = parseFloat(this.$lineSelected.css('left'));
+        let lsw = parseFloat(this.$lineSelected.css('width'));
 
         if (!isFirstDraw) {
         }
@@ -370,11 +364,11 @@ export default class TRSView {
                     newSettings.maxValue,
                 ),
             );
-            hfx = parseInt(this.$handleFrom.css('left'));
+            hfx = parseFloat(this.$handleFrom.css('left'));
             this.$lineSelected.css('left', hfx + hfw - this.offsetLeft);
             this.$lineSelected.css('width', htx - hfx - htw + this.offsetRight);
             this.$tipFrom.css('left', hfx + (hfw - tfw) / 2);
-            tfx = parseInt(this.$tipFrom.css('left'));
+            tfx = parseFloat(this.$tipFrom.css('left'));
             const distanceMin = tfx - tiw;
             if (distanceMin < 1) this.$tipMin.hide();
             else this.$tipMin.show();
@@ -386,14 +380,14 @@ export default class TRSView {
                 'left',
                 this.convertRelativeValueToPixelValue(newSettings.minValue, newSettings.valueTo, newSettings.maxValue),
             );
-            const htx = parseInt(this.$handleTo.css('left'));
+            const htx = parseFloat(this.$handleTo.css('left'));
             if (newSettings.isInterval)
                 this.$lineSelected.css('width', htx - hfx - htw + this.offsetLeft + this.offsetRight);
             else this.$lineSelected.css('width', htx - 1 + this.offsetRight);
-            lsw = parseInt(this.$lineSelected.css('width'));
+            lsw = parseFloat(this.$lineSelected.css('width'));
             this.$tipTo.css('left', htx + (htw - ttw) / 2);
-            const ttx = parseInt(this.$tipTo.css('left'));
-            ttw = parseInt(this.$tipTo.css('width'));
+            const ttx = parseFloat(this.$tipTo.css('left'));
+            ttw = parseFloat(this.$tipTo.css('width'));
             const distanceMax = lw - ttx - ttw - taw;
             if (distanceMax < 1) this.$tipMax.hide();
             else this.$tipMax.show();
