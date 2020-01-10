@@ -28,7 +28,6 @@ class TaskView {
 export default class TRSView {
     private isSplitTips: boolean;
     private oldTFW: number;
-    private oldTTX: number;
     private valueFrom: number;
     private valueTo: number;
     private offsetLeft: number;
@@ -156,11 +155,11 @@ export default class TRSView {
         });
     }
     onHandleMove(e: JQuery.MouseMoveEvent | JQuery.MouseDownEvent, currentHandle: JQuery<HTMLElement>, shiftX: number) {
-        const hfx = parseFloat(this.$handleFrom.css('left'));
+        let hfx = parseFloat(this.$handleFrom.css('left'));
         const hfw = parseFloat(this.$handleFrom.css('width'));
-        const htx = parseFloat(this.$handleTo.css('left'));
+        let htx = parseFloat(this.$handleTo.css('left'));
         const htw = parseFloat(this.$handleTo.css('width'));
-        const chx = parseFloat(currentHandle.css('left'));
+        let chx = parseFloat(currentHandle.css('left'));
         const chw = parseFloat(currentHandle.css('width'));
         const lx = parseFloat(this.$line.css('left'));
         const lw = parseFloat(this.$line.css('width'));
@@ -199,7 +198,9 @@ export default class TRSView {
         }
         if (newLeft > lw - chw) newLeft = lw - chw;
 
-        currentHandle.css('left', newLeft + 'px');
+        currentHandle.css('left', newLeft);
+        isHandleFrom ? (hfx = newLeft) : (htx = newLeft);
+        chx = newLeft;
 
         if (isTwoHandles) {
             //есть 2й ползунок
@@ -242,51 +243,24 @@ export default class TRSView {
         else this.valueTo = newValue;
 
         if (isTwoHandles) {
-            if (isHandleFrom) {
-                let distanceBetweenHandles;
-                if (this.isSplitTips) distanceBetweenHandles = ttx - (newLeft + (hfw - tfw) / 2) - this.oldTFW;
-                else distanceBetweenHandles = ttx - tfx - tfw;
+            let distanceBetweenHandles;
+            let tipFromPosX = 0;
+            tipFromPosX = hfx + (hfw - (isHandleFrom ? tfw : this.oldTFW)) / 2;
+            if (this.isSplitTips) distanceBetweenHandles = ttx - tipFromPosX - this.oldTFW;
+            else distanceBetweenHandles = ttx - tfx - tfw;
 
-                if (distanceBetweenHandles < 1) {
-                    if (!this.isSplitTips) this.oldTFW = tfw;
-                    this.isSplitTips = true;
-                    this.$tipTo.hide();
-                    this.$tipFrom.text(Math.round(this.valueFrom) + ' - ' + Math.round(this.valueTo));
-                    tfw = parseFloat(this.$tipFrom.css('width'));
-                    this.$tipFrom.css('left', hfx + (htx - hfx + htw - tfw) / 2);
-                    tfx = parseFloat(this.$tipFrom.css('left'));
-                } else {
-                    this.isSplitTips = false;
-                    this.$tipTo.show();
-                    this.$tipFrom.css('left', newLeft + (chw - this.oldTFW) / 2);
-                    tfx = parseFloat(this.$tipFrom.css('left'));
-                }
+            if (distanceBetweenHandles < 1) {
+                if (!this.isSplitTips) this.oldTFW = tfw;
+                this.isSplitTips = true;
+                this.$tipTo.hide();
+                this.$tipFrom.text(Math.round(this.valueFrom) + ' - ' + Math.round(this.valueTo));
+                tfw = parseFloat(this.$tipFrom.css('width'));
+                this.$tipFrom.css('left', hfx + (htx - hfx + htw - tfw) / 2);
             } else {
-                let distanceBetweenHandles;
-                if (this.isSplitTips)
-                    //htx + (htw - ttw) / 2
-                    distanceBetweenHandles = ttx - (hfx + (hfw - this.oldTFW) / 2) - this.oldTFW;
-                else distanceBetweenHandles = ttx - tfx - tfw;
-
-                if (distanceBetweenHandles < 1) {
-                    if (!this.isSplitTips) {
-                        this.oldTFW = tfw;
-                        this.oldTTX = ttx;
-                    }
-                    this.isSplitTips = true;
-                    this.$tipTo.hide();
-                    this.$tipFrom.text(Math.round(this.valueFrom) + ' - ' + Math.round(this.valueTo));
-                    tfw = parseFloat(this.$tipFrom.css('width'));
-                    this.$tipFrom.css('left', hfx + (htx - hfx + htw - tfw) / 2);
-                    tfx = parseFloat(this.$tipFrom.css('left'));
-                } else {
-                    this.isSplitTips = false;
-                    this.$tipTo.show();
-                    this.$tipFrom.text(Math.round(this.valueFrom));
-                    this.$tipFrom.css('left', hfx + (hfw - this.oldTFW) / 2);
-                    //this.$tipTo.css('left', newLeft + (chw - this.oldTFW) / 2);
-                    //ttx = parseFloat(this.$tipTo.css('left'));
-                }
+                this.isSplitTips = false;
+                this.$tipTo.show();
+                this.$tipFrom.text(Math.round(this.valueFrom));
+                this.$tipFrom.css('left', hfx + (chw - this.oldTFW) / 2);
             }
         }
         //this.oldTFW = 0;
