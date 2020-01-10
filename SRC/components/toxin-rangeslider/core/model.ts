@@ -6,7 +6,7 @@ export default class TRSModel {
         isTip: true,
         minValue: 10,
         maxValue: 100,
-        step: 0,
+        stepValue: 0,
         valueFrom: 55,
         valueTo: 75,
     };

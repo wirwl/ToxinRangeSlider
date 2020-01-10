@@ -1,30 +1,5 @@
 //import $ from 'jQuery';
 
-/**
- * Encapsulate a single task view logic
- */
-class TaskView {
-    text: string;
-    inx: number;
-    onRemoveTaskCb: any;
-    //: (inx: number) => {};
-    constructor(text: string, inx: number) {
-        this.text = text;
-        this.inx = inx;
-        //this.onRemoveTaskCb = function(): void {};
-    }
-    render() {
-        const el = document.createElement('li');
-        el.innerHTML = this.text + ' <a href="#" data-inx="' + this.inx + '">[x]</a>';
-        this.onRemoveTaskCb = this.onRemoveTaskCb || function() {};
-        el.querySelector('a')!.addEventListener('click', e => {
-            e.preventDefault();
-            //this.onRemoveTaskCb(parseFloat((e.target as HTMLUListElement).dataset.inx!, 10));
-        });
-        return el;
-    }
-}
-
 export default class TRSView {
     private isSplitTips: boolean;
     private oldTFW: number;
@@ -34,6 +9,8 @@ export default class TRSView {
     private offsetRight: number;
     private min: number;
     private max: number;
+    private stepValue: number;
+    private lastStepValue: number;
     private template =
         "<div class='caption'>" +
         "<div class='caption__text'>Range Slider</div>" +
@@ -263,9 +240,6 @@ export default class TRSView {
                 this.$tipFrom.css('left', hfx + (chw - this.oldTFW) / 2);
             }
         }
-        //this.oldTFW = 0;
-        //------------------------------------------------------------
-
         //------------------------------------------------------------
         tfx = parseFloat(this.$tipFrom.css('left'));
         ttx = parseFloat(this.$tipTo.css('left'));
@@ -327,7 +301,18 @@ export default class TRSView {
                 this.$tipTo.hide();
             }
         }
-        if (isFirstDraw || (newSettings.valueFrom != oldSettings.valueFrom && newSettings.isInterval)) {
+        if (isFirstDraw || newSettings.minValue != oldSettings.minValue) {
+            this.$tipMin.text(newSettings.minValue);
+        }
+        if (isFirstDraw || newSettings.maxValue != oldSettings.maxValue) {
+            this.$tipMax.text(newSettings.maxValue);
+        }
+        if (
+            isFirstDraw ||
+            (newSettings.valueFrom != oldSettings.valueFrom && newSettings.isInterval) ||
+            newSettings.minValue != oldSettings.minValue ||
+            newSettings.maxValue != oldSettings.maxValue
+        ) {
             this.valueFrom = newSettings.valueFrom;
             this.$tipFrom.text(newSettings.valueFrom);
             this.$handleFrom.css(
@@ -347,7 +332,12 @@ export default class TRSView {
             if (distanceMin < 1) this.$tipMin.hide();
             else this.$tipMin.show();
         }
-        if (isFirstDraw || newSettings.valueTo != oldSettings.valueTo) {
+        if (
+            isFirstDraw ||
+            newSettings.valueTo != oldSettings.valueTo ||
+            newSettings.minValue != oldSettings.minValue ||
+            newSettings.maxValue != oldSettings.maxValue
+        ) {
             this.valueTo = newSettings.valueTo;
             this.$tipTo.text(newSettings.valueTo);
             this.$handleTo.css(
@@ -370,20 +360,26 @@ export default class TRSView {
                 distanceMin < 1 ? this.$tipMin.hide() : this.$tipMin.show();
             }
         }
-        if (isFirstDraw || newSettings.minValue != oldSettings.minValue) {
-            this.$tipMin.text(newSettings.minValue);
-        }
-        if (isFirstDraw || newSettings.maxValue != oldSettings.maxValue) {
-            this.$tipMax.text(newSettings.maxValue);
+        if (isFirstDraw || newSettings.stepValue != oldSettings.stepValue) {
+            //Написать тест для будущей функции вычисляющей this.lastStepValue
+            this.stepValue = newSettings.stepValue;
+            if (newSettings.stepValue > 0)
+                this.lastStepValue =
+                    newSettings.maxValue -
+                    newSettings.minValue -
+                    Math.trunc((newSettings.maxValue - newSettings.minValue) / newSettings.stepValue) *
+                        newSettings.stepValue;
+            console.log(this.lastStepValue);
         }
     }
+
     removeDOMelements() {}
     emptyList() {
         if (this.list) this.list.innerHTML = '';
     }
     addTask(text: string, inx: number) {
-        const taskView = new TaskView(text, inx);
-        taskView.onRemoveTaskCb = this.onRemoveTaskCb;
-        if (this.list) this.list.appendChild(taskView.render());
+        // const taskView = new TaskView(text, inx);
+        // taskView.onRemoveTaskCb = this.onRemoveTaskCb;
+        // if (this.list) this.list.appendChild(taskView.render());
     }
 }

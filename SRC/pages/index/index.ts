@@ -13,4 +13,5 @@ $(document).ready(() => {
     $('.test1').examplePlugin({ isInterval: true, isTip: true });
     const trs = $('.test1').data('toxinRangeSlider');
     trs.update({ isInterval: true, isTip: true, valueFrom: 55, valueTo: 65 });
+    trs.update({ minValue: 0, maxValue: 110, stepValue: 10 });
 });

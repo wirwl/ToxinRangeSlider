@@ -8,7 +8,7 @@ interface ExamplePluginOptions {
     isScale?: boolean;
     minValue?: number;
     maxValue?: number;
-    step?: number;
+    stepValue?: number;
     valueFrom?: number;
     valueTo?: number;
 }
