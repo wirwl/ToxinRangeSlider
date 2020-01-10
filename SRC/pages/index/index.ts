@@ -10,7 +10,7 @@ import { createToDo, ToDo } from '../../components/todo/todo';
 import '../../components/todo/todo';
 
 $(document).ready(() => {
-    $('.test1').examplePlugin({ isInterval: true });
+    $('.test1').examplePlugin({ isInterval: true, isTip: true });
     const trs = $('.test1').data('toxinRangeSlider');
-    trs.update({ isInterval: false });
+    trs.update({ isInterval: true, isTip: true, valueFrom: 55, valueTo: 65 });
 });

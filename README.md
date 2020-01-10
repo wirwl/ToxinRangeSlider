@@ -55,8 +55,7 @@
 
   >**npm-check --skip-unused** - check what packages is out of date with [npm-check](https://www.npmjs.com/package/npm-check)
 
-## Project demo (website pages)
-![demo.gif](demo.gif)
+Recalculates onresize so suitable for use within responsive designs
 
   
 

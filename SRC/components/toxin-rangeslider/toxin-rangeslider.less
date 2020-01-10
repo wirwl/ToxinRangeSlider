@@ -6,7 +6,7 @@ body {
   justify-content: center;
 }
 .test1 {    
-  width: 304px;
+  width: 247px;
   border: 1px dashed brown;
   
 }
@@ -21,6 +21,18 @@ body {
   position: relative;
   height: 60px;
   border: 1px dashed green;
+}
+.rangeslider__tip-min {
+  display: flex;
+  justify-content: center;
+  align-items: center;    
+  background: gray;
+  position: absolute;
+  top: @slider-x-pos - 26;
+  left: 0px;
+  color: white;
+  padding: 0px 3px;  
+  border-radius: 3px;
 }
 .rangeslider__tip-from {
   display: flex;
@@ -42,6 +54,18 @@ body {
   position: absolute;
   top: @slider-x-pos - 26;
   left: 224px;
+  color: white;
+  padding: 0px 3px;
+  border-radius: 3px;
+}
+.rangeslider__tip-max {
+  display: flex;
+  justify-content: center;
+  align-items: center;    
+  background: gray;
+  position: absolute;
+  top: @slider-x-pos - 26;
+  right: 0px;
   color: white;
   padding: 0px 3px;
   border-radius: 3px;
@@ -77,8 +101,8 @@ body {
   background: transparent;
   border: 1px solid black;
   position: absolute;
-  width: 17px;
-  height: 17px;
+  width: 16px;
+  height: 16px;
   left: 123px;
   top: @slider-x-pos - 5;
   z-index: 11;      
@@ -90,8 +114,8 @@ body {
   background: transparent;
   border: 1px solid teal;
   position: absolute;
-  width: 17px;
-  height: 17px;
+  width: 16px;
+  height: 16px;
   left: 224px;
   top: @slider-x-pos - 5;
   z-index: 11;  
