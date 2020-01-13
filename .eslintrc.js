@@ -1,4 +1,13 @@
 module.exports = {
+    // env: {
+    //     jest: true,
+    //   },
+    //   globals: {
+    //     page: true,
+    //     browser: true,
+    //     context: true,
+    //     jestPuppeteer: true,
+    //   },
     parser: '@typescript-eslint/parser',  // Specifies the ESLint parser
     extends: [
         'plugin:@typescript-eslint/recommended',  // Uses the recommended rules from the @typescript-eslint/eslint-plugin
@@ -15,6 +24,7 @@ module.exports = {
         // e.g. "@typescript-eslint/explicit-function-return-type": "off",
         "@typescript-eslint/no-namespace": "off",
         "@typescript-eslint/interface-name-prefix": "off",
-        "@typescript-eslint/no-empty-function": "off"
+        "@typescript-eslint/no-empty-function": "off",
+        "@typescript-eslint/no-var-requires": "off"
     },
 }

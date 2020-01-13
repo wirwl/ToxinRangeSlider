@@ -56,9 +56,7 @@ export default class TRSView {
         this.offsetLeft = parseFloat(this.$handleFrom.css('width')) / 2;
         this.offsetRight = parseFloat(this.$handleTo.css('width')) / 2;
         this.$lineSelected = this.$rangeslider.find('.rangeslider__line-selected');
-        this.input = el[0].querySelector('[data-bind=input]');
-        this.$input = $(this.input);
-        this.list = el[0].querySelector('[data-bind=tasks]');
+
         this.onSubmitCb = function() {};
         this.onRemoveTaskCb = function() {};
         //this.drawSlider = function() {};
@@ -84,6 +82,8 @@ export default class TRSView {
     // }
     convertRelativeValueToPixelValue(min: number, val: number, max: number): number {
         const lw = parseFloat(this.$line.css('width')) - this.offsetLeft - this.offsetRight;
+        console.log('---hi from view.ts---');
+        console.log(parseFloat(this.$line.css('width')));
         const percent = ((val - min) / (max - min)) * 100;
         return ~~((lw / 100) * percent);
     }
@@ -239,7 +239,12 @@ export default class TRSView {
                 this.$tipFrom.text(Math.round(this.valueFrom));
                 this.$tipFrom.css('left', hfx + (chw - this.oldTFW) / 2);
             }
+            if (Math.round(this.valueFrom) == Math.round(this.valueTo)) {
+                this.$tipFrom.text(Math.round(this.valueFrom));
+                this.$tipFrom.css('left', hfx + (chw - this.oldTFW) / 2);
+            }
         }
+
         //------------------------------------------------------------
         tfx = parseFloat(this.$tipFrom.css('left'));
         ttx = parseFloat(this.$tipTo.css('left'));
