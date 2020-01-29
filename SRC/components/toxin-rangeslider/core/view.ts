@@ -1,5 +1,5 @@
 //import $ from 'jQuery';
-
+//let $: JQueryStatic = require('jquery');
 export default class TRSView {
     private isSplitTips: boolean;
     private oldTFW: number;
@@ -43,8 +43,10 @@ export default class TRSView {
     onRemoveTaskCb: Function;
     data: ExamplePluginOptions;
     constructor(el: JQuery<HTMLElement>) {
+        //if (jq) $ = jq;
         this.el = el;
         this.el.html(this.template);
+        //console.log(this.el);
         this.$rangeslider = el.find('.rangeslider');
         this.$tipMin = el.find('.rangeslider__tip-min');
         this.$tipFrom = el.find('.rangeslider__tip-from');
@@ -52,6 +54,7 @@ export default class TRSView {
         this.$tipMax = el.find('.rangeslider__tip-max');
         this.$line = el.find('.rangeslider__line');
         this.$handleFrom = this.$rangeslider.find('.rangeslider__handle-from');
+        //console.log(this.$handleFrom);
         this.$handleTo = this.$rangeslider.find('.rangeslider__handle-to');
         this.offsetLeft = parseFloat(this.$handleFrom.css('width')) / 2;
         this.offsetRight = parseFloat(this.$handleTo.css('width')) / 2;
@@ -60,10 +63,6 @@ export default class TRSView {
         this.onSubmitCb = function() {};
         this.onRemoveTaskCb = function() {};
         //this.drawSlider = function() {};
-        // this.el[0].addEventListener('submit', e => {
-        //     e.preventDefault();
-        //     if (this.input) this.onSubmitCb(this.input.value);
-        // });
         this.data = el.data('options');
         this.$handleFrom[0].ondragstart = function() {
             return false;
@@ -74,6 +73,9 @@ export default class TRSView {
         this.setTipXPos(this.$tipFrom, this.$handleFrom);
         //this.improveTipWidth(this.$tipTo, this.$handleTo);
         this.setTipXPos(this.$tipTo, this.$handleTo);
+
+        //this.$line.css('width', parseInt(this.el.css('width')) - 4);
+        //console.log(this.el.css('width'));
     }
     // moveAt(e: JQuery.MouseDownEvent | JQuery.MouseMoveEvent, shiftX: number) {
     //     //const shiftX = e.clientX - this.$handleFrom[0].getBoundingClientRect().left;
@@ -82,10 +84,10 @@ export default class TRSView {
     // }
     convertRelativeValueToPixelValue(min: number, val: number, max: number): number {
         const lw = parseFloat(this.$line.css('width')) - this.offsetLeft - this.offsetRight;
-        console.log('---hi from view.ts---');
-        console.log(parseFloat(this.$line.css('width')));
+        // console.log('---hi from view.ts---');
+        // console.log(this.$line.css('width'));
         const percent = ((val - min) / (max - min)) * 100;
-        return ~~((lw / 100) * percent);
+        return (lw / 100) * percent;
     }
     convertPixelValueToRelativeValue(val: number): number {
         let lw = parseFloat(this.$line.css('width'));
@@ -374,7 +376,7 @@ export default class TRSView {
                     newSettings.minValue -
                     Math.trunc((newSettings.maxValue - newSettings.minValue) / newSettings.stepValue) *
                         newSettings.stepValue;
-            console.log(this.lastStepValue);
+            //console.log(this.lastStepValue);
         }
     }
 

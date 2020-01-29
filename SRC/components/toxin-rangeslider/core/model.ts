@@ -1,3 +1,4 @@
+//const $ = require('jquery');
 export default class TRSModel {
     settings: ExamplePluginOptions;
     static defaults: ExamplePluginOptions = {

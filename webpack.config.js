@@ -8,6 +8,7 @@ const discardduplicates = require('postcss-discard-duplicates');
 const flexbugsfixes = require('postcss-flexbugs-fixes');
 const merge = require('webpack-merge');
 const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 
 let devServer;
 process.noDeprecation = true;
@@ -144,7 +145,7 @@ module.exports = ((env, argv) => {
                 // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
                 {
                     test: /\.js$/,
-                    enforce: "pre",                    
+                    enforce: "pre",
                     loader: "source-map-loader"
                 },
                 {
@@ -203,15 +204,41 @@ module.exports = ((env, argv) => {
             ]//rules
         },
         plugins: [
-            new webpack.ProvidePlugin({
-                $: 'jquery',
-                jQuery: 'jquery',
-                'window.jQuery': 'jquery'
-            }),
+            // new webpack.ProvidePlugin({
+            //     $: path.resolve(__dirname, 'SRC/jquery/dist/jquery.js'),
+            //     jQuery: path.resolve(__dirname, 'SRC/jquery/dist/jquery.js'),
+            //     'window.jQuery': path.resolve(__dirname, 'SRC/jquery/dist/jquery.js'),
+            //     'window.$': path.resolve(__dirname, 'SRC/jquery/dist/jquery.js'),
+            // }),
             new FriendlyErrorsWebpackPlugin()
         ]
     };
     //---Site-Pages-----------
+    var jqueryCFG = {
+        plugins: [
+            new CopyPlugin([
+                { from: './src/jquery/dist/jquery.js', to: pathOutput + '/jquery/jquery.js' }
+            ])
+        ]
+    }
+    console.log(__dirname);
+    var pluginCFG = merge({}, common, {
+        entry: './src/components/toxin-rangeslider/toxin-rangeslider.ts',
+        output: {
+            path: path.resolve(__dirname, pathOutput + '/jquery-plugins/toxin-rangeslider/'),
+            filename: 'toxin-rangeslider.js'
+        },
+        plugins: [
+            new MiniCssExtractPlugin({ filename: 'toxin-rangeslider.css' }),
+            new CopyPlugin([
+                {
+                    from: './SRC/jquery/dist/jquery.js',
+                    to: path.resolve(__dirname, pathOutput + '/jquery/jquery.js')
+                }
+            ])
+        ]
+    });
+    //------------------------
     var indexCFG = AddHTMLPage({ common_filename: 'index', input_path: 'SRC/pages/index', output_path: '.' });
-    return [indexCFG];
+    return [pluginCFG, indexCFG];
 })

@@ -1,6 +1,6 @@
 import TRSView from './view';
 import TRSModel from './model';
-
+//const $: JQueryStatic = require('jquery');
 /**
  * Presenter listenes to view events, retrieve data, manipulates it and
  * updates the view
@@ -29,6 +29,7 @@ export default class TRSPresenter {
         this.model.validate();
         this.view.drawSlider(oldSettings, this.model.settings);
     }
+    reset() {}
     onRemoveTask(inx: number) {
         this.model.removeTask(inx);
         this.updateList();
