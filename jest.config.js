@@ -19,12 +19,12 @@ const puppeteer_preset = require('jest-puppeteer/jest-preset')
 //   }
 // };
 
-module.exports = merge.recursive(ts_preset, {  
+module.exports = merge.recursive(ts_preset, {
   globals: {
-      //test_url: `http://${process.env.HOST || '127.0.0.1'}:${process.env.PORT || 3000}`,
+    //test_url: `http://${process.env.HOST || '127.0.0.1'}:${process.env.PORT || 3000}`,
   },
   testEnvironment: 'jsdom',
- //testEnvironment: 'node',
+  //testEnvironment: 'node',
   roots: [
     "<rootDir>/src"
   ],
@@ -34,5 +34,6 @@ module.exports = merge.recursive(ts_preset, {
   ],
   "transform": {
     "^.+\\.(ts|tsx)$": "ts-jest"
-  }
+  },
+  setupFiles: ['./setup-jest.js'],
 })

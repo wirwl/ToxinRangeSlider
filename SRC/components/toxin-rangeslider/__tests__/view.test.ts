@@ -4,7 +4,7 @@ import puppeteer from 'puppeteer';
 import { pageExtend } from 'puppeteer-jquery';
 //import '../../../../node_modules/jquery/dist/jquery.js';
 //import * as $ from 'jquery';
-const $: JQueryStatic = require('jquery');
+//const $: JQueryStatic = require('jquery');
 //global['$'] = global['jQuery'] = $;
 import '../../toxin-rangeslider/toxin-rangeslider';
 //const examplePlugin = require('../../toxin-rangeslider/toxin-rangeslider');
@@ -12,12 +12,16 @@ import '../../toxin-rangeslider/toxin-rangeslider';
 //import $ from 'jquery';
 //var $ = require('jquery');
 //const absolutePath = path.join(__dirname, 'style.css');
-//const $ = require('jquery');
+//const $ = require('../../../jquery/dist/jquery');
+
 const pug = require('pug');
 const fs = require('fs');
 const path = require('path');
 const less = require('less');
 let cssFromLess: string;
+
+(global as any).window = window;
+(global as any).$ = $;
 
 async function injectJquery(page: puppeteer.Page) {
     await page.evaluate(() => {
@@ -72,12 +76,20 @@ beforeAll(() => {
     // const pageEx = await pageExtend(page);
     // console.log(await pageEx.jQuery('.test1'));
     // await pageEx.screenshot({ path: 'testresult.png', fullPage: true });
+
+    // (global as any).window.$ = jest.fn(() => {
+    //     return { on: jest.fn() };
+    // });
 });
 
 test('Check result of convertRelativeValueToPixelValue function', () => {
     //console.log($('.test1').children.length);
     $('.test1').examplePlugin();
-    console.log($('.test1').find('.rangeslider__line').length);
+    console.log(
+        $('.test1')
+            .find('.rangeslider__line')
+            .css('width'),
+    );
     // const view = new TRSView($('.test1'));
     // console.log(view.$line[0].clientWidth);
     // expect(view.convertRelativeValueToPixelValue(0, 50, 100)).toBe(150);

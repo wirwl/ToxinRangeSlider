@@ -14,8 +14,6 @@ import '../../favicons/favicons.js';
 
 $(document).ready(() => {
     //jQuery(document).ready(function($) {
-    console.log('document is ready');
-    console.log($());
     $('.test1').examplePlugin({ isInterval: true, isTip: true });
     const trs = $('.test1').data('toxinRangeSlider');
     trs.update({ isInterval: true, isTip: true, valueFrom: 35, valueTo: 65 });

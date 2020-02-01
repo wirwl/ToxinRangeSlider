@@ -223,7 +223,12 @@ module.exports = ((env, argv) => {
     }
     console.log(__dirname);
     var pluginCFG = merge({}, common, {
-        entry: './src/components/toxin-rangeslider/toxin-rangeslider.ts',
+        entry: {
+            plugin: [
+                './src/components/toxin-rangeslider/toxin-rangeslider.ts',
+                './src/components/toxin-rangeslider/toxin-rangeslider.less'
+            ]
+        },
         output: {
             path: path.resolve(__dirname, pathOutput + '/jquery-plugins/toxin-rangeslider/'),
             filename: 'toxin-rangeslider.js'

@@ -1,4 +1,4 @@
-//const $ = require('jquery');
+const $ = require('../../../jquery/dist/jquery');
 export default class TRSModel {
     settings: ExamplePluginOptions;
     static defaults: ExamplePluginOptions = {

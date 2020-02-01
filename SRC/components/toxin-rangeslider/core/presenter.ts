@@ -1,6 +1,6 @@
 import TRSView from './view';
 import TRSModel from './model';
-//const $: JQueryStatic = require('jquery');
+const $ = require('../../../jquery/dist/jquery');
 /**
  * Presenter listenes to view events, retrieve data, manipulates it and
  * updates the view
