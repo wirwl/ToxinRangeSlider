@@ -1,6 +1,6 @@
-# ToxinHotel
+# ToxinRangeSlider
 [![tested with jest](https://img.shields.io/badge/tested_with-jest-99424f.svg)](https://github.com/facebook/jest)       
-**ToxinHotel** - site for Hotel with finding and reservation rooms (frontend part). This is pet project, that being part of [FSD](https://www.fullstack-development.com) education program (task №2). 
+**ToxinRangeSlider** - site for Hotel with finding and reservation rooms (frontend part). This is pet project, that being part of [FSD](https://www.fullstack-development.com) education program (task №2). 
 
 > Read more about of education program follow this link: www.fullstack-development.com/#system
 

@@ -22,6 +22,7 @@ export default class TRSPresenter {
         $.extend(this.model.settings, this.view.data);
         this.model.validate();
         this.view.drawSlider(null, this.model.settings, true);
+        //this.view.drawSlider(TRSModel.defaults, this.model.settings);
     }
     update(opt: ExamplePluginOptions) {
         const oldSettings = $.extend({}, this.model.settings);

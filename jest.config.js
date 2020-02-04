@@ -19,7 +19,10 @@ const puppeteer_preset = require('jest-puppeteer/jest-preset')
 //   }
 // };
 
-module.exports = merge.recursive(ts_preset, {
+module.exports = merge.recursive({}, ts_preset, {
+  // "globalSetup": "jest-environment-puppeteer/setup",
+  // "globalTeardown": "jest-environment-puppeteer/teardown",
+  // "testEnvironment": "jest-environment-puppeteer",
   globals: {
     //test_url: `http://${process.env.HOST || '127.0.0.1'}:${process.env.PORT || 3000}`,
   },

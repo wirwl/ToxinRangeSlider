@@ -6,7 +6,13 @@ import { pageExtend } from 'puppeteer-jquery';
 //import * as $ from 'jquery';
 //const $: JQueryStatic = require('jquery');
 //global['$'] = global['jQuery'] = $;
+
+//window = (global as any).window;
+
+//console.log($);
+
 import '../../toxin-rangeslider/toxin-rangeslider';
+
 //const examplePlugin = require('../../toxin-rangeslider/toxin-rangeslider');
 //const puppeteer = require('puppeteer');
 //import $ from 'jquery';
@@ -20,8 +26,8 @@ const path = require('path');
 const less = require('less');
 let cssFromLess: string;
 
-(global as any).window = window;
-(global as any).$ = $;
+// (global as any).window = window;
+// (global as any).$ = $;
 
 async function injectJquery(page: puppeteer.Page) {
     await page.evaluate(() => {
@@ -39,7 +45,7 @@ async function injectJquery(page: puppeteer.Page) {
     await watchDog;
 }
 
-beforeAll(() => {
+beforeAll(async () => {
     const urlLess = new URL(
         path.normalize(__dirname + '../../../../components/toxin-rangeslider/toxin-rangeslider.less'),
     );
@@ -70,12 +76,17 @@ beforeAll(() => {
     // $.document = document;
     // $.window = window;
     //console.log(document.documentElement.innerHTML);
-    //const browser = await puppeteer.launch({ headless: false });
-    // await page.setContent(getHtmlFromPug());
-    // await injectJquery(page);
-    // const pageEx = await pageExtend(page);
-    // console.log(await pageEx.jQuery('.test1'));
-    // await pageEx.screenshot({ path: 'testresult.png', fullPage: true });
+
+    // const browser = await puppeteer.launch({ headless: true });
+    // const page = await browser.newPage();
+    // page.setViewport({ width: 1920, height: 1080 });
+    //await page.setContent(getHtmlFromPug());
+    // console.log($('.test1').length);
+
+    //await injectJquery(page);
+    //const pageEx = await pageExtend(page);
+    //console.log(await pageEx.jQuery('.test1'));
+    //await pageEx.screenshot({ path: 'testresult.png', fullPage: true });
 
     // (global as any).window.$ = jest.fn(() => {
     //     return { on: jest.fn() };
@@ -84,15 +95,17 @@ beforeAll(() => {
 
 test('Check result of convertRelativeValueToPixelValue function', () => {
     //console.log($('.test1').children.length);
-    $('.test1').examplePlugin();
-    console.log(
-        $('.test1')
-            .find('.rangeslider__line')
-            .css('width'),
-    );
-    // const view = new TRSView($('.test1'));
+    //$('.test1').examplePlugin();
+    // console.log(
+    //     $('.test1')
+    //         .find('.rangeslider__line')
+    //         .css('width'),
+    // );
+    const view = new TRSView($('.test1'));
     // console.log(view.$line[0].clientWidth);
-    // expect(view.convertRelativeValueToPixelValue(0, 50, 100)).toBe(150);
+    $.css = jest.fn().mockReturnValue(243);
+    //expect($('.test1').find('.rangeslider__line').css('width')).toBe(223);
+    expect(view.convertRelativeValueToPixelValue(0, 50, 100)).toBe(150);
 });
 
 afterAll(() => {

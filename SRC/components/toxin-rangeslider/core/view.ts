@@ -84,8 +84,8 @@ export default class TRSView {
     // }
     convertRelativeValueToPixelValue(min: number, val: number, max: number): number {
         const lw = parseFloat(this.$line.css('width')) - this.offsetLeft - this.offsetRight;
-        // console.log('---hi from view.ts---');
-        // console.log(this.$line.css('width'));
+        console.log('---hi from view.ts---');
+        console.log(this.$line.css('width'));
         const percent = ((val - min) / (max - min)) * 100;
         return (lw / 100) * percent;
     }
@@ -283,7 +283,7 @@ export default class TRSView {
         const lw = parseFloat(this.$line.css('width'));
         const lsx = parseFloat(this.$lineSelected.css('left'));
         let lsw = parseFloat(this.$lineSelected.css('width'));
-
+        //debugger;
         if (!isFirstDraw) {
         }
         if (isFirstDraw || newSettings.isInterval != oldSettings.isInterval) {
@@ -299,46 +299,47 @@ export default class TRSView {
                 this.$lineSelected.css('width', htx - 1 + this.offsetRight);
             }
         }
-        if (isFirstDraw || newSettings.isTip != oldSettings.isTip) {
-            if (newSettings.isTip) {
-                if (newSettings.isInterval) this.$tipFrom.show();
-                this.$tipTo.show();
-            } else {
-                if (newSettings.isInterval) this.$tipFrom.hide();
-                this.$tipTo.hide();
-            }
+        //------------------------------------------------------------
+        if (newSettings.isTip) {
+            if (newSettings.isInterval) this.$tipFrom.show();
+            this.$tipTo.show();
+        } else {
+            if (newSettings.isInterval) this.$tipFrom.hide();
+            this.$tipTo.hide();
         }
+        //------------------------------------------------------------
         if (isFirstDraw || newSettings.minValue != oldSettings.minValue) {
             this.$tipMin.text(newSettings.minValue);
         }
         if (isFirstDraw || newSettings.maxValue != oldSettings.maxValue) {
             this.$tipMax.text(newSettings.maxValue);
         }
-        if (
-            isFirstDraw ||
-            (newSettings.valueFrom != oldSettings.valueFrom && newSettings.isInterval) ||
-            newSettings.minValue != oldSettings.minValue ||
-            newSettings.maxValue != oldSettings.maxValue
-        ) {
-            this.valueFrom = newSettings.valueFrom;
-            this.$tipFrom.text(newSettings.valueFrom);
-            this.$handleFrom.css(
-                'left',
-                this.convertRelativeValueToPixelValue(
-                    newSettings.minValue,
-                    newSettings.valueFrom,
-                    newSettings.maxValue,
-                ),
-            );
-            hfx = parseFloat(this.$handleFrom.css('left'));
-            this.$lineSelected.css('left', hfx + hfw - this.offsetLeft);
-            this.$lineSelected.css('width', htx - hfx - htw + this.offsetRight);
-            this.$tipFrom.css('left', hfx + (hfw - tfw) / 2);
-            tfx = parseFloat(this.$tipFrom.css('left'));
-            const distanceMin = tfx - tiw;
-            if (distanceMin < 1) this.$tipMin.hide();
-            else this.$tipMin.show();
-        }
+        if (newSettings.isInterval)
+            if (
+                isFirstDraw ||
+                newSettings.valueFrom != oldSettings.valueFrom ||
+                newSettings.minValue != oldSettings.minValue ||
+                newSettings.maxValue != oldSettings.maxValue
+            ) {
+                this.valueFrom = newSettings.valueFrom;
+                this.$tipFrom.text(newSettings.valueFrom);
+                this.$handleFrom.css(
+                    'left',
+                    this.convertRelativeValueToPixelValue(
+                        newSettings.minValue,
+                        newSettings.valueFrom,
+                        newSettings.maxValue,
+                    ),
+                );
+                hfx = parseFloat(this.$handleFrom.css('left'));
+                this.$lineSelected.css('left', hfx + hfw - this.offsetLeft);
+                this.$lineSelected.css('width', htx - hfx - htw + this.offsetRight);
+                this.$tipFrom.css('left', hfx + (hfw - tfw) / 2);
+                tfx = parseFloat(this.$tipFrom.css('left'));
+                const distanceMin = tfx - tiw;
+                if (distanceMin < 1) this.$tipMin.hide();
+                else this.$tipMin.show();
+            }
         if (
             isFirstDraw ||
             newSettings.valueTo != oldSettings.valueTo ||

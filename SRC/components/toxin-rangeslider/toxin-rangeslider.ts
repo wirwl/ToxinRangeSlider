@@ -20,13 +20,13 @@ import TRSModel from './core/model';
 // Define the plugin function on the jQuery extension point.
 //Object.assign<ExamplePluginFunction, ExamplePluginDefaultOptions>(
 //const jQuery = require('../../jquery/dist/jquery');
-// eslint-disable-next-line prettier/prettier
 
 //const { jQuery, $ } = require('jquery')(window);
 
 //console.log((global as any).jQuery);
 
-(function($) {
+// eslint-disable-next-line prettier/prettier
+;(function($) {
     $.fn.examplePlugin = function(this: JQuery, options: ExamplePluginOptions): JQuery {
         //new TRSPresenter(new TRSModel($, options), new TRSView(this));
         if (!$.data(this[0], 'tox inRangeSlider')) {
