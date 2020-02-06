@@ -6,10 +6,10 @@ export default class TRSModel {
         isInterval: true,
         isTip: true,
         minValue: 10,
-        maxValue: 100,
+        maxValue: 1000,
         stepValue: 0,
-        valueFrom: 55,
-        valueTo: 75,
+        valueFrom: 10,
+        valueTo: 750,
     };
     constructor(options: ExamplePluginOptions) {
         this.settings = $.extend({}, TRSModel.defaults, options);

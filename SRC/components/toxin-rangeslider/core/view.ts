@@ -1,5 +1,6 @@
 //import $ from 'jQuery';
 //let $: JQueryStatic = require('jquery');
+type resultMoveHandle = { isFromHandle: boolean; value: number };
 export default class TRSView {
     private isSplitTips: boolean;
     private oldTFW: number;
@@ -41,6 +42,7 @@ export default class TRSView {
     list: HTMLUListElement | null;
     onSubmitCb: Function;
     onRemoveTaskCb: Function;
+    onHandlePositionUpdate: Function;
     data: ExamplePluginOptions;
     constructor(el: JQuery<HTMLElement>) {
         //if (jq) $ = jq;
@@ -93,7 +95,7 @@ export default class TRSView {
         let lw = parseFloat(this.$line.css('width'));
         lw = lw - this.offsetLeft - this.offsetRight;
         const percent = val / lw;
-        return this.min + percent * (this.max - this.min);
+        return Math.round(this.min + percent * (this.max - this.min));
     }
     setTipXPos(tip: JQuery<HTMLElement>, handle: JQuery<HTMLElement>) {
         const hl = parseFloat(handle.css('left'));
@@ -133,7 +135,12 @@ export default class TRSView {
             currentHandle.css('z-index', '11');
         });
     }
-    onHandleMove(e: JQuery.MouseMoveEvent | JQuery.MouseDownEvent, currentHandle: JQuery<HTMLElement>, shiftX: number) {
+    onHandleMove(e: JQuery.MouseMoveEvent, currentHandle: JQuery<HTMLElement>, shiftX: number) {
+        const shift = shiftX + this.$line.offset().left;
+        const newLeft = e.clientX - shift;
+        this.onHandlePositionUpdate(currentHandle, newLeft);
+    }
+    moveHandle(currentHandle: JQuery<HTMLElement>, newLeft: number): resultMoveHandle {
         let hfx = parseFloat(this.$handleFrom.css('left'));
         const hfw = parseFloat(this.$handleFrom.css('width'));
         let htx = parseFloat(this.$handleTo.css('left'));
@@ -151,7 +158,6 @@ export default class TRSView {
         const tiw = parseFloat(this.$tipMin.css('width'));
         const taw = parseFloat(this.$tipMax.css('width'));
         const tax = lw - taw;
-        const shift = shiftX + this.$line.offset().left;
 
         const isTwoHandles = this.$handleFrom.css('display') != 'none';
         const isHandleFrom = currentHandle.is(this.$handleFrom);
@@ -169,7 +175,6 @@ export default class TRSView {
 
         currentHandle.css('z-index', '99');
 
-        let newLeft = e.clientX - shift;
         if (newLeft < 0) newLeft = 0;
         if (isTwoHandles) {
             if (currentHandle.is(this.$handleFrom)) if (newLeft > htx) newLeft = htx;
@@ -259,6 +264,10 @@ export default class TRSView {
             distanceMin < 1 ? this.$tipMin.hide() : this.$tipMin.show();
         }
         //-----------------------------------------------------------
+        return {
+            isFromHandle: currentHandle.is(this.$handleFrom) ? true : false,
+            value: newValue,
+        };
     }
     drawSlider1() {}
     redrawSlider1() {
@@ -267,14 +276,14 @@ export default class TRSView {
     drawSlider(oldSettings: ExamplePluginOptions, newSettings: ExamplePluginOptions, isFirstDraw = false) {
         this.min = newSettings.minValue;
         this.max = newSettings.maxValue;
-        let hfx = parseFloat(this.$handleFrom.css('left'));
+        const hfx = parseFloat(this.$handleFrom.css('left'));
         const hfw = parseFloat(this.$handleFrom.css('width'));
         const htx = parseFloat(this.$handleTo.css('left'));
         const htw = parseFloat(this.$handleTo.css('width'));
-        let tfx = parseFloat(this.$tipFrom.css('left'));
+        const tfx = parseFloat(this.$tipFrom.css('left'));
         const tfw = parseFloat(this.$tipFrom.css('width'));
         const ttx = parseFloat(this.$tipTo.css('left'));
-        let ttw = parseFloat(this.$tipTo.css('width'));
+        const ttw = parseFloat(this.$tipTo.css('width'));
         const tix = parseFloat(this.$tipMin.css('left'));
         const tiw = parseFloat(this.$tipMin.css('width'));
         const tax = parseFloat(this.$tipMax.css('left'));
@@ -282,8 +291,9 @@ export default class TRSView {
         const lx = parseFloat(this.$line.css('left'));
         const lw = parseFloat(this.$line.css('width'));
         const lsx = parseFloat(this.$lineSelected.css('left'));
-        let lsw = parseFloat(this.$lineSelected.css('width'));
+        const lsw = parseFloat(this.$lineSelected.css('width'));
         //debugger;
+        //-------------------------------------------------------------------
         if (!isFirstDraw) {
         }
         if (isFirstDraw || newSettings.isInterval != oldSettings.isInterval) {
@@ -314,6 +324,7 @@ export default class TRSView {
         if (isFirstDraw || newSettings.maxValue != oldSettings.maxValue) {
             this.$tipMax.text(newSettings.maxValue);
         }
+        //-------------------------------------------------------------------
         if (newSettings.isInterval)
             if (
                 isFirstDraw ||
@@ -321,53 +332,28 @@ export default class TRSView {
                 newSettings.minValue != oldSettings.minValue ||
                 newSettings.maxValue != oldSettings.maxValue
             ) {
-                this.valueFrom = newSettings.valueFrom;
-                this.$tipFrom.text(newSettings.valueFrom);
-                this.$handleFrom.css(
-                    'left',
+                this.moveHandle(
+                    this.$handleFrom,
                     this.convertRelativeValueToPixelValue(
                         newSettings.minValue,
                         newSettings.valueFrom,
                         newSettings.maxValue,
                     ),
                 );
-                hfx = parseFloat(this.$handleFrom.css('left'));
-                this.$lineSelected.css('left', hfx + hfw - this.offsetLeft);
-                this.$lineSelected.css('width', htx - hfx - htw + this.offsetRight);
-                this.$tipFrom.css('left', hfx + (hfw - tfw) / 2);
-                tfx = parseFloat(this.$tipFrom.css('left'));
-                const distanceMin = tfx - tiw;
-                if (distanceMin < 1) this.$tipMin.hide();
-                else this.$tipMin.show();
             }
+        //-----------------------------------------------------------------
         if (
             isFirstDraw ||
             newSettings.valueTo != oldSettings.valueTo ||
             newSettings.minValue != oldSettings.minValue ||
             newSettings.maxValue != oldSettings.maxValue
         ) {
-            this.valueTo = newSettings.valueTo;
-            this.$tipTo.text(newSettings.valueTo);
-            this.$handleTo.css(
-                'left',
+            this.moveHandle(
+                this.$handleTo,
                 this.convertRelativeValueToPixelValue(newSettings.minValue, newSettings.valueTo, newSettings.maxValue),
             );
-            const htx = parseFloat(this.$handleTo.css('left'));
-            if (newSettings.isInterval)
-                this.$lineSelected.css('width', htx - hfx - htw + this.offsetLeft + this.offsetRight);
-            else this.$lineSelected.css('width', htx - 1 + this.offsetRight);
-            lsw = parseFloat(this.$lineSelected.css('width'));
-            this.$tipTo.css('left', htx + (htw - ttw) / 2);
-            const ttx = parseFloat(this.$tipTo.css('left'));
-            ttw = parseFloat(this.$tipTo.css('width'));
-            const distanceMax = lw - ttx - ttw - taw;
-            if (distanceMax < 1) this.$tipMax.hide();
-            else this.$tipMax.show();
-            if (!newSettings.isInterval) {
-                const distanceMin = ttx - tiw;
-                distanceMin < 1 ? this.$tipMin.hide() : this.$tipMin.show();
-            }
         }
+        //-----------------------------------------------------------------------
         if (isFirstDraw || newSettings.stepValue != oldSettings.stepValue) {
             //Написать тест для будущей функции вычисляющей this.lastStepValue
             this.stepValue = newSettings.stepValue;
@@ -380,7 +366,6 @@ export default class TRSView {
             //console.log(this.lastStepValue);
         }
     }
-
     removeDOMelements() {}
     emptyList() {
         if (this.list) this.list.innerHTML = '';

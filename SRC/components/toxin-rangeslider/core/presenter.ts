@@ -13,6 +13,8 @@ export default class TRSPresenter {
         this.model = model;
         this.view.onSubmitCb = this.onSubmit.bind(this);
         this.view.onRemoveTaskCb = this.onRemoveTask.bind(this);
+        this.view.onHandlePositionUpdate = this.onHandlePositionUpdate.bind(this);
+
         //this.view.onRenderSlider = this.onRenderSlider.bind(this);
         this.init();
         //this.updateList();
@@ -23,6 +25,14 @@ export default class TRSPresenter {
         this.model.validate();
         this.view.drawSlider(null, this.model.settings, true);
         //this.view.drawSlider(TRSModel.defaults, this.model.settings);
+    }
+    onHandlePositionUpdate(handle: JQuery<HTMLElement>, newPos: number) {
+        const result = this.view.moveHandle(handle, newPos);
+        //console.log('old value:' + this.model.settings.valueFrom);
+        result.isFromHandle
+            ? (this.model.settings.valueFrom = result.value)
+            : (this.model.settings.valueTo = result.value);
+        //console.log('new value' + this.model.settings.valueFrom);
     }
     update(opt: ExamplePluginOptions) {
         const oldSettings = $.extend({}, this.model.settings);
