@@ -89,7 +89,7 @@ export default class TRSView {
         console.log('---hi from view.ts---');
         console.log(this.$line.css('width'));
         const percent = ((val - min) / (max - min)) * 100;
-        return (lw / 100) * percent;
+        return lw * (percent / 100);
     }
     convertPixelValueToRelativeValue(val: number): number {
         let lw = parseFloat(this.$line.css('width'));
@@ -138,7 +138,8 @@ export default class TRSView {
     onHandleMove(e: JQuery.MouseMoveEvent, currentHandle: JQuery<HTMLElement>, shiftX: number) {
         const shift = shiftX + this.$line.offset().left;
         const newLeft = e.clientX - shift;
-        this.onHandlePositionUpdate(currentHandle, newLeft);
+        if (this.stepValue > 0) {
+        } else this.onHandlePositionUpdate(currentHandle, newLeft);
     }
     moveHandle(currentHandle: JQuery<HTMLElement>, newLeft: number): resultMoveHandle {
         let hfx = parseFloat(this.$handleFrom.css('left'));
@@ -161,18 +162,8 @@ export default class TRSView {
 
         const isTwoHandles = this.$handleFrom.css('display') != 'none';
         const isHandleFrom = currentHandle.is(this.$handleFrom);
-        //this.$handleFrom.length > 0;
 
         const currentTip = currentHandle.is(this.$handleFrom) ? this.$tipFrom : this.$tipTo;
-        // const ctx = parseFloat(currentTip.css('left'));
-        // const ctw = parseFloat(currentTip.css('width'));
-        // const distanceMin = tfx - tiw;
-        // if (distanceMin < 1) this.$tipMin.hide();
-        // else this.$tipMin.show();
-        // const distanceMax = lw - tfx - tfw - taw;
-        // if (distanceMax < 1) this.$tipMax.hide();
-        // else this.$tipMax.show();
-
         currentHandle.css('z-index', '99');
 
         if (newLeft < 0) newLeft = 0;
@@ -197,12 +188,6 @@ export default class TRSView {
                 //если тянем мышкой 1й ползунок
                 this.$lineSelected.css('left', newLeft + hfw - this.offsetLeft);
                 this.$lineSelected.css('width', htx - newLeft - htw + this.offsetLeft + this.offsetRight);
-                // const distanceMin = tfx - tiw;
-                // const distanceMax = tax - tfx - tfw;
-                // if (distanceMin < 1) this.$tipMin.hide();
-                // else this.$tipMin.show();
-                // if (distanceMax < 1) this.$tipMax.hide();
-                // else this.$tipMax.show();
             }
         } else {
             //если тянем мышкой единственный ползунок
@@ -251,7 +236,6 @@ export default class TRSView {
                 this.$tipFrom.css('left', hfx + (chw - this.oldTFW) / 2);
             }
         }
-
         //------------------------------------------------------------
         tfx = parseFloat(this.$tipFrom.css('left'));
         ttx = parseFloat(this.$tipTo.css('left'));

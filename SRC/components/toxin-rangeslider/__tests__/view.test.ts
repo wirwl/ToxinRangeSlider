@@ -1,5 +1,6 @@
 import '../core/view';
 import TRSView from '../core/view';
+
 import puppeteer from 'puppeteer';
 import { pageExtend } from 'puppeteer-jquery';
 //import '../../../../node_modules/jquery/dist/jquery.js';
@@ -12,6 +13,7 @@ import { pageExtend } from 'puppeteer-jquery';
 //console.log($);
 
 import '../../toxin-rangeslider/toxin-rangeslider';
+import TRSModel from '../core/model';
 
 //const examplePlugin = require('../../toxin-rangeslider/toxin-rangeslider');
 //const puppeteer = require('puppeteer');
@@ -105,7 +107,12 @@ test('Check result of convertRelativeValueToPixelValue function', () => {
     // console.log(view.$line[0].clientWidth);
     $.css = jest.fn().mockReturnValue(243);
     //expect($('.test1').find('.rangeslider__line').css('width')).toBe(223);
-    expect(view.convertRelativeValueToPixelValue(0, 50, 100)).toBe(150);
+    expect(view.convertRelativeValueToPixelValue(10, 750, 1000)).toBe(169.6767676767677);
+});
+
+test('Check result value of calcLastStepValue function', () => {
+    const model = new TRSModel({ minValue: 10, maxValue: 1000, stepValue: 100 });
+    expect(model.calcLastStepValue().toBe(90));
 });
 
 afterAll(() => {

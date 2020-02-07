@@ -1,4 +1,4 @@
-const $ = require('../../../jquery/dist/jquery');
+//const $ = require('../../../jquery/dist/jquery');
 export default class TRSModel {
     settings: ExamplePluginOptions;
     static defaults: ExamplePluginOptions = {
@@ -14,6 +14,7 @@ export default class TRSModel {
     constructor(options: ExamplePluginOptions) {
         this.settings = $.extend({}, TRSModel.defaults, options);
     }
+
     validate() {}
     getTasks() {
         return JSON.parse(localStorage.todo || '[]');

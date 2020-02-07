@@ -9,7 +9,7 @@ interface ExamplePluginOptions {
     minValue?: number;
     maxValue?: number;
     stepValue?: number;
-    valueFrom: number;
+    valueFrom?: number;
     valueTo?: number;
 }
 /**
