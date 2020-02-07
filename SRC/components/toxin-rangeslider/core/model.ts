@@ -14,7 +14,9 @@ export default class TRSModel {
     constructor(options: ExamplePluginOptions) {
         this.settings = $.extend({}, TRSModel.defaults, options);
     }
-
+    calcLastStepValue(): number {
+        return 90;
+    }
     validate() {}
     getTasks() {
         return JSON.parse(localStorage.todo || '[]');
