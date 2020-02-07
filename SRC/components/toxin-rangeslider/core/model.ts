@@ -15,7 +15,9 @@ export default class TRSModel {
         this.settings = $.extend({}, TRSModel.defaults, options);
     }
     calcLastStepValue(): number {
-        return 90;
+        const length = this.settings.maxValue - this.settings.minValue;
+        const stepCount = Math.trunc(length / this.settings.stepValue);
+        return length - stepCount * this.settings.stepValue;
     }
     validate() {}
     getTasks() {

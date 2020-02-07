@@ -111,8 +111,8 @@ test('Check result of convertRelativeValueToPixelValue function', () => {
 });
 
 test('Check result value of calcLastStepValue function', () => {
-    const model = new TRSModel({ minValue: 10, maxValue: 1000, stepValue: 100 });
-    expect(model.calcLastStepValue()).toBe(90);
+    const model = new TRSModel({ minValue: 10, maxValue: 999, stepValue: 100 });
+    expect(model.calcLastStepValue()).toBe(89);
 });
 
 afterAll(() => {
