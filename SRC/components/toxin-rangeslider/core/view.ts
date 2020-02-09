@@ -2,6 +2,7 @@
 //let $: JQueryStatic = require('jquery');
 type resultMoveHandle = { isFromHandle: boolean; value: number };
 export default class TRSView {
+    private settings: ExamplePluginOptions;
     private isSplitTips: boolean;
     private oldTFW: number;
     private valueFrom: number;
@@ -139,6 +140,7 @@ export default class TRSView {
         const shift = shiftX + this.$line.offset().left;
         const newLeft = e.clientX - shift;
         if (this.stepValue > 0) {
+            console.log(newLeft);
         } else this.onHandlePositionUpdate(currentHandle, newLeft);
     }
     moveHandle(currentHandle: JQuery<HTMLElement>, newLeft: number): resultMoveHandle {
@@ -181,17 +183,17 @@ export default class TRSView {
             //есть 2й ползунок
             if (currentHandle.is(this.$handleTo)) {
                 //если тянем мышкой 2й ползунок
-                this.$lineSelected.css('width', newLeft - hfx - htw + this.offsetLeft + this.offsetRight);
+                this.$lineSelected.css('width', newLeft - hfx - htw + this.offsetLeft + this.offsetRight + 1);
                 // const distanceMin = ttx - tiw;
                 // console.log(distanceMin);
             } else {
                 //если тянем мышкой 1й ползунок
                 this.$lineSelected.css('left', newLeft + hfw - this.offsetLeft);
-                this.$lineSelected.css('width', htx - newLeft - htw + this.offsetLeft + this.offsetRight);
+                this.$lineSelected.css('width', htx - newLeft - htw + this.offsetLeft + this.offsetRight + 1);
             }
         } else {
             //если тянем мышкой единственный ползунок
-            this.$lineSelected.css('width', newLeft - 1 + this.offsetRight);
+            this.$lineSelected.css('width', newLeft + this.offsetRight + 1);
         }
         //-----------------------------------------------------------
         const newValue = this.convertPixelValueToRelativeValue(newLeft);
@@ -257,7 +259,27 @@ export default class TRSView {
     redrawSlider1() {
         this.drawSlider1();
     }
+    drawLineByStep(step: number) {
+        $('.rangeslider__thinline').remove();
+        const pxLength = parseFloat($('.rangeslider__line').css('width')) - this.offsetRight;
+        const pxStep = this.convertRelativeValueToPixelValue(this.settings.minValue, step, this.settings.maxValue);
+        console.log(pxStep);
+        //console.log(pxLength);
+        for (let i = this.offsetLeft; i < pxLength; i += pxStep) {
+            //console.log(i);
+            this.drawThinLine(i);
+        }
+        this.drawThinLine(pxLength);
+    }
+    drawThinLine(pos: number) {
+        const newdiv = document.createElement('div');
+        $(newdiv)
+            .addClass('rangeslider__thinline')
+            .css('left', pos);
+        $('.rangeslider').append(newdiv);
+    }
     drawSlider(oldSettings: ExamplePluginOptions, newSettings: ExamplePluginOptions, isFirstDraw = false) {
+        this.settings = newSettings;
         this.min = newSettings.minValue;
         this.max = newSettings.maxValue;
         const hfx = parseFloat(this.$handleFrom.css('left'));
@@ -276,6 +298,7 @@ export default class TRSView {
         const lw = parseFloat(this.$line.css('width'));
         const lsx = parseFloat(this.$lineSelected.css('left'));
         const lsw = parseFloat(this.$lineSelected.css('width'));
+        if (newSettings.stepValue > 0) this.drawLineByStep(newSettings.stepValue);
         //debugger;
         //-------------------------------------------------------------------
         if (!isFirstDraw) {
@@ -289,8 +312,8 @@ export default class TRSView {
                 this.$handleFrom.hide();
                 this.$lineSelected.addClass('rangeslider__line-selected_isOneHandle');
                 this.$tipFrom.hide();
-                this.$lineSelected.css('left', 1);
-                this.$lineSelected.css('width', htx - 1 + this.offsetRight);
+                this.$lineSelected.css('left', 0);
+                // this.$lineSelected.css('width', htx + 1 + this.offsetRight);
             }
         }
         //------------------------------------------------------------

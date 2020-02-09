@@ -5,11 +5,11 @@ export default class TRSModel {
         isVertical: false,
         isInterval: true,
         isTip: true,
-        minValue: 10,
+        minValue: 0,
         maxValue: 1000,
-        stepValue: 0,
-        valueFrom: 10,
-        valueTo: 750,
+        stepValue: 100,
+        valueFrom: 0,
+        valueTo: 1000,
     };
     constructor(options: ExamplePluginOptions) {
         this.settings = $.extend({}, TRSModel.defaults, options);
