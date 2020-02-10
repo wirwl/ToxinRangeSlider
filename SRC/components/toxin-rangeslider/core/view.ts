@@ -140,7 +140,6 @@ export default class TRSView {
         const shift = shiftX + this.$line.offset().left;
         const newLeft = e.clientX - shift;
         if (this.stepValue > 0) {
-            //console.log(newLeft);
             const pos = e.clientX - this.$line.offset().left - this.offsetLeft;
             const pxLength = parseFloat($('.rangeslider__line').css('width')) - this.offsetLeft - this.offsetRight;
             const pxStep = this.convertRelativeValueToPixelValue(
@@ -150,18 +149,12 @@ export default class TRSView {
             );
             const totalstep = Math.round(pxLength / pxStep);
             let nstep = Math.round(pos / pxStep);
-
-            //console.log(pos / pxStep);
-
-            if (Math.trunc(pos / pxStep) < totalstep - 1) this.onHandlePositionUpdate(currentHandle, nstep * pxStep);
-            else {
-                console.log('тут');
+            if (Math.trunc(pos / pxStep) >= totalstep - 1) {
                 const prevnStep = (totalstep - 1) * pxStep;
-                const pxLastStep = pxLength - prevnStep;
-                const pxLastStepHalf = pxLastStep / 2;
+                const pxLastStepHalf = (pxLength - prevnStep) / 2;
                 if (pos > prevnStep + pxLastStepHalf) nstep = totalstep;
-                this.onHandlePositionUpdate(currentHandle, nstep * pxStep);
             }
+            this.onHandlePositionUpdate(currentHandle, nstep * pxStep);
         } else this.onHandlePositionUpdate(currentHandle, newLeft);
     }
     moveHandle(currentHandle: JQuery<HTMLElement>, newLeft: number): resultMoveHandle {
