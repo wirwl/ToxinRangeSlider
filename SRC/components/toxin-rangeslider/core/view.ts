@@ -116,25 +116,19 @@ export default class TRSView {
     //         tip.css('width', tw % 2 ? tw + 1 : tw);
     //     }
     // }
+    onMouseUp(e: JQuery.MouseUpEvent, currentHandle: JQuery<HTMLElement>) {
+        this.$rangeslider.off('mousemove');
+        currentHandle.off('mouseup');
+        currentHandle.css('z-index', '11');
+    }
     onMouseDown(e: JQuery.MouseDownEvent) {
         e.preventDefault();
         const currentHandle: JQuery<HTMLElement> = $(e.target);
         const shiftX = e.clientX - currentHandle.offset().left;
-        //const shiftX = e.clientX - currentHandle[0].getBoundingClientRect().left;
 
-        //this.moveAt(e, shiftX);
-        //this.onHandleMove(e, currentHandle, shiftX);
         this.$rangeslider.mousemove(e => this.onHandleMove(e, currentHandle, shiftX));
-        currentHandle.mouseup(e => {
-            this.$rangeslider.off('mousemove');
-            currentHandle.off('mouseup');
-            currentHandle.css('z-index', '11');
-        });
-        $(document).mouseup(e => {
-            this.$rangeslider.off('mousemove');
-            currentHandle.off('mouseup');
-            currentHandle.css('z-index', '11');
-        });
+        currentHandle.mouseup(e => this.onMouseUp(e, currentHandle));
+        $(document).mouseup(e => this.onMouseUp(e, currentHandle));
     }
     onHandleMove(e: JQuery.MouseMoveEvent, currentHandle: JQuery<HTMLElement>, shiftX: number) {
         const shift = shiftX + this.$line.offset().left;
