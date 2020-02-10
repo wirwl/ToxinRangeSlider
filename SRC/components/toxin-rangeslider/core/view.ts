@@ -87,8 +87,8 @@ export default class TRSView {
     // }
     convertRelativeValueToPixelValue(min: number, val: number, max: number): number {
         const lw = parseFloat(this.$line.css('width')) - this.offsetLeft - this.offsetRight;
-        console.log('---hi from view.ts---');
-        console.log(this.$line.css('width'));
+        //console.log('---hi from view.ts---');
+        //console.log(this.$line.css('width'));
         const percent = ((val - min) / (max - min)) * 100;
         return lw * (percent / 100);
     }
@@ -140,7 +140,28 @@ export default class TRSView {
         const shift = shiftX + this.$line.offset().left;
         const newLeft = e.clientX - shift;
         if (this.stepValue > 0) {
-            console.log(newLeft);
+            //console.log(newLeft);
+            const pos = e.clientX - this.$line.offset().left - this.offsetLeft;
+            const pxLength = parseFloat($('.rangeslider__line').css('width')) - this.offsetLeft - this.offsetRight;
+            const pxStep = this.convertRelativeValueToPixelValue(
+                this.settings.minValue,
+                this.settings.stepValue,
+                this.settings.maxValue,
+            );
+            const totalstep = Math.round(pxLength / pxStep);
+            let nstep = Math.round(pos / pxStep);
+
+            //console.log(pos / pxStep);
+
+            if (Math.trunc(pos / pxStep) < totalstep - 1) this.onHandlePositionUpdate(currentHandle, nstep * pxStep);
+            else {
+                console.log('тут');
+                const prevnStep = (totalstep - 1) * pxStep;
+                const pxLastStep = pxLength - prevnStep;
+                const pxLastStepHalf = pxLastStep / 2;
+                if (pos > prevnStep + pxLastStepHalf) nstep = totalstep;
+                this.onHandlePositionUpdate(currentHandle, nstep * pxStep);
+            }
         } else this.onHandlePositionUpdate(currentHandle, newLeft);
     }
     moveHandle(currentHandle: JQuery<HTMLElement>, newLeft: number): resultMoveHandle {
@@ -261,20 +282,28 @@ export default class TRSView {
     }
     drawLineByStep(step: number) {
         $('.rangeslider__thinline').remove();
+        $('.rangeslider__thinline-half').remove();
+
         const pxLength = parseFloat($('.rangeslider__line').css('width')) - this.offsetRight;
         const pxStep = this.convertRelativeValueToPixelValue(this.settings.minValue, step, this.settings.maxValue);
         console.log(pxStep);
-        //console.log(pxLength);
+        console.log(pxLength);
+        console.log('------');
+        let lastStep = 0;
         for (let i = this.offsetLeft; i < pxLength; i += pxStep) {
-            //console.log(i);
+            console.log(i);
             this.drawThinLine(i);
+            if (i + pxStep < pxLength) this.drawThinLine(i + pxStep / 2, 'rangeslider__thinline-half');
+            else lastStep = i + (pxLength - i) / 2;
         }
         this.drawThinLine(pxLength);
+        this.drawThinLine(lastStep, 'rangeslider__thinline-half');
+        //----------------------------------------------------------
     }
-    drawThinLine(pos: number) {
+    drawThinLine(pos: number, cls = 'rangeslider__thinline') {
         const newdiv = document.createElement('div');
         $(newdiv)
-            .addClass('rangeslider__thinline')
+            .addClass(cls)
             .css('left', pos);
         $('.rangeslider').append(newdiv);
     }

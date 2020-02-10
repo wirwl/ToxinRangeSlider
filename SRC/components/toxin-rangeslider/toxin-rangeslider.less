@@ -6,7 +6,7 @@ body {
   justify-content: center;
 }
 .test1 {    
-  width: 250px;
+  width: 260px;
   border: 1px dashed brown;
   
 }
@@ -131,6 +131,24 @@ body {
   height: 65%;
   top: 0;
   left: 50px;  
+  z-index: 999;  
+  cursor: pointer;
+}
+
+.rangeslider__thinline-half {
+  position: absolute;
+  width: 1px;
+  border-left: 1px solid orange;
+  height: 63%;
+  top: 0;
+  left: 50px;  
   z-index: 999;
   cursor: pointer;
+}
+
+.rangeslider__thinline:hover {
+  border-left: 1px dashed blue;
+}
+.rangeslider__thinline-half:hover {
+  border-left: 1px dashed orange;
 }
