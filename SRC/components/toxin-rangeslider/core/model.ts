@@ -9,8 +9,9 @@ export default class TRSModel {
         maxValue: 1060,
         stepValue: 100,
         valueFrom: 0,
-        valueTo: 6,
-        values: [2, 4, 8, 16, 32, 64, 128],
+        valueTo: 1060,
+        values: null,
+        //values: [2, 4, 8, 16, 32, 64, 128],
         // values: [
         //     'январь',
         //     'февраль',

@@ -162,7 +162,7 @@ export default class TRSView {
             }
 
             let nstep = Math.round(pos / pxStep);
-
+            //console.log(pos);
             if (Math.trunc(pos / pxStep) >= totalstep - 1) {
                 const prevnStep = (totalstep - 1) * pxStep;
                 const pxLastStepHalf = (pxLength - prevnStep) / 2;
@@ -253,9 +253,10 @@ export default class TRSView {
             if (this.isSplitTips) distanceBetweenHandles = ttx - tipFromPosX - this.oldTFW;
             else distanceBetweenHandles = ttx - tfx - tfw;
 
+            this.oldTFW = tfw;
             if (distanceBetweenHandles < 1) {
-                if (!this.isSplitTips) this.oldTFW = tfw;
-                this.isSplitTips = true;
+                //if (!this.isSplitTips) this.oldTFW = tfw;
+                //this.isSplitTips = true;
                 this.$tipTo.hide();
                 this.$tipFrom.text(
                     isValues
@@ -265,9 +266,14 @@ export default class TRSView {
                 tfw = parseFloat(this.$tipFrom.css('width'));
                 this.$tipFrom.css('left', hfx + (htx - hfx + htw - tfw) / 2);
             } else {
-                this.isSplitTips = false;
+                //this.isSplitTips = false;
                 this.$tipTo.show();
                 this.$tipFrom.text(isValues ? this.settings.values[this.valueFrom] : Math.round(this.valueFrom));
+                //tfw = parseFloat(this.$tipFrom.css('width'));
+                console.log(hfx);
+                console.log(chw);
+                console.log(this.oldTFW);
+                console.log('------------');
                 this.$tipFrom.css('left', hfx + (chw - this.oldTFW) / 2);
             }
             if (Math.round(this.valueFrom) == Math.round(this.valueTo)) {
@@ -300,8 +306,11 @@ export default class TRSView {
         $('.rangeslider__thinline').remove();
         $('.rangeslider__thinline-half').remove();
 
+        const isValues = this.settings.values && this.settings.values.length > 1;
         const pxLength = parseFloat($('.rangeslider__line').css('width')) - this.offsetRight;
-        const pxStep = this.convertRelativeValueToPixelValue(this.settings.minValue, step, this.settings.maxValue);
+        const pxStep = isValues
+            ? (pxLength - this.offsetLeft) / (this.settings.values.length - 1)
+            : this.convertRelativeValueToPixelValue(this.settings.minValue, step, this.settings.maxValue);
         console.log(pxStep);
         console.log(pxLength);
         console.log('------');
@@ -341,8 +350,7 @@ export default class TRSView {
         const lw = parseFloat(this.$line.css('width'));
         const lsx = parseFloat(this.$lineSelected.css('left'));
         const lsw = parseFloat(this.$lineSelected.css('width'));
-        if (ns.stepValue > 0) this.drawLineByStep(ns.stepValue);
-        //debugger;
+        //if (ns.stepValue > 0) this.drawLineByStep(ns.stepValue);
         //-------------------------------------------------------------------
         if (!isFirstDraw) {
         }
