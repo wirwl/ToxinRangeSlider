@@ -9,7 +9,22 @@ export default class TRSModel {
         maxValue: 1060,
         stepValue: 100,
         valueFrom: 0,
-        valueTo: 1060,
+        valueTo: 6,
+        values: [2, 4, 8, 16, 32, 64, 128],
+        // values: [
+        //     'январь',
+        //     'февраль',
+        //     'март',
+        //     'апрель',
+        //     'май',
+        //     'июнь',
+        //     'июль',
+        //     'август',
+        //     'сентябрь',
+        //     'октябрь',
+        //     'ноябрь',
+        //     'декабрь',
+        // ],
     };
     constructor(options: ExamplePluginOptions) {
         this.settings = $.extend({}, TRSModel.defaults, options);

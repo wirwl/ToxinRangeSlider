@@ -9,10 +9,6 @@ export default class TRSView {
     private valueTo: number;
     private offsetLeft: number;
     private offsetRight: number;
-    private min: number;
-    private max: number;
-    private stepValue: number;
-    private lastStepValue: number;
     private template =
         "<div class='caption'>" +
         "<div class='caption__text'>Range Slider</div>" +
@@ -89,14 +85,27 @@ export default class TRSView {
         const lw = parseFloat(this.$line.css('width')) - this.offsetLeft - this.offsetRight;
         //console.log('---hi from view.ts---');
         //console.log(this.$line.css('width'));
-        const percent = ((val - min) / (max - min)) * 100;
-        return lw * (percent / 100);
+        let result;
+        if (this.settings.values && this.settings.values.length > 1) {
+            const pxStep = lw / (this.settings.values.length - 1);
+            result = val * pxStep;
+        } else {
+            const percent = ((val - min) / (max - min)) * 100;
+            result = lw * (percent / 100);
+        }
+        return result;
     }
     convertPixelValueToRelativeValue(val: number): number {
-        let lw = parseFloat(this.$line.css('width'));
-        lw = lw - this.offsetLeft - this.offsetRight;
-        const percent = val / lw;
-        return Math.round(this.min + percent * (this.max - this.min));
+        const lw = parseFloat(this.$line.css('width')) - this.offsetLeft - this.offsetRight;
+        let result;
+        if (this.settings.values && this.settings.values.length > 1) {
+            const pxStep = lw / (this.settings.values.length - 1);
+            result = Math.round(val / pxStep);
+        } else {
+            const percent = val / lw;
+            result = Math.round(this.settings.minValue + percent * (this.settings.maxValue - this.settings.minValue));
+        }
+        return result;
     }
     setTipXPos(tip: JQuery<HTMLElement>, handle: JQuery<HTMLElement>) {
         const hl = parseFloat(handle.css('left'));
@@ -133,16 +142,27 @@ export default class TRSView {
     onHandleMove(e: JQuery.MouseMoveEvent, currentHandle: JQuery<HTMLElement>, shiftX: number) {
         const shift = shiftX + this.$line.offset().left;
         const newLeft = e.clientX - shift;
-        if (this.stepValue > 0) {
+
+        if (this.settings.stepValue > 0) {
             const pos = e.clientX - this.$line.offset().left - this.offsetLeft;
             const pxLength = parseFloat($('.rangeslider__line').css('width')) - this.offsetLeft - this.offsetRight;
-            const pxStep = this.convertRelativeValueToPixelValue(
+            let pxStep = this.convertRelativeValueToPixelValue(
                 this.settings.minValue,
                 this.settings.stepValue,
                 this.settings.maxValue,
             );
-            const totalstep = Math.round(pxLength / pxStep);
+            let totalstep = Math.round(pxLength / pxStep);
+
+            if (this.settings.values) {
+                const count = this.settings.values.length;
+                if (count > 1) {
+                    pxStep = pxLength / (count - 1);
+                    totalstep = count;
+                }
+            }
+
             let nstep = Math.round(pos / pxStep);
+
             if (Math.trunc(pos / pxStep) >= totalstep - 1) {
                 const prevnStep = (totalstep - 1) * pxStep;
                 const pxLastStepHalf = (pxLength - prevnStep) / 2;
@@ -172,6 +192,7 @@ export default class TRSView {
 
         const isTwoHandles = this.$handleFrom.css('display') != 'none';
         const isHandleFrom = currentHandle.is(this.$handleFrom);
+        const isValues = this.settings.values && this.settings.values.length > 1;
 
         const currentTip = currentHandle.is(this.$handleFrom) ? this.$tipFrom : this.$tipTo;
         currentHandle.css('z-index', '99');
@@ -205,7 +226,11 @@ export default class TRSView {
         }
         //-----------------------------------------------------------
         const newValue = this.convertPixelValueToRelativeValue(newLeft);
-        currentTip.text(Math.round(newValue));
+        if (isValues) currentTip.text(this.settings.values[newValue]);
+        else {
+            currentTip.text(Math.round(newValue));
+        }
+
         if (currentTip.is(this.$tipFrom)) tfw = parseFloat(this.$tipFrom.css('width'));
         else ttw = parseFloat(this.$tipTo.css('width'));
 
@@ -232,17 +257,21 @@ export default class TRSView {
                 if (!this.isSplitTips) this.oldTFW = tfw;
                 this.isSplitTips = true;
                 this.$tipTo.hide();
-                this.$tipFrom.text(Math.round(this.valueFrom) + ' - ' + Math.round(this.valueTo));
+                this.$tipFrom.text(
+                    isValues
+                        ? this.settings.values[this.valueFrom] + '-' + this.settings.values[this.valueTo]
+                        : Math.round(this.valueFrom) + ' - ' + Math.round(this.valueTo),
+                );
                 tfw = parseFloat(this.$tipFrom.css('width'));
                 this.$tipFrom.css('left', hfx + (htx - hfx + htw - tfw) / 2);
             } else {
                 this.isSplitTips = false;
                 this.$tipTo.show();
-                this.$tipFrom.text(Math.round(this.valueFrom));
+                this.$tipFrom.text(isValues ? this.settings.values[this.valueFrom] : Math.round(this.valueFrom));
                 this.$tipFrom.css('left', hfx + (chw - this.oldTFW) / 2);
             }
             if (Math.round(this.valueFrom) == Math.round(this.valueTo)) {
-                this.$tipFrom.text(Math.round(this.valueFrom));
+                this.$tipFrom.text(isValues ? this.settings.values[this.valueFrom] : Math.round(this.valueFrom));
                 this.$tipFrom.css('left', hfx + (chw - this.oldTFW) / 2);
             }
         }
@@ -294,10 +323,8 @@ export default class TRSView {
             .css('left', pos);
         $('.rangeslider').append(newdiv);
     }
-    drawSlider(oldSettings: ExamplePluginOptions, newSettings: ExamplePluginOptions, isFirstDraw = false) {
-        this.settings = newSettings;
-        this.min = newSettings.minValue;
-        this.max = newSettings.maxValue;
+    drawSlider(os: ExamplePluginOptions, ns: ExamplePluginOptions, isFirstDraw = false) {
+        this.settings = ns;
         const hfx = parseFloat(this.$handleFrom.css('left'));
         const hfw = parseFloat(this.$handleFrom.css('width'));
         const htx = parseFloat(this.$handleTo.css('left'));
@@ -314,14 +341,14 @@ export default class TRSView {
         const lw = parseFloat(this.$line.css('width'));
         const lsx = parseFloat(this.$lineSelected.css('left'));
         const lsw = parseFloat(this.$lineSelected.css('width'));
-        if (newSettings.stepValue > 0) this.drawLineByStep(newSettings.stepValue);
+        if (ns.stepValue > 0) this.drawLineByStep(ns.stepValue);
         //debugger;
         //-------------------------------------------------------------------
         if (!isFirstDraw) {
         }
-        if (isFirstDraw || newSettings.isInterval != oldSettings.isInterval) {
+        if (isFirstDraw || ns.isInterval != os.isInterval) {
             const countHandles = this.$rangeslider.find('.rangeslider__handle');
-            if (newSettings.isInterval) {
+            if (ns.isInterval) {
                 this.$handleFrom.show();
                 this.$lineSelected.removeClass('rangeslider__line-selected_isOneHandle');
             } else {
@@ -333,60 +360,52 @@ export default class TRSView {
             }
         }
         //------------------------------------------------------------
-        if (newSettings.isTip) {
-            if (newSettings.isInterval) this.$tipFrom.show();
+        if (ns.isTip) {
+            if (ns.isInterval) this.$tipFrom.show();
             this.$tipTo.show();
         } else {
-            if (newSettings.isInterval) this.$tipFrom.hide();
+            if (ns.isInterval) this.$tipFrom.hide();
             this.$tipTo.hide();
         }
         //------------------------------------------------------------
-        if (isFirstDraw || newSettings.minValue != oldSettings.minValue) {
-            this.$tipMin.text(newSettings.minValue);
+        if (isFirstDraw || ns.minValue != os.minValue) {
+            this.$tipMin.text(ns.minValue);
         }
-        if (isFirstDraw || newSettings.maxValue != oldSettings.maxValue) {
-            this.$tipMax.text(newSettings.maxValue);
+        if (isFirstDraw || ns.maxValue != os.maxValue) {
+            this.$tipMax.text(ns.maxValue);
         }
-        //-------------------------------------------------------------------
-        if (newSettings.isInterval)
+        //-------------------------------------------------------------
+        if (isFirstDraw || ns.values != os.values) {
+            if (ns.values) {
+                const count = ns.values.length;
+                if (count > 1) {
+                    this.$tipMin.text(ns.values[0]);
+                    this.$tipMax.text(ns.values[count - 1]);
+                }
+            }
+        }
+        //-------------------------------------------------------------
+        if (ns.isInterval)
             if (
                 isFirstDraw ||
-                newSettings.valueFrom != oldSettings.valueFrom ||
-                newSettings.minValue != oldSettings.minValue ||
-                newSettings.maxValue != oldSettings.maxValue
+                ns.valueFrom != os.valueFrom ||
+                ns.minValue != os.minValue ||
+                ns.maxValue != os.maxValue
             ) {
                 this.moveHandle(
                     this.$handleFrom,
-                    this.convertRelativeValueToPixelValue(
-                        newSettings.minValue,
-                        newSettings.valueFrom,
-                        newSettings.maxValue,
-                    ),
+                    this.convertRelativeValueToPixelValue(ns.minValue, ns.valueFrom, ns.maxValue),
                 );
             }
         //-----------------------------------------------------------------
-        if (
-            isFirstDraw ||
-            newSettings.valueTo != oldSettings.valueTo ||
-            newSettings.minValue != oldSettings.minValue ||
-            newSettings.maxValue != oldSettings.maxValue
-        ) {
+        if (isFirstDraw || ns.valueTo != os.valueTo || ns.minValue != os.minValue || ns.maxValue != os.maxValue) {
             this.moveHandle(
                 this.$handleTo,
-                this.convertRelativeValueToPixelValue(newSettings.minValue, newSettings.valueTo, newSettings.maxValue),
+                this.convertRelativeValueToPixelValue(ns.minValue, ns.valueTo, ns.maxValue),
             );
         }
         //-----------------------------------------------------------------------
-        if (isFirstDraw || newSettings.stepValue != oldSettings.stepValue) {
-            //Написать тест для будущей функции вычисляющей this.lastStepValue
-            this.stepValue = newSettings.stepValue;
-            if (newSettings.stepValue > 0)
-                this.lastStepValue =
-                    newSettings.maxValue -
-                    newSettings.minValue -
-                    Math.trunc((newSettings.maxValue - newSettings.minValue) / newSettings.stepValue) *
-                        newSettings.stepValue;
-            //console.log(this.lastStepValue);
+        if (isFirstDraw || ns.stepValue != os.stepValue) {
         }
     }
     removeDOMelements() {}

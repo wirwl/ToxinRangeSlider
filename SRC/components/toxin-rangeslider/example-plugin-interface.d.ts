@@ -11,6 +11,7 @@ interface ExamplePluginOptions {
     stepValue?: number;
     valueFrom?: number;
     valueTo?: number;
+    values?: any[] | null;
 }
 /**
  * Global options of the example plugin available as properties on $.fn object.
