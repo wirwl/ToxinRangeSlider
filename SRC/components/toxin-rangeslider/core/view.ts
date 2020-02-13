@@ -4,8 +4,6 @@ type resultMoveHandle = { isFromHandle: boolean; value: number };
 export default class TRSView {
     private settings: ExamplePluginOptions;
     private isSplitTips: boolean;
-    private valueFrom: number;
-    private valueTo: number;
     private offsetLeft: number;
     private offsetRight: number;
     private template =
@@ -258,8 +256,8 @@ export default class TRSView {
             }
         }
         //------------------------------------------------------------
-        if (currentHandle.is(this.$handleFrom)) this.valueFrom = newValue;
-        else this.valueTo = newValue;
+        if (currentHandle.is(this.$handleFrom)) this.settings.valueFrom = newValue;
+        else this.settings.valueTo = newValue;
 
         if (isTwoHandles) {
             const distanceBetweenHandles = ttx - tfx - tfw;
@@ -268,19 +266,25 @@ export default class TRSView {
                 this.$tipTo.hide();
                 this.$tipFrom.text(
                     isValues
-                        ? this.settings.values[this.valueFrom] + '-' + this.settings.values[this.valueTo]
-                        : Math.round(this.valueFrom) + ' - ' + Math.round(this.valueTo),
+                        ? this.settings.values[this.settings.valueFrom] +
+                              '-' +
+                              this.settings.values[this.settings.valueTo]
+                        : Math.round(this.settings.valueFrom) + ' - ' + Math.round(this.settings.valueTo),
                 );
                 tfw = parseFloat(this.$tipFrom.css('width'));
                 this.$tipFrom.css('left', hfx + (htx - hfx + htw - tfw) / 2);
             } else {
                 this.isSplitTips = false;
                 this.$tipTo.show();
-                this.$tipFrom.text(isValues ? this.settings.values[this.valueFrom] : Math.round(this.valueFrom));
+                this.$tipFrom.text(
+                    isValues ? this.settings.values[this.settings.valueFrom] : Math.round(this.settings.valueFrom),
+                );
                 this.$tipFrom.css('left', hfx + (chw - tfw) / 2);
             }
-            if (Math.round(this.valueFrom) == Math.round(this.valueTo)) {
-                this.$tipFrom.text(isValues ? this.settings.values[this.valueFrom] : Math.round(this.valueFrom));
+            if (Math.round(this.settings.valueFrom) == Math.round(this.settings.valueTo)) {
+                this.$tipFrom.text(
+                    isValues ? this.settings.values[this.settings.valueFrom] : Math.round(this.settings.valueFrom),
+                );
                 tfw = parseFloat(this.$tipFrom.css('width'));
                 this.$tipFrom.css('left', hfx + (chw - tfw) / 2);
             }
