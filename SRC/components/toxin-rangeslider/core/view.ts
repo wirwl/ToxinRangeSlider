@@ -122,6 +122,9 @@ export default class TRSView {
     //         tip.css('width', tw % 2 ? tw + 1 : tw);
     //     }
     // }
+    getNearestHandle(pos: number) {
+        return this.$handleFrom;
+    }
     onMouseUp(e: JQuery.MouseUpEvent, currentHandle: JQuery<HTMLElement>) {
         this.$rangeslider.off('mousemove');
         currentHandle.off('mouseup');
@@ -135,6 +138,12 @@ export default class TRSView {
         this.$rangeslider.mousemove(e => this.onHandleMove(e, currentHandle, shiftX));
         currentHandle.mouseup(e => this.onMouseUp(e, currentHandle));
         $(document).mouseup(e => this.onMouseUp(e, currentHandle));
+    }
+    onMouseDownByLine(e: JQuery.MouseDownEvent) {
+        e.preventDefault();
+        const currentHandle: JQuery<HTMLElement> = $(e.target);
+        const pos = e.clientX - currentHandle.offset().left;
+        this.onHandlePositionUpdate(this.getNearestHandle(pos), 0);
     }
     onHandleMove(e: JQuery.MouseMoveEvent, currentHandle: JQuery<HTMLElement>, shiftX: number) {
         const shift = shiftX + this.$line.offset().left;

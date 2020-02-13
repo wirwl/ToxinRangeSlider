@@ -96,23 +96,30 @@ beforeAll(async () => {
 });
 
 test('Check result of convertRelativeValueToPixelValue function', () => {
-    //console.log($('.test1').children.length);
-    //$('.test1').examplePlugin();
-    // console.log(
-    //     $('.test1')
-    //         .find('.rangeslider__line')
-    //         .css('width'),
-    // );
-    const view = new TRSView($('.test1'));
-    // console.log(view.$line[0].clientWidth);
-    $.css = jest.fn().mockReturnValue(243);
-    //expect($('.test1').find('.rangeslider__line').css('width')).toBe(223);
-    expect(view.convertRelativeValueToPixelValue(10, 750, 1000)).toBe(169.6767676767677);
+    // const view = new TRSView($('.test1'));
+    // $.css = jest.fn().mockReturnValue(243);
+    // expect(view.convertRelativeValueToPixelValue(10, 750, 1000)).toBe(169.6767676767677);
 });
 
 test('Check result value of calcLastStepValue function', () => {
-    const model = new TRSModel({ minValue: 10, maxValue: 999, stepValue: 100 });
-    expect(model.calcLastStepValue()).toBe(89);
+    // const model = new TRSModel({ minValue: 10, maxValue: 999, stepValue: 100 });
+    // expect(model.calcLastStepValue()).toBe(89);
+});
+let trs;
+test('Check result of getNearestHandle() function', () => {
+    $('.test1').examplePlugin({
+        isVertical: false,
+        isInterval: true,
+        isTip: true,
+        minValue: 0,
+        maxValue: 1060,
+        stepValue: 0,
+        valueFrom: 322,
+        valueTo: 720,
+        values: [],
+    });
+    trs = $('.test1').data('toxinRangeSlider');
+    expect(trs.view.getNearestHandle(32)).toBe(trs.view.$handleFrom);
 });
 
 afterAll(() => {
