@@ -4,7 +4,6 @@ type resultMoveHandle = { isFromHandle: boolean; value: number };
 export default class TRSView {
     private settings: ExamplePluginOptions;
     private isSplitTips: boolean;
-    private oldTFW: number;
     private valueFrom: number;
     private valueTo: number;
     private offsetLeft: number;
@@ -263,26 +262,8 @@ export default class TRSView {
         else this.valueTo = newValue;
 
         if (isTwoHandles) {
-            if (newValue == 3) {
-                console.log(newValue);
-            }
-            //console.log('ttx:' + ttx);
-
             const distanceBetweenHandles = ttx - tfx - tfw;
-
-            // if (this.isSplitTips && !isHandleFrom) {
-            //     const tipFromPosX = hfx + (hfw - this.oldTFW) / 2;
-            //     distanceBetweenHandles = ttx - tfx - this.oldTFW;
-            // }
-
-            // if (!this.isSplitTips && !isHandleFrom) {
-            //     const tipFromPosX = hfx + (hfw - this.oldTFW) / 2;
-            //     distanceBetweenHandles = ttx - tipFromPosX - this.oldTFW;
-            // }
-
             if (distanceBetweenHandles < 1) {
-                //if (!isHandleFrom)
-                this.oldTFW = tfw;
                 this.isSplitTips = true;
                 this.$tipTo.hide();
                 this.$tipFrom.text(
@@ -300,10 +281,9 @@ export default class TRSView {
             }
             if (Math.round(this.valueFrom) == Math.round(this.valueTo)) {
                 this.$tipFrom.text(isValues ? this.settings.values[this.valueFrom] : Math.round(this.valueFrom));
-                this.$tipFrom.css('left', hfx + (chw - this.oldTFW) / 2);
+                tfw = parseFloat(this.$tipFrom.css('width'));
+                this.$tipFrom.css('left', hfx + (chw - tfw) / 2);
             }
-            //tfw = parseFloat(this.$tipFrom.css('width'));
-            //console.log('oldTFW:' + this.oldTFW);
         }
         //------------------------------------------------------------
         tfx = parseFloat(this.$tipFrom.css('left'));
@@ -311,7 +291,6 @@ export default class TRSView {
         let distanceMin = tfx - tiw;
         const distanceMax = tax - ttx - ttw;
         let distancBetweenTipFromAndTipMax = 1;
-        //if (this.isSplitTips)
         distancBetweenTipFromAndTipMax = tax - tfx - tfw;
         distanceMin < 1 ? this.$tipMin.hide() : this.$tipMin.show();
         distanceMax < 1 ? this.$tipMax.hide() : this.$tipMax.show();
@@ -369,7 +348,6 @@ export default class TRSView {
         const htw = parseFloat(this.$handleTo.css('width'));
         const tfx = parseFloat(this.$tipFrom.css('left'));
         const tfw = parseFloat(this.$tipFrom.css('width'));
-        this.oldTFW = tfw;
         const ttx = parseFloat(this.$tipTo.css('left'));
         const ttw = parseFloat(this.$tipTo.css('width'));
         const tix = parseFloat(this.$tipMin.css('left'));
@@ -394,7 +372,6 @@ export default class TRSView {
                 this.$lineSelected.addClass('rangeslider__line-selected_isOneHandle');
                 this.$tipFrom.hide();
                 this.$lineSelected.css('left', 0);
-                // this.$lineSelected.css('width', htx + 1 + this.offsetRight);
             }
         }
         //------------------------------------------------------------
