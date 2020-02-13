@@ -310,8 +310,13 @@ export default class TRSView {
         ttx = parseFloat(this.$tipTo.css('left'));
         let distanceMin = tfx - tiw;
         const distanceMax = tax - ttx - ttw;
+        let distancBetweenTipFromAndTipMax = 1;
+        //if (this.isSplitTips)
+        distancBetweenTipFromAndTipMax = tax - tfx - tfw;
         distanceMin < 1 ? this.$tipMin.hide() : this.$tipMin.show();
         distanceMax < 1 ? this.$tipMax.hide() : this.$tipMax.show();
+        if (distancBetweenTipFromAndTipMax < 1) this.$tipMax.hide();
+
         if (!isTwoHandles) {
             distanceMin = ttx - tiw;
             distanceMin < 1 ? this.$tipMin.hide() : this.$tipMin.show();
