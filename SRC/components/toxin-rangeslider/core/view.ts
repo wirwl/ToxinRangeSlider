@@ -80,8 +80,6 @@ export default class TRSView {
     // }
     convertRelativeValueToPixelValue(min: number, val: number, max: number): number {
         const lw = parseFloat(this.$line.css('width')) - this.offsetLeft - this.offsetRight;
-        //console.log('---hi from view.ts---');
-        //console.log(this.$line.css('width'));
         let result;
         if (this.settings.values && this.settings.values.length > 1) {
             const pxStep = lw / (this.settings.values.length - 1);
@@ -123,7 +121,22 @@ export default class TRSView {
     //     }
     // }
     getNearestHandle(pos: number) {
-        return this.$handleFrom;
+        const hfx = parseFloat(this.$handleFrom.css('left'));
+        const hfw = parseFloat(this.$handleFrom.css('width'));
+        const htx = parseFloat(this.$handleTo.css('left'));
+        const htw = parseFloat(this.$handleTo.css('width'));
+        if (this.settings.isInterval) {
+            if (pos < hfx) return this.$handleFrom;
+            if (pos > htx) return this.$handleTo;
+            const distanceBetweenHandles = htx - hfx - hfw;
+            const half = hfx + hfw + distanceBetweenHandles / 2;
+            if (pos < half) return this.$handleFrom;
+            else return this.$handleTo;
+        } else {
+            if (pos < htx) return this.$handleFrom;
+            else return this.$handleTo;
+        }
+        return null;
     }
     onMouseUp(e: JQuery.MouseUpEvent, currentHandle: JQuery<HTMLElement>) {
         this.$rangeslider.off('mousemove');

@@ -3,13 +3,13 @@ export default class TRSModel {
     settings: ExamplePluginOptions;
     static defaults: ExamplePluginOptions = {
         isVertical: false,
-        isInterval: true,
+        isInterval: false,
         isTip: true,
         minValue: 0,
         maxValue: 1060,
         stepValue: 0,
-        valueFrom: 0,
-        valueTo: 1060,
+        valueFrom: 322,
+        valueTo: 491,
         values: [],
         //values: [20000, 40000, 80000, 16, 32, 64000, 12800],
         // values: [

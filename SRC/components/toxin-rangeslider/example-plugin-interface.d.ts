@@ -12,6 +12,7 @@ interface ExamplePluginOptions {
     valueFrom?: number;
     valueTo?: number;
     values?: any[] | null;
+    length?: number;
 }
 /**
  * Global options of the example plugin available as properties on $.fn object.

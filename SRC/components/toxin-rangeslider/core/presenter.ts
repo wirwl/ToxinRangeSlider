@@ -34,11 +34,11 @@ export default class TRSPresenter {
             : (this.model.settings.valueTo = result.value);
         //console.log('new value' + this.model.settings.valueFrom);
     }
-    update(opt: ExamplePluginOptions) {
+    update(opt: ExamplePluginOptions, isForceRedraw = false) {
         const oldSettings = $.extend({}, this.model.settings);
         $.extend(this.model.settings, opt);
         this.model.validate();
-        this.view.drawSlider(oldSettings, this.model.settings);
+        this.view.drawSlider(oldSettings, this.model.settings, isForceRedraw);
     }
     reset() {}
     onRemoveTask(inx: number) {
