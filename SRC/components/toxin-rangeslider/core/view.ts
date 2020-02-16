@@ -1,5 +1,6 @@
 //import $ from 'jQuery';
 //let $: JQueryStatic = require('jquery');
+import Handle from '../core/entities/handle';
 type resultMoveHandle = { isFromHandle: boolean; value: number };
 export default class TRSView {
     private settings: ExamplePluginOptions;
@@ -38,11 +39,11 @@ export default class TRSView {
     onRemoveTaskCb: Function;
     onHandlePositionUpdate: Function;
     data: ExamplePluginOptions;
+    handleFrom: Handle;
+    handleTo: Handle;
     constructor(el: JQuery<HTMLElement>) {
-        //if (jq) $ = jq;
         this.el = el;
         this.el.html(this.template);
-        //console.log(this.el);
         this.$rangeslider = el.find('.rangeslider');
         this.$tipMin = el.find('.rangeslider__tip-min');
         this.$tipFrom = el.find('.rangeslider__tip-from');
@@ -50,34 +51,29 @@ export default class TRSView {
         this.$tipMax = el.find('.rangeslider__tip-max');
         this.$line = el.find('.rangeslider__line');
         this.$handleFrom = this.$rangeslider.find('.rangeslider__handle-from');
-        //console.log(this.$handleFrom);
         this.$handleTo = this.$rangeslider.find('.rangeslider__handle-to');
         this.offsetLeft = parseFloat(this.$handleFrom.css('width')) / 2;
         this.offsetRight = parseFloat(this.$handleTo.css('width')) / 2;
         this.$lineSelected = this.$rangeslider.find('.rangeslider__line-selected');
-
         this.onSubmitCb = function() {};
         this.onRemoveTaskCb = function() {};
-        //this.drawSlider = function() {};
         this.data = el.data('options');
         this.$handleFrom[0].ondragstart = function() {
             return false;
         };
         this.$handleFrom.mousedown(e => this.onMouseDown(e));
         this.$handleTo.mousedown(e => this.onMouseDown(e));
-        //this.improveTipWidth(this.$tipFrom, this.$handleFrom);
         this.setTipXPos(this.$tipFrom, this.$handleFrom);
-        //this.improveTipWidth(this.$tipTo, this.$handleTo);
         this.setTipXPos(this.$tipTo, this.$handleTo);
 
-        //this.$line.css('width', parseInt(this.el.css('width')) - 4);
-        //console.log(this.el.css('width'));
-    }
-    // moveAt(e: JQuery.MouseDownEvent | JQuery.MouseMoveEvent, shiftX: number) {
-    //     //const shiftX = e.clientX - this.$handleFrom[0].getBoundingClientRect().left;
+        this.handleFrom = new Handle(this.$handleFrom);
+        this.handleTo = new Handle(this.$handleTo);
 
-    //     this.$handleFrom.css('left', e.pageX - shiftX + 'px');
-    // }
+        console.log(this.handleFrom.x);
+        this.handleFrom.isVertical = true;
+        console.log(this.handleFrom.pos);
+    }
+
     convertRelativeValueToPixelValue(min: number, val: number, max: number): number {
         const lw = parseFloat(this.$line.css('width')) - this.offsetLeft - this.offsetRight;
         let result;
@@ -109,17 +105,6 @@ export default class TRSView {
         const tw = parseFloat(tip.css('width'));
         tip.css('left', tl + (hw - tw) / 2);
     }
-    // improveTipWidth(tip: JQuery<HTMLElement>, handle: JQuery<HTMLElement>) {
-    //     const tw = parseFloat(tip.css('width'));
-    //     const hw = parseFloat(handle.css('width'));
-    //     if (hw % 2) {
-    //         console.log('нечётное число');
-    //         tip.css('width', tw % 2 ? tw : tw + 1);
-    //     } else {
-    //         console.log('чётное число');
-    //         tip.css('width', tw % 2 ? tw + 1 : tw);
-    //     }
-    // }
     getNearestHandle(pos: number) {
         const hfx = parseFloat(this.$handleFrom.css('left'));
         const hfw = parseFloat(this.$handleFrom.css('width'));
