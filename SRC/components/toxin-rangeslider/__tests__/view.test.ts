@@ -92,10 +92,10 @@ describe('Check result of getNearestHandle() function. Six diffrent tests.', () 
     beforeEach(() => {});
     describe('If there are two handles.', () => {
         test('LMB clicked on the left of first handle', () => {
-            expect(rangeslider.view.getNearestHandle(32)).toBe(rangeslider.view.$handleFrom);
+            expect(rangeslider.view.getNearestHandle(32)).toBe(rangeslider.view.handleFrom.el);
         });
         test('LMB clicked between two handles, closer to left handle', () => {
-            expect(rangeslider.view.getNearestHandle(95)).toBe(rangeslider.view.$handleFrom);
+            expect(rangeslider.view.getNearestHandle(95)).toBe(rangeslider.view.handleFrom.el);
         });
         test('LMB clicked between two handles, closer to rigth handle', () => {
             expect(rangeslider.view.getNearestHandle(130)).toBe(rangeslider.view.$handleTo);
@@ -112,7 +112,7 @@ describe('Check result of getNearestHandle() function. Six diffrent tests.', () 
             });
         });
         test('LMB clicked on the left of handle', () => {
-            expect(rangeslider.view.getNearestHandle(41)).toBe(rangeslider.view.$handleFrom);
+            expect(rangeslider.view.getNearestHandle(41)).toBe(rangeslider.view.handleFrom.el);
         });
         test('LMB clicked on the right of handle', () => {
             expect(rangeslider.view.getNearestHandle(203)).toBe(rangeslider.view.$handleTo);

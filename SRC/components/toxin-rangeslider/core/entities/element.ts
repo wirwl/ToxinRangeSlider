@@ -1,5 +1,5 @@
 export default class TRSElement {
-    private el: JQuery<HTMLElement>;
+    el: JQuery<HTMLElement>;
     isVertical = false;
 
     private _x: number;
@@ -27,7 +27,7 @@ export default class TRSElement {
         this.isVertical ? (this.x = value) : (this.y = value);
     }
 
-    private _width: number;
+    protected _width: number;
     get width(): number {
         return this._width;
     }
@@ -36,7 +36,7 @@ export default class TRSElement {
         this.el.css('width', value);
     }
 
-    private _height: number;
+    protected _height: number;
     get heigth(): number {
         return this._height;
     }
@@ -58,5 +58,12 @@ export default class TRSElement {
         this._y = parseFloat(el.css('top'));
         this._width = parseFloat(el.css('width'));
         this._height = parseFloat(el.css('height'));
+    }
+
+    show() {
+        this.el.show();
+    }
+    hide() {
+        this.el.hide();
     }
 }
