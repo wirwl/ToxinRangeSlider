@@ -28,7 +28,6 @@ export default class TRSPresenter {
     }
     onHandlePositionUpdate(handle: JQuery<HTMLElement>, newPos: number) {
         const result = this.view.moveHandle(handle, newPos);
-        //console.log('old value:' + this.model.settings.valueFrom);
         result.isFromHandle
             ? (this.model.settings.valueFrom = result.value)
             : (this.model.settings.valueTo = result.value);
