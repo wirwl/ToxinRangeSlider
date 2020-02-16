@@ -177,10 +177,10 @@ export default class TRSView {
         } else this.onHandlePositionUpdate(currentHandle, newLeft);
     }
     moveHandle(currentHandle: JQuery<HTMLElement>, newLeft: number): resultMoveHandle {
-        let hfx = parseFloat(this.$handleFrom.css('left'));
-        const hfw = parseFloat(this.$handleFrom.css('width'));
-        let htx = parseFloat(this.$handleTo.css('left'));
-        const htw = parseFloat(this.$handleTo.css('width'));
+        //let hfx = parseFloat(this.$handleFrom.css('left'));
+        //const hfw = parseFloat(this.$handleFrom.css('width'));
+        //let htx = parseFloat(this.$handleTo.css('left'));
+        //const htw = parseFloat(this.$handleTo.css('width'));
         let chx = parseFloat(currentHandle.css('left'));
         const chw = parseFloat(currentHandle.css('width'));
         const lx = parseFloat(this.$line.css('left'));
@@ -204,26 +204,30 @@ export default class TRSView {
 
         if (newLeft < 0) newLeft = 0;
         if (isTwoHandles) {
-            if (currentHandle.is(this.$handleFrom)) if (newLeft > htx) newLeft = htx;
-            if (currentHandle.is(this.$handleTo)) if (newLeft < hfx) newLeft = hfx;
+            if (currentHandle.is(this.$handleFrom)) if (newLeft > this.handleTo.x) newLeft = this.handleTo.x;
+            if (currentHandle.is(this.$handleTo)) if (newLeft < this.handleFrom.x) newLeft = this.handleFrom.x;
         }
         if (newLeft > lw - chw) newLeft = lw - chw;
 
         currentHandle.css('left', newLeft);
-        isHandleFrom ? (hfx = newLeft) : (htx = newLeft);
+        isHandleFrom ? (this.handleFrom.x = newLeft) : (this.handleTo.x = newLeft);
         chx = newLeft;
 
         if (isTwoHandles) {
             //есть 2й ползунок
             if (currentHandle.is(this.$handleTo)) {
                 //если тянем мышкой 2й ползунок
-                this.$lineSelected.css('width', newLeft - hfx - htw + this.offsetLeft + this.offsetRight + 1);
-                // const distanceMin = ttx - tiw;
-                // console.log(distanceMin);
+                this.$lineSelected.css(
+                    'width',
+                    newLeft - this.handleFrom.x - this.handleTo.width + this.offsetLeft + this.offsetRight + 1,
+                );
             } else {
                 //если тянем мышкой 1й ползунок
-                this.$lineSelected.css('left', newLeft + hfw - this.offsetLeft);
-                this.$lineSelected.css('width', htx - newLeft - htw + this.offsetLeft + this.offsetRight + 1);
+                this.$lineSelected.css('left', newLeft + this.handleFrom.width - this.offsetLeft);
+                this.$lineSelected.css(
+                    'width',
+                    this.handleTo.x - newLeft - this.handleTo.width + this.offsetLeft + this.offsetRight + 1,
+                );
             }
         } else {
             //если тянем мышкой единственный ползунок
@@ -245,9 +249,7 @@ export default class TRSView {
             anotherTip.text(Math.round(anotherValue));
         }
         //-------------------------------------------
-        //if (currentTip.is(this.$tipFrom))
         tfw = parseFloat(this.$tipFrom.css('width'));
-        //else
         ttw = parseFloat(this.$tipTo.css('width'));
 
         if (this.$tipTo.length > 0) {
@@ -258,7 +260,7 @@ export default class TRSView {
                 this.$tipTo.css('left', newLeft + (chw - ttw) / 2);
                 ttx = parseFloat(this.$tipTo.css('left'));
 
-                this.$tipFrom.css('left', hfx + (hfw - tfw) / 2);
+                this.$tipFrom.css('left', this.handleFrom.x + (this.handleFrom.width - tfw) / 2);
                 tfx = parseFloat(this.$tipFrom.css('left'));
             }
         }
@@ -279,21 +281,24 @@ export default class TRSView {
                         : Math.round(this.settings.valueFrom) + ' - ' + Math.round(this.settings.valueTo),
                 );
                 tfw = parseFloat(this.$tipFrom.css('width'));
-                this.$tipFrom.css('left', hfx + (htx - hfx + htw - tfw) / 2);
+                this.$tipFrom.css(
+                    'left',
+                    this.handleFrom.x + (this.handleTo.x - this.handleFrom.x + this.handleTo.width - tfw) / 2,
+                );
             } else {
                 this.isSplitTips = false;
                 this.$tipTo.show();
                 this.$tipFrom.text(
                     isValues ? this.settings.values[this.settings.valueFrom] : Math.round(this.settings.valueFrom),
                 );
-                this.$tipFrom.css('left', hfx + (chw - tfw) / 2);
+                this.$tipFrom.css('left', this.handleFrom.x + (chw - tfw) / 2);
             }
             if (Math.round(this.settings.valueFrom) == Math.round(this.settings.valueTo)) {
                 this.$tipFrom.text(
                     isValues ? this.settings.values[this.settings.valueFrom] : Math.round(this.settings.valueFrom),
                 );
                 tfw = parseFloat(this.$tipFrom.css('width'));
-                this.$tipFrom.css('left', hfx + (chw - tfw) / 2);
+                this.$tipFrom.css('left', this.handleFrom.x + (chw - tfw) / 2);
             }
         }
         //------------------------------------------------------------

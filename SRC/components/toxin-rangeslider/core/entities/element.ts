@@ -1,5 +1,4 @@
-import TRSElement from '../entities/element';
-export default class Handle {
+export default class TRSElement {
     private el: JQuery<HTMLElement>;
     isVertical = false;
 
