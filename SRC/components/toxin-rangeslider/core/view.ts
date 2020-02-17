@@ -63,6 +63,8 @@ export default class TRSView {
         this.handleTo.el.mousedown(e => this.onMouseDown(e));
         this.offsetRight = this.handleTo.width / 2;
 
+        this.$line.mousedown(e => this.onMouseDownByLine(e));
+
         this.lineSelected = new Line(this.$rangeslider.find('.rangeslider__line-selected'));
     }
 
@@ -111,19 +113,18 @@ export default class TRSView {
         }
         return result;
     }
-    getNearestHandle(pos: number) {
+    getNearestHandle(pos: number): Handle {
         if (this.settings.isInterval) {
-            if (pos < this.handleFrom.x) return this.handleFrom.el;
-            if (pos > this.handleTo.x) return this.handleTo.el;
+            if (pos < this.handleFrom.x) return this.handleFrom;
+            if (pos > this.handleTo.x) return this.handleTo;
             const distanceBetweenHandles = this.handleTo.x - this.handleFrom.x - this.handleFrom.width;
             const half = this.handleFrom.x + this.handleFrom.width + distanceBetweenHandles / 2;
-            if (pos < half) return this.handleFrom.el;
-            else return this.handleTo.el;
+            if (pos < half) return this.handleFrom;
+            else return this.handleTo;
         } else {
-            if (pos < this.handleTo.x) return this.handleFrom.el;
-            else return this.handleTo.el;
+            if (pos < this.handleTo.x) return this.handleFrom;
+            else return this.handleTo;
         }
-        return null;
     }
     onMouseUp(e: JQuery.MouseUpEvent, currentHandle: Handle) {
         this.$rangeslider.off('mousemove');
@@ -140,9 +141,11 @@ export default class TRSView {
     }
     onMouseDownByLine(e: JQuery.MouseDownEvent) {
         e.preventDefault();
-        const currentHandle: JQuery<HTMLElement> = $(e.target);
-        const pos = e.clientX - currentHandle.offset().left;
-        this.onHandlePositionUpdate(this.getNearestHandle(pos), 0);
+        const $currentHandle: JQuery<HTMLElement> = $(e.target);
+        let pos = e.clientX - $currentHandle.offset().left;
+        const nearHandle = this.getNearestHandle(pos);
+        pos = nearHandle.is(this.handleFrom) ? pos - this.offsetLeft : pos - this.offsetRight;
+        this.onHandlePositionUpdate(nearHandle, pos);
     }
 
     onHandleMove(e: JQuery.MouseMoveEvent, currentHandle: Handle, shiftX: number) {
