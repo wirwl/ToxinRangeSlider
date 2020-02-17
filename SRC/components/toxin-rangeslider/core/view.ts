@@ -3,6 +3,7 @@
 import Handle from '../core/entities/handle';
 import Tip from './entities/tip';
 import Line from './entities/line';
+import { HttpMethod } from 'puppeteer';
 //type resultMoveHandle = { isFromHandle: boolean; value: number };
 export default class TRSView {
     private settings: ExamplePluginOptions;
@@ -190,19 +191,10 @@ export default class TRSView {
             this.lineSelected.width = currentHandle.x + currentHandle.width - this.offsetRight + 1;
         }
     }
-    moveHandle(currentHandle: Handle, pxX: number): Handle {
+    drawTips(currentHandle: Handle) {
         const lw = parseFloat(this.$line.css('width'));
 
-        currentHandle.isMoving = true;
-        currentHandle.el.css('z-index', '99');
-        //console.log(this.validate(pxX));
-        //currentHandle.x = pxX;
-        currentHandle.x = this.validate(pxX);
-
-        this.drawLineSelected(currentHandle);
-        //-----------------------------------------------------------
         currentHandle.value = this.convertPixelValueToRelativeValue(currentHandle.x);
-        //const relValue =
         currentHandle.displayValue = this.getValue(currentHandle.value);
         //-----------------------------------------------------------
         this.tipFrom.text = this.handleFrom.displayValue;
@@ -241,7 +233,15 @@ export default class TRSView {
             distanceMin = this.tipTo.x - this.tipMin.width;
             distanceMin < 1 ? this.tipMin.hide() : this.tipMin.show();
         }
-        //-----------------------------------------------------------
+    }
+    moveHandle(currentHandle: Handle, pxX: number): Handle {
+        currentHandle.isMoving = true;
+        currentHandle.el.css('z-index', '99');
+        currentHandle.x = this.validate(pxX);
+
+        this.drawLineSelected(currentHandle);
+        this.drawTips(currentHandle);
+
         currentHandle.isMoving = false;
         return currentHandle;
     }
