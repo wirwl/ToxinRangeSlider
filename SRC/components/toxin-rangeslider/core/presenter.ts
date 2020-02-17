@@ -1,5 +1,6 @@
 import TRSView from './view';
 import TRSModel from './model';
+import Handle from './entities/handle';
 const $ = require('../../../jquery/dist/jquery');
 /**
  * Presenter listenes to view events, retrieve data, manipulates it and
@@ -26,7 +27,7 @@ export default class TRSPresenter {
         this.view.drawSlider(null, this.model.settings, true);
         //this.view.drawSlider(TRSModel.defaults, this.model.settings);
     }
-    onHandlePositionUpdate(handle: JQuery<HTMLElement>, newPos: number) {
+    onHandlePositionUpdate(handle: Handle, newPos: number) {
         const result = this.view.moveHandle(handle, newPos);
         result.isFromHandle
             ? (this.model.settings.valueFrom = result.value)

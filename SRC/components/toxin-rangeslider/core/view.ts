@@ -5,7 +5,6 @@ import Tip from './entities/tip';
 type resultMoveHandle = { isFromHandle: boolean; value: number };
 export default class TRSView {
     private settings: ExamplePluginOptions;
-    private isSplitTips: boolean;
     private offsetLeft: number;
     private offsetRight: number;
     private template =
@@ -56,28 +55,29 @@ export default class TRSView {
         //this.$tipMax = el.find('.rangeslider__tip-max');
         this.$line = el.find('.rangeslider__line');
         //this.$handleFrom = this.$rangeslider.find('.rangeslider__handle-from');
-        this.$handleTo = this.$rangeslider.find('.rangeslider__handle-to');
+        //this.$handleTo = this.$rangeslider.find('.rangeslider__handle-to');
         this.$lineSelected = this.$rangeslider.find('.rangeslider__line-selected');
         this.data = el.data('options');
-
-        this.handleFrom = new Handle(this.$rangeslider.find('.rangeslider__handle-from'));
-        this.handleFrom.el[0].ondragstart = function() {
-            return false;
-        };
-        this.handleFrom.el.mousedown(e => this.onMouseDown(e));
-        this.offsetLeft = this.handleFrom.width / 2;
-
-        this.handleTo = new Handle(this.$handleTo);
-        this.$handleTo.mousedown(e => this.onMouseDown(e));
-        this.offsetRight = parseFloat(this.$handleTo.css('width')) / 2;
 
         this.tipFrom = new Tip(el.find('.rangeslider__tip-from'));
         this.tipTo = new Tip(el.find('.rangeslider__tip-to'));
         this.tipMin = new Tip(el.find('.rangeslider__tip-min'));
         this.tipMax = new Tip(el.find('.rangeslider__tip-max'));
 
-        this.setTipXPos(this.tipFrom.el, this.handleFrom.el);
-        this.setTipXPos(this.tipTo.el, this.$handleTo);
+        this.handleFrom = new Handle(this.$rangeslider.find('.rangeslider__handle-from'), this.tipFrom);
+        this.handleFrom.el[0].ondragstart = function() {
+            return false;
+        };
+        this.handleFrom.el.mousedown(e => this.onMouseDown(e));
+        this.offsetLeft = this.handleFrom.width / 2;
+
+        this.handleTo = new Handle(this.$rangeslider.find('.rangeslider__handle-to'), this.tipTo);
+        this.handleTo.el.mousedown(e => this.onMouseDown(e));
+        this.offsetRight = this.handleTo.width / 2;
+        //parseFloat(this.$handleTo.css('width')) / 2;
+
+        // this.setTipXPos(this.tipFrom.el, this.handleFrom.el);
+        // this.setTipXPos(this.tipTo.el, this.handleTo.el);
     }
 
     convertRelativeValueToPixelValue(min: number, val: number, max: number): number {
@@ -122,25 +122,26 @@ export default class TRSView {
             const distanceBetweenHandles = this.handleTo.x - this.handleFrom.x - this.handleFrom.width;
             const half = this.handleFrom.x + this.handleFrom.width + distanceBetweenHandles / 2;
             if (pos < half) return this.handleFrom.el;
-            else return this.$handleTo;
+            else return this.handleTo.el;
         } else {
             if (pos < this.handleTo.x) return this.handleFrom.el;
-            else return this.$handleTo;
+            else return this.handleTo.el;
         }
         return null;
     }
-    onMouseUp(e: JQuery.MouseUpEvent, currentHandle: JQuery<HTMLElement>) {
+    onMouseUp(e: JQuery.MouseUpEvent, currentHandle: Handle) {
         this.$rangeslider.off('mousemove');
-        currentHandle.off('mouseup');
-        currentHandle.css('z-index', '11');
+        currentHandle.el.off('mouseup');
+        currentHandle.el.css('z-index', '11');
     }
     onMouseDown(e: JQuery.MouseDownEvent) {
         e.preventDefault();
-        const currentHandle: JQuery<HTMLElement> = $(e.target);
-        const shiftX = e.clientX - currentHandle.offset().left;
+        //const currentHandle: JQuery<HTMLElement> = $(e.target);
+        const currentHandle: Handle = $(e.target).is(this.handleFrom.el) ? this.handleFrom : this.handleTo;
+        const shiftX = e.clientX - currentHandle.el.offset().left;
 
         this.$rangeslider.mousemove(e => this.onHandleMove(e, currentHandle, shiftX));
-        currentHandle.mouseup(e => this.onMouseUp(e, currentHandle));
+        currentHandle.el.mouseup(e => this.onMouseUp(e, currentHandle));
         $(document).mouseup(e => this.onMouseUp(e, currentHandle));
     }
     onMouseDownByLine(e: JQuery.MouseDownEvent) {
@@ -149,7 +150,7 @@ export default class TRSView {
         const pos = e.clientX - currentHandle.offset().left;
         this.onHandlePositionUpdate(this.getNearestHandle(pos), 0);
     }
-    onHandleMove(e: JQuery.MouseMoveEvent, currentHandle: JQuery<HTMLElement>, shiftX: number) {
+    onHandleMove(e: JQuery.MouseMoveEvent, currentHandle: Handle, shiftX: number) {
         const shift = shiftX + this.$line.offset().left;
         const newLeft = e.clientX - shift;
 
@@ -182,45 +183,29 @@ export default class TRSView {
             this.onHandlePositionUpdate(currentHandle, nstep * pxStep);
         } else this.onHandlePositionUpdate(currentHandle, newLeft);
     }
-    moveHandle(currentHandle: JQuery<HTMLElement>, newLeft: number): resultMoveHandle {
-        //let hfx = parseFloat(this.$handleFrom.css('left'));
-        //const hfw = parseFloat(this.$handleFrom.css('width'));
-        //let htx = parseFloat(this.$handleTo.css('left'));
-        //const htw = parseFloat(this.$handleTo.css('width'));
-        let chx = parseFloat(currentHandle.css('left'));
-        const chw = parseFloat(currentHandle.css('width'));
-        const lx = parseFloat(this.$line.css('left'));
+    moveHandle(currentHandle: Handle, newLeft: number): resultMoveHandle {
+        //const chw = parseFloat(currentHandle.css('width'));
         const lw = parseFloat(this.$line.css('width'));
-        const lsx = parseFloat(this.$lineSelected.css('left'));
-        const lsw = parseFloat(this.$lineSelected.css('width'));
-        //let tfx = parseFloat(this.$tipFrom.css('left'));
-        //let tfw = parseFloat(this.$tipFrom.css('width'));
-        // let ttx = parseFloat(this.$tipTo.css('left'));
-        // let ttw = parseFloat(this.$tipTo.css('width'));
-        //const tiw = parseFloat(this.$tipMin.css('width'));
-        //const taw = parseFloat(this.$tipMax.css('width'));
 
-        //const isTwoHandles = (this.settings.isInterval = true);
-        const isHandleFrom = currentHandle.is(this.handleFrom.el);
+        const isHandleFrom = currentHandle.el.is(this.handleFrom.el);
         const isValues = this.settings.values && this.settings.values.length > 1;
-        const currentTip: Tip = currentHandle.is(this.handleFrom.el) ? this.tipFrom : this.tipTo;
-        //currentHandle.is(this.$handleFrom) ? this.$tipFrom : this.$tipTo;
-        currentHandle.css('z-index', '99');
+
+        currentHandle.el.css('z-index', '99');
 
         if (newLeft < 0) newLeft = 0;
         if (this.settings.isInterval) {
-            if (currentHandle.is(this.handleFrom.el)) if (newLeft > this.handleTo.x) newLeft = this.handleTo.x;
-            if (currentHandle.is(this.$handleTo)) if (newLeft < this.handleFrom.x) newLeft = this.handleFrom.x;
+            if (currentHandle.el.is(this.handleFrom.el)) if (newLeft > this.handleTo.x) newLeft = this.handleTo.x;
+            if (currentHandle.el.is(this.handleTo.el)) if (newLeft < this.handleFrom.x) newLeft = this.handleFrom.x;
         }
-        if (newLeft > lw - chw) newLeft = lw - chw;
+        if (newLeft > lw - currentHandle.width) newLeft = lw - currentHandle.width;
 
-        currentHandle.css('left', newLeft);
+        //currentHandle.css('left', newLeft);
+        currentHandle.x = newLeft;
         isHandleFrom ? (this.handleFrom.x = newLeft) : (this.handleTo.x = newLeft);
-        chx = newLeft;
 
         if (this.settings.isInterval) {
             //есть 2й ползунок
-            if (currentHandle.is(this.$handleTo)) {
+            if (currentHandle.el.is(this.handleTo.el)) {
                 //если тянем мышкой 2й ползунок
                 this.$lineSelected.css(
                     'width',
@@ -240,83 +225,59 @@ export default class TRSView {
         }
         //-----------------------------------------------------------
         const newValue = this.convertPixelValueToRelativeValue(newLeft);
+        //-----------------------------------------------------------
         if (isValues) {
-            //currentTip.text(this.settings.values[newValue]);
-            currentTip.text = this.settings.values[newValue];
+            currentHandle.tip.text = this.settings.values[newValue];
         } else {
-            currentTip.text = Math.round(newValue);
+            currentHandle.tip.text = Math.round(newValue);
         }
         //-------------------------------------------
-        const anotherTip: Tip = currentTip.el.is(this.tipTo.el) ? this.tipFrom : this.tipTo;
-        const anotherValue = currentTip.el.is(this.tipTo.el) ? this.settings.valueFrom : this.settings.valueTo;
+        const anotherTip: Tip = currentHandle.tip.el.is(this.tipTo.el) ? this.tipFrom : this.tipTo;
+        const anotherValue = currentHandle.tip.el.is(this.tipTo.el) ? this.settings.valueFrom : this.settings.valueTo;
         if (isValues) {
             anotherTip.text = this.settings.values[anotherValue];
         } else {
             anotherTip.text = Math.round(anotherValue);
         }
         //-------------------------------------------
-        //!//tfw = parseFloat(this.$tipFrom.css('width'));
-        //ttw = parseFloat(this.$tipTo.css('width'));
-
         if (this.tipTo.el.length > 0) {
-            if (currentHandle.is(this.handleFrom.el)) {
-                //this.$tipFrom.css('left', newLeft + (chw - this.tipFrom.width) / 2);
-                this.tipFrom.x = newLeft + (chw - this.tipFrom.width) / 2;
-                //this.tipFrom.x = parseFloat(this.$tipFrom.css('left'));
+            if (currentHandle.el.is(this.handleFrom.el)) {
+                this.tipFrom.x = newLeft + (currentHandle.width - this.tipFrom.width) / 2;
             } else {
-                //this.$tipTo.css('left', newLeft + (chw - ttw) / 2);
-                //ttx = parseFloat(this.$tipTo.css('left'));
-                this.tipTo.x = newLeft + (chw - this.tipTo.width) / 2;
-
-                //this.$tipFrom.css('left', this.handleFrom.x + (this.handleFrom.width - this.tipFrom.width) / 2);
-                //this.tipFrom.x = parseFloat(this.$tipFrom.css('left'));
+                this.tipTo.x = newLeft + (currentHandle.width - this.tipTo.width) / 2;
                 this.tipFrom.x = this.handleFrom.x + (this.handleFrom.width - this.tipFrom.width) / 2;
             }
         }
         //------------------------------------------------------------
-        if (currentHandle.is(this.handleFrom.el)) this.settings.valueFrom = newValue;
+        if (currentHandle.el.is(this.handleFrom.el)) this.settings.valueFrom = newValue;
         else this.settings.valueTo = newValue;
 
         if (this.settings.isInterval) {
             const distanceBetweenHandles = this.tipTo.x - this.tipFrom.x - this.tipFrom.width;
             if (distanceBetweenHandles < 1) {
-                this.isSplitTips = true;
                 this.tipTo.hide();
                 this.tipFrom.text = isValues
                     ? this.settings.values[this.settings.valueFrom] + '-' + this.settings.values[this.settings.valueTo]
                     : Math.round(this.settings.valueFrom) + ' - ' + Math.round(this.settings.valueTo);
-                //!//tfw = parseFloat(this.$tipFrom.css('width'));
                 this.tipFrom.x =
                     this.handleFrom.x +
                     (this.handleTo.x - this.handleFrom.x + this.handleTo.width - this.tipFrom.width) / 2;
             } else {
-                this.isSplitTips = false;
                 this.tipTo.show();
-                this.tipFrom.text = isValues
-                    ? this.settings.values[this.settings.valueFrom]
-                    : Math.round(this.settings.valueFrom);
-                //this.$tipFrom.css('left', this.handleFrom.x + (chw - this.tipFrom.width) / 2);
-                this.tipFrom.x = this.handleFrom.x + (chw - this.tipFrom.width) / 2;
             }
             if (Math.round(this.settings.valueFrom) == Math.round(this.settings.valueTo)) {
                 this.tipFrom.text = isValues
                     ? this.settings.values[this.settings.valueFrom]
                     : Math.round(this.settings.valueFrom);
-                //this.tipFrom.width = parseFloat(this.$tipFrom.css('width'));
-                //this.$tipFrom.css('left', this.handleFrom.x + (chw - this.tipFrom.width) / 2);
-                this.tipFrom.x = this.handleFrom.x + (chw - this.tipFrom.width) / 2;
+                this.tipFrom.x = this.handleFrom.x + (currentHandle.width - this.tipFrom.width) / 2;
             }
         }
         //------------------------------------------------------------
-        //!//tfx = parseFloat(this.$tipFrom.css('left'));
-        //ttx = parseFloat(this.$tipTo.css('left'));
         const tax = lw - this.tipMax.width;
         let distanceMin = this.tipFrom.x - this.tipMin.width;
         const distanceMax = tax - this.tipTo.x - this.tipTo.width;
         let distancBetweenTipFromAndTipMax = 1;
         distancBetweenTipFromAndTipMax = tax - this.tipFrom.x - this.tipFrom.width;
-        console.log(this.tipMin.width);
-        console.log(distanceMin);
         distanceMin < 1 ? this.tipMin.hide() : this.tipMin.show();
         distanceMax < 1 ? this.tipMax.hide() : this.tipMax.show();
         if (distancBetweenTipFromAndTipMax < 1) this.tipMax.hide();
@@ -327,7 +288,7 @@ export default class TRSView {
         }
         //-----------------------------------------------------------
         return {
-            isFromHandle: currentHandle.is(this.handleFrom.el) ? true : false,
+            isFromHandle: currentHandle.el.is(this.handleFrom.el) ? true : false,
             value: newValue,
         };
     }
@@ -411,16 +372,13 @@ export default class TRSView {
                 ns.maxValue != os.maxValue
             ) {
                 this.moveHandle(
-                    this.handleFrom.el,
+                    this.handleFrom,
                     this.convertRelativeValueToPixelValue(ns.minValue, ns.valueFrom, ns.maxValue),
                 );
             }
         //-----------------------------------------------------------------
         if (isFirstDraw || ns.valueTo != os.valueTo || ns.minValue != os.minValue || ns.maxValue != os.maxValue) {
-            this.moveHandle(
-                this.$handleTo,
-                this.convertRelativeValueToPixelValue(ns.minValue, ns.valueTo, ns.maxValue),
-            );
+            this.moveHandle(this.handleTo, this.convertRelativeValueToPixelValue(ns.minValue, ns.valueTo, ns.maxValue));
         }
         //-----------------------------------------------------------------------
     }

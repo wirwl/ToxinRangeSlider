@@ -98,10 +98,10 @@ describe('Check result of getNearestHandle() function. Six diffrent tests.', () 
             expect(rangeslider.view.getNearestHandle(95)).toBe(rangeslider.view.handleFrom.el);
         });
         test('LMB clicked between two handles, closer to rigth handle', () => {
-            expect(rangeslider.view.getNearestHandle(130)).toBe(rangeslider.view.$handleTo);
+            expect(rangeslider.view.getNearestHandle(130)).toBe(rangeslider.view.handleTo.el);
         });
         test('LMB clicked on the right of second handle', () => {
-            expect(rangeslider.view.getNearestHandle(200)).toBe(rangeslider.view.$handleTo);
+            expect(rangeslider.view.getNearestHandle(200)).toBe(rangeslider.view.handleTo.el);
         });
     });
     describe('If there are one handle.', () => {
@@ -115,7 +115,7 @@ describe('Check result of getNearestHandle() function. Six diffrent tests.', () 
             expect(rangeslider.view.getNearestHandle(41)).toBe(rangeslider.view.handleFrom.el);
         });
         test('LMB clicked on the right of handle', () => {
-            expect(rangeslider.view.getNearestHandle(203)).toBe(rangeslider.view.$handleTo);
+            expect(rangeslider.view.getNearestHandle(203)).toBe(rangeslider.view.handleTo.el);
         });
     });
 });

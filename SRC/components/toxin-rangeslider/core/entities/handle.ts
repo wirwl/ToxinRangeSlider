@@ -1,6 +1,9 @@
 import TRSElement from '../entities/element';
+import Tip from './tip';
 export default class Handle extends TRSElement {
-    constructor(el: JQuery<HTMLElement>) {
+    tip: Tip;
+    constructor(el: JQuery<HTMLElement>, tip: Tip) {
         super(el);
+        this.tip = tip;
     }
 }
