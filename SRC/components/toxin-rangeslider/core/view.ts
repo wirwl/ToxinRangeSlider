@@ -2,6 +2,7 @@
 //let $: JQueryStatic = require('jquery');
 import Handle from '../core/entities/handle';
 import Tip from './entities/tip';
+import Line from './entities/line';
 type resultMoveHandle = { isFromHandle: boolean; value: number };
 export default class TRSView {
     private settings: ExamplePluginOptions;
@@ -24,14 +25,7 @@ export default class TRSView {
         '</div>';
     el: JQuery<Element>;
     $rangeslider: JQuery<HTMLElement>;
-    //$tipMin: JQuery<HTMLElement>;
-    //$tipFrom: JQuery<HTMLElement>;
-    //$tipTo: JQuery<HTMLElement>;
-    //$tipMax: JQuery<HTMLElement>;
-    //$handleFrom: JQuery<HTMLElement>;
-    //$handleTo: JQuery<HTMLElement> | null;
     $line: JQuery<HTMLElement>;
-    $lineSelected: JQuery<HTMLElement>;
     input: HTMLInputElement | null;
     $input: JQuery<Element>;
     list: HTMLUListElement | null;
@@ -45,20 +39,13 @@ export default class TRSView {
     tipTo: Tip;
     tipMin: Tip;
     tipMax: Tip;
+    lineSelected: Line;
     constructor(el: JQuery<HTMLElement>) {
         this.el = el;
         this.el.html(this.template);
         this.$rangeslider = el.find('.rangeslider');
-        //this.$tipMin = el.find('.rangeslider__tip-min');
-        //this.$tipFrom = el.find('.rangeslider__tip-from');
-        //this.$tipTo = el.find('.rangeslider__tip-to');
-        //this.$tipMax = el.find('.rangeslider__tip-max');
         this.$line = el.find('.rangeslider__line');
-        //this.$handleFrom = this.$rangeslider.find('.rangeslider__handle-from');
-        //this.$handleTo = this.$rangeslider.find('.rangeslider__handle-to');
-        this.$lineSelected = this.$rangeslider.find('.rangeslider__line-selected');
         this.data = el.data('options');
-
         this.tipFrom = new Tip(el.find('.rangeslider__tip-from'));
         this.tipTo = new Tip(el.find('.rangeslider__tip-to'));
         this.tipMin = new Tip(el.find('.rangeslider__tip-min'));
@@ -74,10 +61,8 @@ export default class TRSView {
         this.handleTo = new Handle(this.$rangeslider.find('.rangeslider__handle-to'), this.tipTo);
         this.handleTo.el.mousedown(e => this.onMouseDown(e));
         this.offsetRight = this.handleTo.width / 2;
-        //parseFloat(this.$handleTo.css('width')) / 2;
 
-        // this.setTipXPos(this.tipFrom.el, this.handleFrom.el);
-        // this.setTipXPos(this.tipTo.el, this.handleTo.el);
+        this.lineSelected = new Line(this.$rangeslider.find('.rangeslider__line-selected'));
     }
 
     convertRelativeValueToPixelValue(min: number, val: number, max: number): number {
@@ -143,7 +128,6 @@ export default class TRSView {
     }
     onMouseDown(e: JQuery.MouseDownEvent) {
         e.preventDefault();
-        //const currentHandle: JQuery<HTMLElement> = $(e.target);
         const currentHandle: Handle = $(e.target).is(this.handleFrom.el) ? this.handleFrom : this.handleTo;
         const shiftX = e.clientX - currentHandle.el.offset().left;
 
@@ -169,7 +153,6 @@ export default class TRSView {
                 this.settings.minValue + this.settings.stepValue,
                 this.settings.maxValue,
             );
-            //console.log(pxStep);
             let totalstep = Math.round(pxLength / pxStep);
 
             if (this.settings.values) {
@@ -181,7 +164,7 @@ export default class TRSView {
             }
 
             let nstep = Math.round(pos / pxStep);
-            //console.log(pos);
+
             if (Math.trunc(pos / pxStep) >= totalstep - 1) {
                 const prevnStep = (totalstep - 1) * pxStep;
                 const pxLastStepHalf = (pxLength - prevnStep) / 2;
@@ -190,84 +173,57 @@ export default class TRSView {
             this.onHandlePositionUpdate(currentHandle, nstep * pxStep);
         } else this.onHandlePositionUpdate(currentHandle, newLeft);
     }
-    moveHandle(currentHandle: Handle, newLeft: number): resultMoveHandle {
+    getValue(val: number): any {
+        const isValues = this.settings.values.length > 1;
+        return isValues ? this.settings.values[val] : Math.round(val);
+    }
+
+    moveHandle(currentHandle: Handle, pxX: number): resultMoveHandle {
         const lw = parseFloat(this.$line.css('width'));
-
-        const isHandleFrom = currentHandle.el.is(this.handleFrom.el);
-        const isValues = this.settings.values && this.settings.values.length > 1;
-
         currentHandle.el.css('z-index', '99');
-
-        newLeft = this.validate(newLeft, currentHandle);
-        currentHandle.x = newLeft;
+        pxX = this.validate(pxX, currentHandle);
+        currentHandle.x = pxX;
 
         if (this.settings.isInterval) {
             //есть 2й ползунок
             if (currentHandle.el.is(this.handleTo.el)) {
                 //если тянем мышкой 2й ползунок
-                this.$lineSelected.css(
-                    'width',
-                    newLeft - this.handleFrom.x - this.handleTo.width + this.offsetLeft + this.offsetRight + 1,
-                );
+                this.lineSelected.width =
+                    pxX - this.handleFrom.x - this.handleTo.width + this.offsetLeft + this.offsetRight + 1;
             } else {
                 //если тянем мышкой 1й ползунок
-                this.$lineSelected.css('left', newLeft + this.handleFrom.width - this.offsetLeft);
-                this.$lineSelected.css(
-                    'width',
-                    this.handleTo.x - newLeft - this.handleTo.width + this.offsetLeft + this.offsetRight + 1,
-                );
+                this.lineSelected.x = pxX + this.handleFrom.width - this.offsetLeft;
+                this.lineSelected.width =
+                    this.handleTo.x - pxX - this.handleTo.width + this.offsetLeft + this.offsetRight + 1;
             }
         } else {
             //если тянем мышкой единственный ползунок
-            this.$lineSelected.css('width', newLeft + this.offsetRight + 1);
+            this.lineSelected.width = pxX + this.offsetRight + 1;
         }
         //-----------------------------------------------------------
-        const newValue = this.convertPixelValueToRelativeValue(newLeft);
+        const relValue = this.convertPixelValueToRelativeValue(pxX);
+        currentHandle.value = this.getValue(relValue);
         //-----------------------------------------------------------
-        if (isValues) {
-            currentHandle.tip.text = this.settings.values[newValue];
-        } else {
-            currentHandle.tip.text = Math.round(newValue);
-        }
+        this.tipFrom.text = this.handleFrom.value;
+        this.tipTo.text = this.handleTo.value;
         //-------------------------------------------
-        const anotherTip: Tip = currentHandle.tip.el.is(this.tipTo.el) ? this.tipFrom : this.tipTo;
-        const anotherValue = currentHandle.tip.el.is(this.tipTo.el) ? this.settings.valueFrom : this.settings.valueTo;
-        if (isValues) {
-            anotherTip.text = this.settings.values[anotherValue];
-        } else {
-            anotherTip.text = Math.round(anotherValue);
-        }
-        //-------------------------------------------
-        if (this.tipTo.el.length > 0) {
-            if (currentHandle.el.is(this.handleFrom.el)) {
-                this.tipFrom.x = newLeft + (currentHandle.width - this.tipFrom.width) / 2;
-            } else {
-                this.tipTo.x = newLeft + (currentHandle.width - this.tipTo.width) / 2;
-                this.tipFrom.x = this.handleFrom.x + (this.handleFrom.width - this.tipFrom.width) / 2;
-            }
-        }
+        this.tipFrom.x = this.handleFrom.x + (this.handleFrom.width - this.tipFrom.width) / 2;
+        this.tipTo.x = this.handleTo.x + (this.handleTo.width - this.tipTo.width) / 2;
         //------------------------------------------------------------
-        if (currentHandle.el.is(this.handleFrom.el)) this.settings.valueFrom = newValue;
-        else this.settings.valueTo = newValue;
-
         if (this.settings.isInterval) {
             const distanceBetweenHandles = this.tipTo.x - this.tipFrom.x - this.tipFrom.width;
             if (distanceBetweenHandles < 1) {
                 this.tipTo.hide();
-                this.tipFrom.text = isValues
-                    ? this.settings.values[this.settings.valueFrom] + '-' + this.settings.values[this.settings.valueTo]
-                    : Math.round(this.settings.valueFrom) + ' - ' + Math.round(this.settings.valueTo);
+                this.tipFrom.text = this.tipFrom.text + '-' + this.tipTo.text;
                 this.tipFrom.x =
                     this.handleFrom.x +
                     (this.handleTo.x - this.handleFrom.x + this.handleTo.width - this.tipFrom.width) / 2;
             } else {
                 this.tipTo.show();
             }
-            if (Math.round(this.settings.valueFrom) == Math.round(this.settings.valueTo)) {
-                this.tipFrom.text = isValues
-                    ? this.settings.values[this.settings.valueFrom]
-                    : Math.round(this.settings.valueFrom);
-                this.tipFrom.x = this.handleFrom.x + (currentHandle.width - this.tipFrom.width) / 2;
+            if (this.handleFrom.value == this.handleTo.value) {
+                this.tipFrom.text = this.handleFrom.value;
+                this.tipFrom.x = this.handleFrom.x + (this.handleFrom.width - this.tipFrom.width) / 2;
             }
         }
         //------------------------------------------------------------
@@ -287,7 +243,7 @@ export default class TRSView {
         //-----------------------------------------------------------
         return {
             isFromHandle: currentHandle.el.is(this.handleFrom.el) ? true : false,
-            value: newValue,
+            value: relValue,
         };
     }
 
@@ -328,12 +284,12 @@ export default class TRSView {
         if (isFirstDraw || ns.isInterval != os.isInterval) {
             if (ns.isInterval) {
                 this.handleFrom.show();
-                this.$lineSelected.removeClass('rangeslider__line-selected_isOneHandle');
+                this.lineSelected.el.removeClass('rangeslider__line-selected_isOneHandle');
             } else {
                 this.handleFrom.hide();
-                this.$lineSelected.addClass('rangeslider__line-selected_isOneHandle');
+                this.lineSelected.el.addClass('rangeslider__line-selected_isOneHandle');
                 this.tipFrom.hide();
-                this.$lineSelected.css('left', 0);
+                this.lineSelected.x = 0;
             }
         }
         //------------------------------------------------------------
