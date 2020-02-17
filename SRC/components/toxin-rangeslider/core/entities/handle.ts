@@ -7,4 +7,7 @@ export default class Handle extends TRSElement {
         super(el);
         this.tip = tip;
     }
+    is(h: Handle): boolean {
+        return this.el.is(h.el);
+    }
 }

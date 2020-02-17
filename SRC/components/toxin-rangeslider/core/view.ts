@@ -141,6 +141,7 @@ export default class TRSView {
         const pos = e.clientX - currentHandle.offset().left;
         this.onHandlePositionUpdate(this.getNearestHandle(pos), 0);
     }
+
     onHandleMove(e: JQuery.MouseMoveEvent, currentHandle: Handle, shiftX: number) {
         const shift = shiftX + this.$line.offset().left;
         const newLeft = e.clientX - shift;
@@ -177,29 +178,22 @@ export default class TRSView {
         const isValues = this.settings.values.length > 1;
         return isValues ? this.settings.values[val] : Math.round(val);
     }
-
+    drawLineSelected(currentHandle: Handle) {
+        if (this.settings.isInterval) {
+            if (currentHandle.is(this.handleFrom)) this.lineSelected.x = this.handleFrom.x + this.offsetLeft;
+            this.lineSelected.width =
+                this.handleTo.x - this.handleFrom.x + this.handleTo.width - this.offsetLeft - this.offsetRight + 1;
+        } else {
+            this.lineSelected.width = currentHandle.x + currentHandle.width - this.offsetRight + 1;
+        }
+    }
     moveHandle(currentHandle: Handle, pxX: number): resultMoveHandle {
         const lw = parseFloat(this.$line.css('width'));
         currentHandle.el.css('z-index', '99');
         pxX = this.validate(pxX, currentHandle);
         currentHandle.x = pxX;
 
-        if (this.settings.isInterval) {
-            //есть 2й ползунок
-            if (currentHandle.el.is(this.handleTo.el)) {
-                //если тянем мышкой 2й ползунок
-                this.lineSelected.width =
-                    pxX - this.handleFrom.x - this.handleTo.width + this.offsetLeft + this.offsetRight + 1;
-            } else {
-                //если тянем мышкой 1й ползунок
-                this.lineSelected.x = pxX + this.handleFrom.width - this.offsetLeft;
-                this.lineSelected.width =
-                    this.handleTo.x - pxX - this.handleTo.width + this.offsetLeft + this.offsetRight + 1;
-            }
-        } else {
-            //если тянем мышкой единственный ползунок
-            this.lineSelected.width = pxX + this.offsetRight + 1;
-        }
+        this.drawLineSelected(currentHandle);
         //-----------------------------------------------------------
         const relValue = this.convertPixelValueToRelativeValue(pxX);
         currentHandle.value = this.getValue(relValue);
