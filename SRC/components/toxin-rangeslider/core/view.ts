@@ -111,6 +111,9 @@ export default class TRSView {
         const tw = parseFloat(tip.css('width'));
         tip.css('left', tl + (hw - tw) / 2);
     }
+    validate(pos: number) {
+        return 1060;
+    }
     getNearestHandle(pos: number) {
         // const hfx = parseFloat(this.$handleFrom.css('left'));
         // const hfw = parseFloat(this.$handleFrom.css('width'));
@@ -184,7 +187,6 @@ export default class TRSView {
         } else this.onHandlePositionUpdate(currentHandle, newLeft);
     }
     moveHandle(currentHandle: Handle, newLeft: number): resultMoveHandle {
-        //const chw = parseFloat(currentHandle.css('width'));
         const lw = parseFloat(this.$line.css('width'));
 
         const isHandleFrom = currentHandle.el.is(this.handleFrom.el);
@@ -192,16 +194,16 @@ export default class TRSView {
 
         currentHandle.el.css('z-index', '99');
 
+        //----------------------------------------------------
         if (newLeft < 0) newLeft = 0;
         if (this.settings.isInterval) {
             if (currentHandle.el.is(this.handleFrom.el)) if (newLeft > this.handleTo.x) newLeft = this.handleTo.x;
             if (currentHandle.el.is(this.handleTo.el)) if (newLeft < this.handleFrom.x) newLeft = this.handleFrom.x;
         }
         if (newLeft > lw - currentHandle.width) newLeft = lw - currentHandle.width;
+        //----------------------------------------------------
 
-        //currentHandle.css('left', newLeft);
         currentHandle.x = newLeft;
-        isHandleFrom ? (this.handleFrom.x = newLeft) : (this.handleTo.x = newLeft);
 
         if (this.settings.isInterval) {
             //есть 2й ползунок
