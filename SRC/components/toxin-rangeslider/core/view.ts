@@ -111,14 +111,18 @@ export default class TRSView {
         const tw = parseFloat(tip.css('width'));
         tip.css('left', tl + (hw - tw) / 2);
     }
-    validate(pos: number) {
-        return 1060;
+    validate(pos: number, ch: Handle): number {
+        let result = pos;
+        const lw = parseFloat(this.$line.css('width'));
+        if (pos < 0) result = 0;
+        if (pos > lw - ch.width) result = lw - ch.width;
+        if (this.settings.isInterval) {
+            if (ch.el.is(this.handleFrom.el)) if (pos > this.handleTo.x) result = this.handleTo.x;
+            if (ch.el.is(this.handleTo.el)) if (pos < this.handleFrom.x) result = this.handleFrom.x;
+        }
+        return result;
     }
     getNearestHandle(pos: number) {
-        // const hfx = parseFloat(this.$handleFrom.css('left'));
-        // const hfw = parseFloat(this.$handleFrom.css('width'));
-        // const htx = parseFloat(this.$handleTo.css('left'));
-        // const htw = parseFloat(this.$handleTo.css('width'));
         if (this.settings.isInterval) {
             if (pos < this.handleFrom.x) return this.handleFrom.el;
             if (pos > this.handleTo.x) return this.handleTo.el;
@@ -194,15 +198,7 @@ export default class TRSView {
 
         currentHandle.el.css('z-index', '99');
 
-        //----------------------------------------------------
-        if (newLeft < 0) newLeft = 0;
-        if (this.settings.isInterval) {
-            if (currentHandle.el.is(this.handleFrom.el)) if (newLeft > this.handleTo.x) newLeft = this.handleTo.x;
-            if (currentHandle.el.is(this.handleTo.el)) if (newLeft < this.handleFrom.x) newLeft = this.handleFrom.x;
-        }
-        if (newLeft > lw - currentHandle.width) newLeft = lw - currentHandle.width;
-        //----------------------------------------------------
-
+        newLeft = this.validate(newLeft, currentHandle);
         currentHandle.x = newLeft;
 
         if (this.settings.isInterval) {
