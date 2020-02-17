@@ -28,8 +28,8 @@ export default class TRSPresenter {
         //this.view.drawSlider(TRSModel.defaults, this.model.settings);
     }
     onHandlePositionUpdate(handle: Handle, newPos: number) {
-        const result = this.view.moveHandle(handle, newPos);
-        result.isFromHandle
+        const result: Handle = this.view.moveHandle(handle, newPos);
+        result.is(this.view.handleFrom)
             ? (this.model.settings.valueFrom = result.value)
             : (this.model.settings.valueTo = result.value);
         //console.log('new value' + this.model.settings.valueFrom);

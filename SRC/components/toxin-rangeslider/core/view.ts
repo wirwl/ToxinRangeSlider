@@ -3,7 +3,7 @@
 import Handle from '../core/entities/handle';
 import Tip from './entities/tip';
 import Line from './entities/line';
-type resultMoveHandle = { isFromHandle: boolean; value: number };
+//type resultMoveHandle = { isFromHandle: boolean; value: number };
 export default class TRSView {
     private settings: ExamplePluginOptions;
     private offsetLeft: number;
@@ -96,14 +96,17 @@ export default class TRSView {
         const tw = parseFloat(tip.css('width'));
         tip.css('left', tl + (hw - tw) / 2);
     }
-    validate(pos: number, ch: Handle): number {
+    validate(pos: number): number {
         let result = pos;
         const lw = parseFloat(this.$line.css('width'));
+        const ch = this.handleFrom.isMoving ? this.handleFrom : this.handleTo;
+        console.log('from x:' + this.handleFrom.x);
+        console.log('  to x:' + this.handleTo.x);
         if (pos < 0) result = 0;
         if (pos > lw - ch.width) result = lw - ch.width;
         if (this.settings.isInterval) {
-            if (ch.el.is(this.handleFrom.el)) if (pos > this.handleTo.x) result = this.handleTo.x;
-            if (ch.el.is(this.handleTo.el)) if (pos < this.handleFrom.x) result = this.handleFrom.x;
+            if (ch.is(this.handleFrom)) if (pos > this.handleTo.x) result = this.handleTo.x;
+            if (ch.is(this.handleTo)) if (pos < this.handleFrom.x) result = this.handleFrom.x;
         }
         return result;
     }
@@ -187,19 +190,23 @@ export default class TRSView {
             this.lineSelected.width = currentHandle.x + currentHandle.width - this.offsetRight + 1;
         }
     }
-    moveHandle(currentHandle: Handle, pxX: number): resultMoveHandle {
+    moveHandle(currentHandle: Handle, pxX: number): Handle {
         const lw = parseFloat(this.$line.css('width'));
+
+        currentHandle.isMoving = true;
         currentHandle.el.css('z-index', '99');
-        pxX = this.validate(pxX, currentHandle);
-        currentHandle.x = pxX;
+        //console.log(this.validate(pxX));
+        //currentHandle.x = pxX;
+        currentHandle.x = this.validate(pxX);
 
         this.drawLineSelected(currentHandle);
         //-----------------------------------------------------------
-        const relValue = this.convertPixelValueToRelativeValue(pxX);
-        currentHandle.value = this.getValue(relValue);
+        currentHandle.value = this.convertPixelValueToRelativeValue(currentHandle.x);
+        //const relValue =
+        currentHandle.displayValue = this.getValue(currentHandle.value);
         //-----------------------------------------------------------
-        this.tipFrom.text = this.handleFrom.value;
-        this.tipTo.text = this.handleTo.value;
+        this.tipFrom.text = this.handleFrom.displayValue;
+        this.tipTo.text = this.handleTo.displayValue;
         //-------------------------------------------
         this.tipFrom.x = this.handleFrom.x + (this.handleFrom.width - this.tipFrom.width) / 2;
         this.tipTo.x = this.handleTo.x + (this.handleTo.width - this.tipTo.width) / 2;
@@ -215,8 +222,8 @@ export default class TRSView {
             } else {
                 this.tipTo.show();
             }
-            if (this.handleFrom.value == this.handleTo.value) {
-                this.tipFrom.text = this.handleFrom.value;
+            if (this.handleFrom.displayValue == this.handleTo.displayValue) {
+                this.tipFrom.text = this.handleFrom.displayValue;
                 this.tipFrom.x = this.handleFrom.x + (this.handleFrom.width - this.tipFrom.width) / 2;
             }
         }
@@ -235,10 +242,8 @@ export default class TRSView {
             distanceMin < 1 ? this.tipMin.hide() : this.tipMin.show();
         }
         //-----------------------------------------------------------
-        return {
-            isFromHandle: currentHandle.el.is(this.handleFrom.el) ? true : false,
-            value: relValue,
-        };
+        currentHandle.isMoving = false;
+        return currentHandle;
     }
 
     drawLineByStep(step: number) {

@@ -121,7 +121,7 @@ describe('Check result of getNearestHandle() function. Six diffrent tests.', () 
 });
 
 test('Check result of validate() function in view layer', () => {
-    expect(rangeslider.view.validate(9999, rangeslider.view.handleFrom)).toBe(244);
+    expect(rangeslider.view.validate(9999)).toBe(244);
 });
 
 afterAll(() => {
