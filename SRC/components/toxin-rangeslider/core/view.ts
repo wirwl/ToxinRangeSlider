@@ -128,7 +128,6 @@ export default class TRSView {
     onMouseUp(e: JQuery.MouseUpEvent, currentHandle: Handle) {
         this.$rangeslider.off('mousemove');
         currentHandle.el.off('mouseup');
-        currentHandle.el.css('z-index', '11');
     }
     onMouseDown(e: JQuery.MouseDownEvent) {
         e.preventDefault();
@@ -236,8 +235,15 @@ export default class TRSView {
     }
     moveHandle(currentHandle: Handle, pxX: number): Handle {
         currentHandle.isMoving = true;
-        currentHandle.el.css('z-index', '99');
+
         currentHandle.x = this.validate(pxX);
+        if (currentHandle.is(this.handleFrom)) {
+            this.handleFrom.incZIndex();
+            this.handleTo.decZIndex();
+        } else {
+            this.handleTo.incZIndex();
+            this.handleFrom.decZIndex();
+        }
 
         this.drawLineSelected(currentHandle);
         this.drawTips(currentHandle);
