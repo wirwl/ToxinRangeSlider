@@ -6,10 +6,10 @@ export default class TRSModel {
         isInterval: true,
         isTip: true,
         minValue: 0,
-        maxValue: 1060,
+        maxValue: 1220,
         stepValue: 0,
-        valueFrom: 200,
-        valueTo: 800,
+        valueFrom: 0,
+        valueTo: 1220,
         values: [],
         //values: [20000, 40000, 80000, 16, 32, 64000, 12800],
         // values: [

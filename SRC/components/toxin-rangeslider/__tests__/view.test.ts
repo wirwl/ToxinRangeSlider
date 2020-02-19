@@ -85,7 +85,8 @@ beforeAll(async () => {
 });
 
 test('Check result of convertRelativeValueToPixelValue function', () => {
-    expect(rangeslider.view.convertRelativeValueToPixelValue(10, 750, 1000)).toBe(182.3838383838384);
+    rangeslider.update({ minValue: 10, maxValue: 1000 });
+    expect(rangeslider.view.convertRelativeValueToPixelValue(750)).toBe(182.3838383838384);
 });
 
 describe('Check result of getNearestHandle() function. Six diffrent tests.', () => {

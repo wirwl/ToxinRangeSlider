@@ -26,7 +26,6 @@ export default class TRSView {
         '</div>';
     el: JQuery<Element>;
     $rangeslider: JQuery<HTMLElement>;
-    $line: JQuery<HTMLElement>;
     input: HTMLInputElement | null;
     $input: JQuery<Element>;
     list: HTMLUListElement | null;
@@ -40,12 +39,13 @@ export default class TRSView {
     tipTo: Tip;
     tipMin: Tip;
     tipMax: Tip;
+    line: Line;
     lineSelected: Line;
     constructor(el: JQuery<HTMLElement>) {
         this.el = el;
         this.el.html(this.template);
         this.$rangeslider = el.find('.rangeslider');
-        this.$line = el.find('.rangeslider__line');
+        //this.$line = el.find('.rangeslider__line');
         this.data = el.data('options');
         this.tipFrom = new Tip(el.find('.rangeslider__tip-from'));
         this.tipTo = new Tip(el.find('.rangeslider__tip-to'));
@@ -63,25 +63,26 @@ export default class TRSView {
         this.handleTo.el.mousedown(e => this.onMouseDown(e));
         this.offsetRight = this.handleTo.width / 2;
 
-        this.$line.mousedown(e => this.onMouseDownByLine(e));
+        this.line = new Line(el.find('.rangeslider__line'));
+        this.line.el.mousedown(e => this.onMouseDownByLine(e));
 
         this.lineSelected = new Line(this.$rangeslider.find('.rangeslider__line-selected'));
     }
 
-    convertRelativeValueToPixelValue(min: number, val: number, max: number): number {
-        const lw = parseFloat(this.$line.css('width')) - this.offsetLeft - this.offsetRight;
+    convertRelativeValueToPixelValue(val: number): number {
+        const lw = this.line.width - this.offsetLeft - this.offsetRight;
         let result;
         if (this.settings.values && this.settings.values.length > 1) {
             const pxStep = lw / (this.settings.values.length - 1);
             result = val * pxStep;
         } else {
-            const percent = ((val - min) / (max - min)) * 100;
+            const percent = ((val - this.settings.minValue) / (this.settings.maxValue - this.settings.minValue)) * 100;
             result = lw * (percent / 100);
         }
         return result;
     }
     convertPixelValueToRelativeValue(val: number): number {
-        const lw = parseFloat(this.$line.css('width')) - this.offsetLeft - this.offsetRight;
+        const lw = this.line.width - this.offsetLeft - this.offsetRight;
         let result;
         if (this.settings.values && this.settings.values.length > 1) {
             const pxStep = lw / (this.settings.values.length - 1);
@@ -92,19 +93,10 @@ export default class TRSView {
         }
         return result;
     }
-    setTipXPos(tip: JQuery<HTMLElement>, handle: JQuery<HTMLElement>) {
-        const hl = parseFloat(handle.css('left'));
-        const hw = parseFloat(handle.css('width'));
-        const tl = parseFloat(tip.css('left'));
-        const tw = parseFloat(tip.css('width'));
-        tip.css('left', tl + (hw - tw) / 2);
-    }
     validate(pos: number): number {
         let result = pos;
-        const lw = parseFloat(this.$line.css('width'));
+        const lw = this.line.width;
         const ch = this.handleFrom.isMoving ? this.handleFrom : this.handleTo;
-        console.log('from x:' + this.handleFrom.x);
-        console.log('  to x:' + this.handleTo.x);
         if (pos < 0) result = 0;
         if (pos > lw - ch.width) result = lw - ch.width;
         if (this.settings.isInterval) {
@@ -149,35 +141,43 @@ export default class TRSView {
     }
 
     onHandleMove(e: JQuery.MouseMoveEvent, currentHandle: Handle, shiftX: number) {
-        const shift = shiftX + this.$line.offset().left;
+        const shift = shiftX + this.line.el.offset().left;
         const newLeft = e.clientX - shift;
 
-        if (this.settings.stepValue > 0 || this.settings.values.length > 1) {
-            const pos = e.clientX - this.$line.offset().left - this.offsetLeft;
-            const pxLength = parseFloat($('.rangeslider__line').css('width')) - this.offsetLeft - this.offsetRight;
-            let pxStep = this.convertRelativeValueToPixelValue(
-                this.settings.minValue,
-                this.settings.minValue + this.settings.stepValue,
-                this.settings.maxValue,
-            );
-            let totalstep = Math.round(pxLength / pxStep);
+        const pxLength = this.line.width - this.offsetLeft - this.offsetRight;
 
-            if (this.settings.values) {
-                const count = this.settings.values.length;
-                if (count > 1) {
-                    pxStep = pxLength / (count - 1);
-                    totalstep = count;
-                }
+        const isDefinedStep = this.settings.stepValue > 0;
+        const isDefinedSetOfValues = this.settings.values.length > 1;
+        const isTooLongLine = pxLength > this.settings.maxValue - this.settings.minValue;
+
+        if (isDefinedStep || isTooLongLine || isDefinedSetOfValues) {
+            const posX = e.clientX - this.line.el.offset().left - this.offsetLeft;
+
+            let pxStep: number;
+
+            if (isDefinedStep)
+                pxStep = this.convertRelativeValueToPixelValue(this.settings.minValue + this.settings.stepValue);
+
+            if (isTooLongLine) {
+                pxStep = pxLength / (this.settings.maxValue - this.settings.minValue);
+                if (isDefinedStep) pxStep = pxStep * this.settings.stepValue;
             }
 
-            let nstep = Math.round(pos / pxStep);
-
-            if (Math.trunc(pos / pxStep) >= totalstep - 1) {
-                const prevnStep = (totalstep - 1) * pxStep;
-                const pxLastStepHalf = (pxLength - prevnStep) / 2;
-                if (pos > prevnStep + pxLastStepHalf) nstep = totalstep;
+            if (isDefinedSetOfValues) {
+                pxStep = pxLength / (this.settings.values.length - 1);
             }
-            this.onHandlePositionUpdate(currentHandle, nstep * pxStep);
+
+            const nStep = Math.round(posX / pxStep);
+            let newPos = nStep * pxStep;
+
+            if (posX / pxStep > Math.round(pxLength / pxStep)) {
+                console.log('kek');
+                const remainder = pxLength - newPos;
+                if (posX > newPos + remainder / 2) newPos += remainder;
+            }
+
+            this.drawThinLine(newPos + this.offsetLeft);
+            this.onHandlePositionUpdate(currentHandle, newPos);
         } else this.onHandlePositionUpdate(currentHandle, newLeft);
     }
     getValue(val: number): any {
@@ -194,7 +194,7 @@ export default class TRSView {
         }
     }
     drawTips(currentHandle: Handle) {
-        const lw = parseFloat(this.$line.css('width'));
+        const lw = this.line.width;
 
         currentHandle.value = this.convertPixelValueToRelativeValue(currentHandle.x);
         currentHandle.displayValue = this.getValue(currentHandle.value);
@@ -263,7 +263,7 @@ export default class TRSView {
         const pxLength = parseFloat($('.rangeslider__line').css('width')) - this.offsetRight;
         const pxStep = isValues
             ? (pxLength - this.offsetLeft) / (this.settings.values.length - 1)
-            : this.convertRelativeValueToPixelValue(this.settings.minValue, step, this.settings.maxValue);
+            : this.convertRelativeValueToPixelValue(step);
         console.log(pxStep);
         console.log(pxLength);
         console.log('------');
@@ -288,6 +288,7 @@ export default class TRSView {
     drawSlider(os: ExamplePluginOptions, ns: ExamplePluginOptions, isFirstDraw = false) {
         this.settings = ns;
         //if (ns.stepValue > 0) this.drawLineByStep(ns.stepValue);
+
         //-------------------------------------------------------------------
         if (isFirstDraw || ns.isInterval != os.isInterval) {
             if (ns.isInterval) {
@@ -333,16 +334,12 @@ export default class TRSView {
                 ns.minValue != os.minValue ||
                 ns.maxValue != os.maxValue
             ) {
-                this.moveHandle(
-                    this.handleFrom,
-                    this.convertRelativeValueToPixelValue(ns.minValue, ns.valueFrom, ns.maxValue),
-                );
+                this.moveHandle(this.handleFrom, this.convertRelativeValueToPixelValue(ns.valueFrom));
             }
         //-----------------------------------------------------------------
         if (isFirstDraw || ns.valueTo != os.valueTo || ns.minValue != os.minValue || ns.maxValue != os.maxValue) {
-            this.moveHandle(this.handleTo, this.convertRelativeValueToPixelValue(ns.minValue, ns.valueTo, ns.maxValue));
+            this.moveHandle(this.handleTo, this.convertRelativeValueToPixelValue(ns.valueTo));
         }
-        //-----------------------------------------------------------------------
     }
     removeDOMelements() {}
     emptyList() {
