@@ -133,17 +133,20 @@ export default class TRSView {
     }
     onMouseDownByLine(e: JQuery.MouseDownEvent) {
         e.preventDefault();
-        const $currentHandle: JQuery<HTMLElement> = $(e.target);
-        let pos = e.clientX - $currentHandle.offset().left;
+        const line: JQuery<HTMLElement> = $(e.target);
+        const pos = e.clientX - line.offset().left;
         const nearHandle = this.getNearestHandle(pos);
-        pos = nearHandle.is(this.handleFrom) ? pos - this.offsetLeft : pos - this.offsetRight;
-        this.onHandlePositionUpdate(nearHandle, pos);
+        const shift = line.offset().left + (nearHandle.is(this.handleFrom) ? this.offsetLeft : this.offsetRight);
+
+        this.onHandlePositionUpdate(nearHandle, this.GetRightPosX(e.clientX, shift));
+
+        const newEvent: JQuery.MouseDownEvent = e;
+        newEvent.target = nearHandle.el;
+        nearHandle.el.trigger(newEvent, 'mousedown');
     }
-
-    onHandleMove(e: JQuery.MouseMoveEvent, currentHandle: Handle, shiftX: number) {
-        const shift = shiftX + this.line.el.offset().left;
-        const newLeft = e.clientX - shift;
-
+    GetRightPosX(x: number, shift: number): number {
+        const newLeft = x - shift;
+        console.log(newLeft);
         const pxLength = this.line.width - this.offsetLeft - this.offsetRight;
 
         const isDefinedStep = this.settings.stepValue > 0;
@@ -151,8 +154,10 @@ export default class TRSView {
         const isTooLongLine = pxLength > this.settings.maxValue - this.settings.minValue;
 
         if (isDefinedStep || isTooLongLine || isDefinedSetOfValues) {
-            const posX = e.clientX - this.line.el.offset().left - this.offsetLeft;
-
+            const posX = x - shift;
+            //- this.line.el.offset().left - this.offsetLeft;
+            console.log(posX);
+            console.log('---');
             let pxStep: number;
 
             if (isDefinedStep)
@@ -177,8 +182,13 @@ export default class TRSView {
             }
 
             this.drawThinLine(newPos + this.offsetLeft);
-            this.onHandlePositionUpdate(currentHandle, newPos);
-        } else this.onHandlePositionUpdate(currentHandle, newLeft);
+            return newPos;
+        } else return newLeft;
+    }
+    onHandleMove(e: JQuery.MouseMoveEvent, currentHandle: Handle, shiftX: number) {
+        const shift = shiftX + this.line.el.offset().left;
+        const newLeft = e.clientX - shift;
+        this.onHandlePositionUpdate(currentHandle, this.GetRightPosX(e.clientX, shift));
     }
     getValue(val: number): any {
         const isValues = this.settings.values.length > 1;
