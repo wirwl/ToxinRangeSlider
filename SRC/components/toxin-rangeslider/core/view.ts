@@ -136,28 +136,25 @@ export default class TRSView {
         const line: JQuery<HTMLElement> = $(e.target);
         const pos = e.clientX - line.offset().left;
         const nearHandle = this.getNearestHandle(pos);
-        const shift = line.offset().left + (nearHandle.is(this.handleFrom) ? this.offsetLeft : this.offsetRight);
+        const posWithoutStep =
+            pos - (nearHandle.is(this.handleFrom) ? this.offsetLeft : this.handleTo.width - this.offsetRight);
 
-        this.onHandlePositionUpdate(nearHandle, this.GetRightPosX(e.clientX, shift));
+        const posWithStep = this.GetRightPosX(e.clientX);
+        this.onHandlePositionUpdate(nearHandle, posWithStep == null ? posWithoutStep : posWithStep);
 
-        const newEvent: JQuery.MouseDownEvent = e;
+        const newEvent = e;
         newEvent.target = nearHandle.el;
         nearHandle.el.trigger(newEvent, 'mousedown');
     }
-    GetRightPosX(x: number, shift: number): number {
-        const newLeft = x - shift;
-        console.log(newLeft);
+    GetRightPosX(clientX: number): number {
         const pxLength = this.line.width - this.offsetLeft - this.offsetRight;
-
         const isDefinedStep = this.settings.stepValue > 0;
         const isDefinedSetOfValues = this.settings.values.length > 1;
         const isTooLongLine = pxLength > this.settings.maxValue - this.settings.minValue;
 
         if (isDefinedStep || isTooLongLine || isDefinedSetOfValues) {
-            const posX = x - shift;
-            //- this.line.el.offset().left - this.offsetLeft;
-            console.log(posX);
-            console.log('---');
+            const posX = clientX - this.line.el.offset().left - this.offsetLeft;
+
             let pxStep: number;
 
             if (isDefinedStep)
@@ -175,20 +172,20 @@ export default class TRSView {
             const nStep = Math.round(posX / pxStep);
             let newPos = nStep * pxStep;
 
-            if (posX / pxStep > Math.round(pxLength / pxStep)) {
+            if (posX / pxStep > Math.trunc(pxLength / pxStep)) {
                 console.log('kek');
                 const remainder = pxLength - newPos;
                 if (posX > newPos + remainder / 2) newPos += remainder;
             }
-
             this.drawThinLine(newPos + this.offsetLeft);
             return newPos;
-        } else return newLeft;
+        }
+        return null;
     }
     onHandleMove(e: JQuery.MouseMoveEvent, currentHandle: Handle, shiftX: number) {
-        const shift = shiftX + this.line.el.offset().left;
-        const newLeft = e.clientX - shift;
-        this.onHandlePositionUpdate(currentHandle, this.GetRightPosX(e.clientX, shift));
+        const newLeftWithoutStep = e.clientX - this.line.el.offset().left - shiftX;
+        const newLeftWithStep = this.GetRightPosX(e.clientX);
+        this.onHandlePositionUpdate(currentHandle, newLeftWithStep == null ? newLeftWithoutStep : newLeftWithStep);
     }
     getValue(val: number): any {
         const isValues = this.settings.values.length > 1;
@@ -344,20 +341,17 @@ export default class TRSView {
                 ns.minValue != os.minValue ||
                 ns.maxValue != os.maxValue
             ) {
-                this.moveHandle(this.handleFrom, this.convertRelativeValueToPixelValue(ns.valueFrom));
+                const posXWithOutStep = this.convertRelativeValueToPixelValue(ns.valueFrom);
+                const posXWithStep = this.GetRightPosX(posXWithOutStep + this.line.el.offset().left + this.offsetLeft);
+                this.moveHandle(this.handleFrom, posXWithStep == null ? posXWithOutStep : posXWithStep);
             }
         //-----------------------------------------------------------------
         if (isFirstDraw || ns.valueTo != os.valueTo || ns.minValue != os.minValue || ns.maxValue != os.maxValue) {
-            this.moveHandle(this.handleTo, this.convertRelativeValueToPixelValue(ns.valueTo));
+            const posXWithOutStep = this.convertRelativeValueToPixelValue(ns.valueTo);
+            const posXWithStep = this.GetRightPosX(
+                posXWithOutStep + this.line.el.offset().left + this.handleTo.width - this.offsetRight,
+            );
+            this.moveHandle(this.handleTo, posXWithStep == null ? posXWithOutStep : posXWithStep);
         }
-    }
-    removeDOMelements() {}
-    emptyList() {
-        if (this.list) this.list.innerHTML = '';
-    }
-    addTask(text: string, inx: number) {
-        // const taskView = new TaskView(text, inx);
-        // taskView.onRemoveTaskCb = this.onRemoveTaskCb;
-        // if (this.list) this.list.appendChild(taskView.render());
     }
 }
