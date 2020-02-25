@@ -1,4 +1,4 @@
-@slider-x-pos: 34px;
+@offset: 0px;
 
 * { box-sizing: border-box;}
 body {
@@ -18,7 +18,7 @@ body {
   align-items: center;    
   background: gray;
   position: absolute;
-  top: @slider-x-pos - 26;
+  top: @offset;
   left: 0px;
   color: white;
   padding: 0px 3px;  
@@ -30,7 +30,7 @@ body {
   align-items: center;    
   background: green;
   position: absolute;
-  top: @slider-x-pos - 26;
+  top: @offset;
   left: 123px;
   color: white;
   padding: 0px 3px;  
@@ -43,7 +43,7 @@ body {
   align-items: center;    
   background: green;
   position: absolute;
-  top: @slider-x-pos - 26;
+  top: @offset;
   left: 224px;
   color: white;
   padding: 0px 3px;
@@ -56,7 +56,7 @@ body {
   align-items: center;    
   background: gray;
   position: absolute;
-  top: @slider-x-pos - 26;
+  top: @offset;
   right: 0px;
   color: white;
   padding: 0px 3px;
@@ -68,7 +68,7 @@ body {
   border-radius: 5px;
   position: absolute;  
   left: 0px;
-  top: @slider-x-pos;
+  top: @offset + 26;
   width: 100%;
   z-index: 10;
 }
@@ -77,7 +77,7 @@ body {
   background: green;
   position: absolute;
   left: 140px;
-  top: @slider-x-pos + 1;
+  top: @offset + 26 + 1;
   width: 84px;
   height: 4px;  
 }
@@ -96,7 +96,7 @@ body {
   width: 16px;
   height: 16px;
   left: 123px;
-  top: @slider-x-pos - 5;
+  top: @offset + 21;
   z-index: 11;      
 }
 
@@ -109,7 +109,7 @@ body {
   width: 16px;
   height: 16px;
   left: 224px;
-  top: @slider-x-pos - 5;
+  top: @offset + 21;
   z-index: 11;  
 }
 

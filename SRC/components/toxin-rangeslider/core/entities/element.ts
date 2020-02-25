@@ -20,10 +20,10 @@ export default class TRSElement {
         this.el.css('top', value);
     }
 
-    get thickness(): number {
+    get pos(): number {
         return this.isVertical ? this.y : this.x;
     }
-    set thickness(value: number) {
+    set pos(value: number) {
         this.isVertical ? (this.x = value) : (this.y = value);
     }
 
@@ -37,7 +37,7 @@ export default class TRSElement {
     }
 
     protected _height: number;
-    get heigth(): number {
+    get height(): number {
         return this._height;
     }
     set height(value: number) {

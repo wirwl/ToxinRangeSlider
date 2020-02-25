@@ -6,15 +6,15 @@ export default class Rangeslider extends TRSElement {
     }
     set thickness(value: number) {
         if (this.isVertical) {
-            this.width = value;
+            this._width = value;
             this.el.css('min-width', value);
         } else {
-            this.height = value;
+            this._height = value;
             this.el.css('min-height', value);
         }
     }
     get length(): number {
-        return this.isVertical ? this.width : this.height;
+        return this.isVertical ? this.height : this.width;
     }
     // set length(value: number) {
     //     this.isVertical ? (this.height = value) : (this.width = value);

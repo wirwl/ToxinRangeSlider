@@ -283,13 +283,22 @@ export default class TRSView {
         $('.rangeslider').append(newdiv);
     }
     evalThickness(isVertical: boolean): number {
-        return 60;
+        if (isVertical) {
+            return 60;
+        } else {
+            let minTipPos = this.tipTo.y;
+            if (this.settings.isInterval && this.tipFrom.y < minTipPos) minTipPos = this.tipFrom.y;
+            let maxHandlePos = this.handleTo.y + this.handleTo.height;
+            if (this.settings.isInterval && this.handleFrom.y + this.handleFrom.height > maxHandlePos)
+                maxHandlePos = this.handleFrom.y + this.handleFrom.height;
+            return maxHandlePos - minTipPos;
+        }
     }
     drawSlider(os: ExamplePluginOptions, ns: ExamplePluginOptions, isFirstDraw = false) {
         this.settings = ns;
         //if (ns.stepValue > 0) this.drawLineByStep(ns.stepValue);
         //-------------------------------------------------------------------
-
+        this.rangeslider.thickness = this.evalThickness(ns.isVertical);
         //-------------------------------------------------------------------
         if (ns.isVertical != os?.isVertical) {
             this.rangeslider.isVertical = ns.isVertical;
