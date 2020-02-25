@@ -97,7 +97,6 @@ export default class TRSView {
         return result;
     }
     getNearestHandle(pos: number): Handle {
-        console.log(pos);
         if (this.settings.isInterval) {
             if (pos < this.handleFrom.x) return this.handleFrom;
             if (pos > this.handleTo.x) return this.handleTo;
@@ -282,6 +281,9 @@ export default class TRSView {
             .addClass(cls)
             .css('left', pos);
         $('.rangeslider').append(newdiv);
+    }
+    evalThickness(isVertical: boolean): number {
+        return 60;
     }
     drawSlider(os: ExamplePluginOptions, ns: ExamplePluginOptions, isFirstDraw = false) {
         this.settings = ns;

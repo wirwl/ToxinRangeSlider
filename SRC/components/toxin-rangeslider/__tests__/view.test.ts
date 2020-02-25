@@ -126,14 +126,11 @@ test('Check result of convertRelativeValueToPixelValue function', () => {
 });
 
 test('Check result of evalThickness, if rangeslider is not vertical', () => {
-    expect(rangeslider.view.evalThickness(false).toBe(5);
+    expect(rangeslider.view.evalThickness(false)).toBe(60);
 });
 
 test('Check result of evalThickness, if rangeslider is vertical', () => {
-    expect(rangeslider.view.evalThickness(true)).toBe(5);
+    expect(rangeslider.view.evalThickness(true)).toBe(60);
 });
 
-afterAll(() => {
-    //await page.close();
-    //await browser.close();
-});
+afterAll(() => {});
