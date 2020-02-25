@@ -8,6 +8,9 @@ export default class Handle extends TRSElement {
     constructor(el: JQuery<HTMLElement>, tip: Tip) {
         super(el);
         this.tip = tip;
+        el[0].ondragstart = function() {
+            return false;
+        };
     }
     is(h: Handle): boolean {
         return this.el.is(h.el);

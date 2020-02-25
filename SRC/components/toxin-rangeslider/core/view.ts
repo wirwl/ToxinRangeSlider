@@ -1,19 +1,12 @@
-//import $ from 'jQuery';
-//let $: JQueryStatic = require('jquery');
 import Handle from '../core/entities/handle';
 import Tip from './entities/tip';
 import Line from './entities/line';
-import { HttpMethod } from 'puppeteer';
-//type resultMoveHandle = { isFromHandle: boolean; value: number };
+import Rangeslider from './entities/rangeslider';
 export default class TRSView {
     private settings: ExamplePluginOptions;
     private offsetLeft: number;
     private offsetRight: number;
     private template =
-        "<div class='caption'>" +
-        "<div class='caption__text'>Range Slider</div>" +
-        "<div class='caption__value'>25</div>" +
-        '</div>' +
         "<div class='rangeslider'>" +
         "<div class='rangeslider__tip-min'>00</div>" +
         "<div class='rangeslider__tip-from'>23</div>" +
@@ -25,9 +18,8 @@ export default class TRSView {
         "<div class='rangeslider__handle rangeslider__handle-to'></div>" +
         '</div>';
     el: JQuery<Element>;
-    $rangeslider: JQuery<HTMLElement>;
-    input: HTMLInputElement | null;
-    $input: JQuery<Element>;
+    //$rangeslider: JQuery<HTMLElement>;
+    rangeslider: Rangeslider;
     list: HTMLUListElement | null;
     onSubmitCb: Function;
     onRemoveTaskCb: Function;
@@ -44,29 +36,28 @@ export default class TRSView {
     constructor(el: JQuery<HTMLElement>) {
         this.el = el;
         this.el.html(this.template);
-        this.$rangeslider = el.find('.rangeslider');
-        //this.$line = el.find('.rangeslider__line');
+
+        this.rangeslider = new Rangeslider(el.find('.rangeslider'));
+
+        this.line = new Line(el.find('.rangeslider__line'));
+        this.line.el.mousedown(e => this.onMouseDownByLine(e));
+
+        this.lineSelected = new Line(this.rangeslider.el.find('.rangeslider__line-selected'));
+
         this.data = el.data('options');
         this.tipFrom = new Tip(el.find('.rangeslider__tip-from'));
         this.tipTo = new Tip(el.find('.rangeslider__tip-to'));
         this.tipMin = new Tip(el.find('.rangeslider__tip-min'));
         this.tipMax = new Tip(el.find('.rangeslider__tip-max'));
 
-        this.handleFrom = new Handle(this.$rangeslider.find('.rangeslider__handle-from'), this.tipFrom);
-        this.handleFrom.el[0].ondragstart = function() {
-            return false;
-        };
+        this.handleFrom = new Handle(this.rangeslider.el.find('.rangeslider__handle-from'), this.tipFrom);
+
         this.handleFrom.el.mousedown(e => this.onMouseDown(e));
         this.offsetLeft = this.handleFrom.width / 2;
 
-        this.handleTo = new Handle(this.$rangeslider.find('.rangeslider__handle-to'), this.tipTo);
+        this.handleTo = new Handle(this.rangeslider.el.find('.rangeslider__handle-to'), this.tipTo);
         this.handleTo.el.mousedown(e => this.onMouseDown(e));
         this.offsetRight = this.handleTo.width / 2;
-
-        this.line = new Line(el.find('.rangeslider__line'));
-        this.line.el.mousedown(e => this.onMouseDownByLine(e));
-
-        this.lineSelected = new Line(this.$rangeslider.find('.rangeslider__line-selected'));
     }
 
     convertRelativeValueToPixelValue(val: number): number {
@@ -106,6 +97,7 @@ export default class TRSView {
         return result;
     }
     getNearestHandle(pos: number): Handle {
+        console.log(pos);
         if (this.settings.isInterval) {
             if (pos < this.handleFrom.x) return this.handleFrom;
             if (pos > this.handleTo.x) return this.handleTo;
@@ -119,7 +111,7 @@ export default class TRSView {
         }
     }
     onMouseUp(e: JQuery.MouseUpEvent, currentHandle: Handle) {
-        this.$rangeslider.off('mousemove');
+        this.rangeslider.el.off('mousemove');
         currentHandle.el.off('mouseup');
     }
     onMouseDown(e: JQuery.MouseDownEvent) {
@@ -127,7 +119,7 @@ export default class TRSView {
         const currentHandle: Handle = $(e.target).is(this.handleFrom.el) ? this.handleFrom : this.handleTo;
         const shiftX = e.clientX - currentHandle.el.offset().left;
 
-        this.$rangeslider.mousemove(e => this.onHandleMove(e, currentHandle, shiftX));
+        this.rangeslider.el.mousemove(e => this.onHandleMove(e, currentHandle, shiftX));
         currentHandle.el.mouseup(e => this.onMouseUp(e, currentHandle));
         $(document).mouseup(e => this.onMouseUp(e, currentHandle));
     }
@@ -261,7 +253,6 @@ export default class TRSView {
         currentHandle.isMoving = false;
         return currentHandle;
     }
-
     drawLineByStep(step: number) {
         $('.rangeslider__thinline').remove();
         $('.rangeslider__thinline-half').remove();
@@ -295,7 +286,20 @@ export default class TRSView {
     drawSlider(os: ExamplePluginOptions, ns: ExamplePluginOptions, isFirstDraw = false) {
         this.settings = ns;
         //if (ns.stepValue > 0) this.drawLineByStep(ns.stepValue);
+        //-------------------------------------------------------------------
 
+        //-------------------------------------------------------------------
+        if (ns.isVertical != os?.isVertical) {
+            this.rangeslider.isVertical = ns.isVertical;
+            this.handleFrom.isVertical = ns.isVertical;
+            this.handleTo.isVertical = ns.isVertical;
+            this.tipFrom.isVertical = ns.isVertical;
+            this.tipTo.isVertical = ns.isVertical;
+            this.tipMin.isVertical = ns.isVertical;
+            this.tipMax.isVertical = ns.isVertical;
+            this.line.isVertical = ns.isVertical;
+            this.lineSelected.isVertical = ns.isVertical;
+        }
         //-------------------------------------------------------------------
         if (isFirstDraw || ns.isInterval != os.isInterval) {
             if (ns.isInterval) {

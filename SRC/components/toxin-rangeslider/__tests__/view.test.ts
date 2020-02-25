@@ -84,25 +84,20 @@ beforeAll(async () => {
     rangeslider = plugin.data('toxinRangeSlider');
 });
 
-test('Check result of convertRelativeValueToPixelValue function', () => {
-    rangeslider.update({ minValue: 10, maxValue: 1000 });
-    expect(rangeslider.view.convertRelativeValueToPixelValue(750)).toBe(182.3838383838384);
-});
-
 describe('Check result of getNearestHandle() function. Six diffrent tests.', () => {
     beforeEach(() => {});
     describe('If there are two handles.', () => {
         test('LMB clicked on the left of first handle', () => {
-            expect(rangeslider.view.getNearestHandle(32)).toBe(rangeslider.view.handleFrom.el);
+            expect(rangeslider.view.getNearestHandle(32)).toBe(rangeslider.view.handleFrom);
         });
         test('LMB clicked between two handles, closer to left handle', () => {
-            expect(rangeslider.view.getNearestHandle(95)).toBe(rangeslider.view.handleFrom.el);
+            expect(rangeslider.view.getNearestHandle(95)).toBe(rangeslider.view.handleFrom);
         });
         test('LMB clicked between two handles, closer to rigth handle', () => {
-            expect(rangeslider.view.getNearestHandle(130)).toBe(rangeslider.view.handleTo.el);
+            expect(rangeslider.view.getNearestHandle(130)).toBe(rangeslider.view.handleTo);
         });
         test('LMB clicked on the right of second handle', () => {
-            expect(rangeslider.view.getNearestHandle(200)).toBe(rangeslider.view.handleTo.el);
+            expect(rangeslider.view.getNearestHandle(200)).toBe(rangeslider.view.handleTo);
         });
     });
     describe('If there are one handle.', () => {
@@ -113,16 +108,29 @@ describe('Check result of getNearestHandle() function. Six diffrent tests.', () 
             });
         });
         test('LMB clicked on the left of handle', () => {
-            expect(rangeslider.view.getNearestHandle(41)).toBe(rangeslider.view.handleFrom.el);
+            expect(rangeslider.view.getNearestHandle(41)).toBe(rangeslider.view.handleFrom);
         });
         test('LMB clicked on the right of handle', () => {
-            expect(rangeslider.view.getNearestHandle(203)).toBe(rangeslider.view.handleTo.el);
+            expect(rangeslider.view.getNearestHandle(203)).toBe(rangeslider.view.handleTo);
         });
     });
 });
 
 test('Check result of validate() function in view layer', () => {
     expect(rangeslider.view.validate(9999)).toBe(244);
+});
+
+test('Check result of convertRelativeValueToPixelValue function', () => {
+    rangeslider.update({ minValue: 10, maxValue: 1000 });
+    expect(rangeslider.view.convertRelativeValueToPixelValue(750)).toBe(182.3838383838384);
+});
+
+test('Check result of evalThickness, if rangeslider is not vertical', () => {
+    expect(rangeslider.view.evalThickness(false).toBe(5);
+});
+
+test('Check result of evalThickness, if rangeslider is vertical', () => {
+    expect(rangeslider.view.evalThickness(true)).toBe(5);
 });
 
 afterAll(() => {
