@@ -2,13 +2,34 @@ export default class TRSElement {
     el: JQuery<HTMLElement>;
     isVertical = false;
 
-    private _x: number;
+    protected _x: number;
     get x(): number {
         return this._x;
     }
     set x(value: number) {
         this._x = value;
         this.el.css('left', value);
+        this.el.css('right', 'auto');
+    }
+
+    protected _right: number;
+    get right(): number {
+        return this._right;
+    }
+    set right(value: number) {
+        this._right = value;
+        this.el.css('right', value);
+        this.el.css('left', 'auto');
+    }
+
+    protected _bottom: number;
+    get bottom(): number {
+        return this._bottom;
+    }
+    set bottom(value: number) {
+        this._bottom = value;
+        this.el.css('bottom', value);
+        this.el.css('top', 'auto');
     }
 
     private _y: number;
@@ -24,7 +45,7 @@ export default class TRSElement {
         return this.isVertical ? this.y : this.x;
     }
     set pos(value: number) {
-        this.isVertical ? (this.x = value) : (this.y = value);
+        this.isVertical ? (this.y = value) : (this.x = value);
     }
 
     protected _width: number;
@@ -58,6 +79,8 @@ export default class TRSElement {
         this._y = parseFloat(el.css('top'));
         this._width = parseFloat(el.css('width'));
         this._height = parseFloat(el.css('height'));
+        this._right = parseFloat(el.css('right'));
+        this._bottom = parseFloat(el.css('bottom'));
     }
 
     show() {

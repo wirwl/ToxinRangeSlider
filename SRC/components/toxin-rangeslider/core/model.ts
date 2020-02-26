@@ -8,8 +8,8 @@ export default class TRSModel {
         minValue: 0,
         maxValue: 1220,
         stepValue: 0,
-        valueFrom: 45,
-        valueTo: 1220,
+        valueFrom: 220,
+        valueTo: 820,
         values: [],
         //values: [20000, 40000, 80000, 16, 32, 64000, 12800],
         // values: [

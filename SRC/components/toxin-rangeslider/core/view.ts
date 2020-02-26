@@ -61,7 +61,7 @@ export default class TRSView {
     }
 
     convertRelativeValueToPixelValue(val: number): number {
-        const lw = this.line.width - this.offsetLeft - this.offsetRight;
+        const lw = this.line.size - this.offsetLeft - this.offsetRight;
         let result;
         if (this.settings.values && this.settings.values.length > 1) {
             const pxStep = lw / (this.settings.values.length - 1);
@@ -73,7 +73,7 @@ export default class TRSView {
         return result;
     }
     convertPixelValueToRelativeValue(val: number): number {
-        const lw = this.line.width - this.offsetLeft - this.offsetRight;
+        const lw = this.line.size - this.offsetLeft - this.offsetRight;
         let result;
         if (this.settings.values && this.settings.values.length > 1) {
             const pxStep = lw / (this.settings.values.length - 1);
@@ -86,13 +86,13 @@ export default class TRSView {
     }
     validate(pos: number): number {
         let result = pos;
-        const lw = this.line.width;
+        const lw = this.line.size;
         const ch = this.handleFrom.isMoving ? this.handleFrom : this.handleTo;
         if (pos < 0) result = 0;
-        if (pos > lw - ch.width) result = lw - ch.width;
+        if (pos > lw - ch.size) result = lw - ch.size;
         if (this.settings.isInterval) {
-            if (ch.is(this.handleFrom)) if (pos > this.handleTo.x) result = this.handleTo.x;
-            if (ch.is(this.handleTo)) if (pos < this.handleFrom.x) result = this.handleFrom.x;
+            if (ch.is(this.handleFrom)) if (pos > this.handleTo.pos) result = this.handleTo.pos;
+            if (ch.is(this.handleTo)) if (pos < this.handleFrom.pos) result = this.handleFrom.pos;
         }
         return result;
     }
@@ -237,7 +237,7 @@ export default class TRSView {
     moveHandle(currentHandle: Handle, pxX: number): Handle {
         currentHandle.isMoving = true;
 
-        currentHandle.x = this.validate(pxX);
+        currentHandle.pos = this.validate(pxX);
         if (currentHandle.is(this.handleFrom)) {
             this.handleFrom.incZIndex();
             this.handleTo.decZIndex();
@@ -291,14 +291,51 @@ export default class TRSView {
             let maxHandlePos = this.handleTo.y + this.handleTo.height;
             if (this.settings.isInterval && this.handleFrom.y + this.handleFrom.height > maxHandlePos)
                 maxHandlePos = this.handleFrom.y + this.handleFrom.height;
-            return maxHandlePos - minTipPos;
+            //return maxHandlePos - minTipPos;
+            return maxHandlePos;
+        }
+    }
+    setPositionsForElements(isVertical: boolean) {
+        const posTips = 0;
+        const posLine = posTips + (isVertical ? 34 : 24);
+        const posLineSelected = posLine + 1;
+        const posHandles = posLine - 5;
+
+        const sizeLine = 6;
+        const sizeLineSelected = sizeLine - 2;
+
+        if (isVertical) {
+            this.tipMin.x = this.tipFrom.x = this.tipTo.x = this.tipMax.x = 20;
+            this.tipMin.y = 0;
+            this.tipMax.bottom = 0;
+            this.handleFrom.x = this.handleTo.x = 0;
+            this.line.x = 5;
+            this.lineSelected.x = this.line.x + 1;
+            this.line.y = 0;
+            this.line.width = sizeLine;
+            this.lineSelected.width = sizeLineSelected;
+
+            this.lineSelected.y = 140;
+            this.lineSelected.height = 84;
+            this.tipFrom.y = this.handleFrom.y = 123;
+            this.tipTo.y = this.handleTo.y = 224;
+        } else {
+            this.tipMin.y = this.tipFrom.y = this.tipTo.y = this.tipMax.y = posTips;
+            this.tipMin.x = 0;
+            this.tipMax.right = 0;
+            this.handleFrom.y = this.handleTo.y = posHandles;
+            this.line.y = posLine;
+            this.lineSelected.y = posLineSelected;
+            this.line.x = 0;
+            this.line.height = sizeLine;
+            this.lineSelected.height = sizeLineSelected;
         }
     }
     drawSlider(os: ExamplePluginOptions, ns: ExamplePluginOptions, isFirstDraw = false) {
         this.settings = ns;
         //if (ns.stepValue > 0) this.drawLineByStep(ns.stepValue);
         //-------------------------------------------------------------------
-        this.rangeslider.thickness = this.evalThickness(ns.isVertical);
+
         //-------------------------------------------------------------------
         if (ns.isVertical != os?.isVertical) {
             this.rangeslider.isVertical = ns.isVertical;
@@ -312,6 +349,14 @@ export default class TRSView {
             this.lineSelected.isVertical = ns.isVertical;
         }
         //-------------------------------------------------------------------
+        if (isFirstDraw || ns.isVertical != os?.isVertical) this.setPositionsForElements(ns.isVertical);
+        //-------------------------------------------------------------------
+        if (ns.isVertical) {
+            this.el.css('width', this.evalThickness(ns.isVertical));
+        } else {
+            this.el.css('height', this.evalThickness(ns.isVertical));
+        }
+        //-------------------------------------------------------------------
         if (isFirstDraw || ns.isInterval != os.isInterval) {
             if (ns.isInterval) {
                 this.handleFrom.show();
@@ -320,7 +365,7 @@ export default class TRSView {
                 this.handleFrom.hide();
                 this.lineSelected.el.addClass('rangeslider__line-selected_isOneHandle');
                 this.tipFrom.hide();
-                this.lineSelected.x = 0;
+                this.lineSelected.pos = 0;
             }
         }
         //------------------------------------------------------------
@@ -348,6 +393,8 @@ export default class TRSView {
                 }
             }
         }
+        //-------------------------------------------------------------------
+        if (ns.isVertical) return;
         //-------------------------------------------------------------
         if (ns.isInterval)
             if (

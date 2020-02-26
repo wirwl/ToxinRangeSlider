@@ -126,7 +126,7 @@ test('Check result of convertRelativeValueToPixelValue function', () => {
 });
 
 test('Check result of evalThickness, if rangeslider is not vertical', () => {
-    expect(rangeslider.view.evalThickness(false)).toBe(60);
+    expect(rangeslider.view.evalThickness(false)).toBe(35);
 });
 
 test('Check result of evalThickness, if rangeslider is vertical', () => {
