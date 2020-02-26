@@ -115,10 +115,9 @@ export default class TRSView {
     }
     onMouseDown(e: JQuery.MouseDownEvent) {
         e.preventDefault();
+        const clientPos = this.settings.isVertical ? e.clientY : e.clientX;
         const currentHandle: Handle = $(e.target).is(this.handleFrom.el) ? this.handleFrom : this.handleTo;
-        const shiftPos = this.settings.isVertical
-            ? e.clientY - currentHandle.el.offset().top
-            : e.clientX - currentHandle.el.offset().left;
+        const shiftPos = clientPos - currentHandle.offset;
 
         this.rangeslider.el.mousemove(e => this.onHandleMove(e, currentHandle, shiftPos));
         currentHandle.el.mouseup(e => this.onMouseUp(e, currentHandle));
