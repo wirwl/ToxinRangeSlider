@@ -116,7 +116,7 @@ export default class TRSView {
     onMouseDown(e: JQuery.MouseDownEvent) {
         e.preventDefault();
         const currentHandle: Handle = $(e.target).is(this.handleFrom.el) ? this.handleFrom : this.handleTo;
-        const shiftPos = this.settings.isInterval
+        const shiftPos = this.settings.isVertical
             ? e.clientY - currentHandle.el.offset().top
             : e.clientX - currentHandle.el.offset().left;
 
@@ -175,10 +175,12 @@ export default class TRSView {
         }
         return null;
     }
-    onHandleMove(e: JQuery.MouseMoveEvent, currentHandle: Handle, shiftX: number) {
-        const newLeftWithoutStep = e.clientX - this.line.el.offset().left - shiftX;
-        const newLeftWithStep = this.GetRightPosX(e.clientX);
-        this.onHandlePositionUpdate(currentHandle, newLeftWithStep == null ? newLeftWithoutStep : newLeftWithStep);
+    onHandleMove(e: JQuery.MouseMoveEvent, currentHandle: Handle, shiftPos: number) {
+        const newPosWithoutStep = this.settings.isVertical
+            ? e.clientY - this.line.el.offset().top - shiftPos
+            : e.clientX - this.line.el.offset().left - shiftPos;
+        const newLeftWithStep = this.GetRightPosX(this.settings.isVertical ? e.clientY : e.clientX);
+        this.onHandlePositionUpdate(currentHandle, newLeftWithStep == null ? newPosWithoutStep : newLeftWithStep);
     }
     getValue(val: number): any {
         const isValues = this.settings.values.length > 1;
