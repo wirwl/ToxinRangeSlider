@@ -7,9 +7,9 @@ export default class TRSModel {
         isTip: true,
         minValue: 0,
         maxValue: 1220,
-        stepValue: 100,
-        valueFrom: 220,
-        valueTo: 820,
+        stepValue: 0,
+        valueFrom: 100,
+        valueTo: 920,
         values: [],
         //values: [20000, 40000, 80000, 16, 32, 64000, 12800],
         // values: [

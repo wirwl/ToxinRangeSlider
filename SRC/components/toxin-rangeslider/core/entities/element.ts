@@ -9,7 +9,7 @@ export default class TRSElement {
     set x(value: number) {
         this._x = value;
         this.el.css('left', value);
-        this.el.css('right', 'auto');
+        //this.el.css('right', 'auto');
     }
 
     protected _right: number;
@@ -19,7 +19,7 @@ export default class TRSElement {
     set right(value: number) {
         this._right = value;
         this.el.css('right', value);
-        this.el.css('left', 'auto');
+        //this.el.css('left', 'auto');
     }
 
     protected _bottom: number;
@@ -29,7 +29,7 @@ export default class TRSElement {
     set bottom(value: number) {
         this._bottom = value;
         this.el.css('bottom', value);
-        this.el.css('top', 'auto');
+        //this.el.css('top', 'auto');
     }
 
     private _y: number;
@@ -87,14 +87,16 @@ export default class TRSElement {
 
     constructor(el: JQuery<HTMLElement>) {
         this.el = el;
-        this._x = parseFloat(el.css('left'));
-        this._y = parseFloat(el.css('top'));
-        this._width = parseFloat(el.css('width'));
-        this._height = parseFloat(el.css('height'));
-        this._right = parseFloat(el.css('right'));
-        this._bottom = parseFloat(el.css('bottom'));
+        this.refresh();
     }
-
+    refresh() {
+        this._x = parseFloat(this.el.css('left'));
+        this._y = parseFloat(this.el.css('top'));
+        this._width = parseFloat(this.el.css('width'));
+        this._height = parseFloat(this.el.css('height'));
+        this._right = parseFloat(this.el.css('right'));
+        this._bottom = parseFloat(this.el.css('bottom'));
+    }
     show() {
         this.el.show();
     }

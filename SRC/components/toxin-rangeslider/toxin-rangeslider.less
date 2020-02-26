@@ -1,54 +1,60 @@
-@xpos-tips: 0px;
-@xpos-handles: @xpos-tips + 19px;
-@xpos-line:  @xpos-tips + 24px;
+@xpos-tips : 0px;
+@xpos-handles : @xpos-tips + 19px;
+@xpos-line : @xpos-tips + 24px;
 @xpos-lineselected: @xpos-line + 1;
 
-@size-line: 6px;
+@size-line : 6px;
 @size-lineselected: @size-line - 2;
 
 
 
-* { box-sizing: border-box;}
+* {
+  box-sizing: border-box;
+}
+
 body {
   display: flex;
   justify-content: center;
 }
 
 .rangeslider {
-  position: relative;  
+  position: relative;
   width: 100%;
-  height: 100%;  
+  height: 100%;
   outline: 1px dashed red;
 }
+
 .rangeslider__tip-min {
   display: flex;
   justify-content: center;
-  align-items: center;    
+  align-items: center;
   background: gray;
   position: absolute;
   top: @xpos-tips;
   left: 0px;
   color: white;
-  padding: 0px 3px;  
+  padding: 0px 3px;
   border-radius: 3px;
 }
+
 .rangeslider__tip-from {
   display: flex;
   justify-content: center;
-  align-items: center;    
+  align-items: center;
   background: green;
   position: absolute;
   top: @xpos-tips;
   left: 123px;
   color: white;
-  padding: 0px 3px;  
+  padding: 0px 3px;
   border-radius: 3px;
   white-space: nowrap;
 }
+
 .rangeslider__tip-to {
   display: flex;
   justify-content: center;
-  align-items: center;    
+  align-items: center;
   background: green;
   position: absolute;
   top: @xpos-tips;
@@ -58,10 +64,11 @@ body {
   border-radius: 3px;
   white-space: nowrap;
 }
+
 .rangeslider__tip-max {
   display: flex;
   justify-content: center;
-  align-items: center;    
+  align-items: center;
   background: gray;
   position: absolute;
   top: @xpos-tips;
@@ -70,15 +77,17 @@ body {
   padding: 0px 3px;
   border-radius: 3px;
 }
+
 .rangeslider__line {
   height: @size-line;
   border: 1px solid gray;
   border-radius: 5px;
-  position: absolute;  
+  position: absolute;
   left: 0px;
   top: @xpos-line;
   width: 100%;
   height: 100%;
+  height: 6px;
   z-index: 10;
 }
 
@@ -87,13 +96,13 @@ body {
   position: absolute;
   left: 140px;
   top: @xpos-lineselected;
-  width: 84px;  
+  width: 84px;
   height: @size-lineselected;
 }
 
 .rangeslider__line-selected_isOneHandle {
-   border-top-left-radius: 5px;
-   border-bottom-left-radius: 5px;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
 }
 
 .rangeslider__handle-from {
@@ -106,7 +115,7 @@ body {
   height: 16px;
   left: 123px;
   top: @xpos-handles;
-  z-index: 11;      
+  z-index: 11;
 }
 
 .rangeslider__handle-to {
@@ -119,7 +128,7 @@ body {
   height: 16px;
   left: 224px;
   top: @xpos-handles;
-  z-index: 11;  
+  z-index: 11;
 }
 
 .rangeslider__thinline {
@@ -128,8 +137,8 @@ body {
   border-left: 1px solid blue;
   height: 65%;
   top: 0;
-  left: 50px;  
-  z-index: 999;  
+  left: 50px;
+  z-index: 999;
   cursor: pointer;
 }
 
@@ -139,7 +148,7 @@ body {
   border-left: 1px solid orange;
   height: 63%;
   top: 0;
-  left: 50px;  
+  left: 50px;
   z-index: 999;
   cursor: pointer;
 }
@@ -147,8 +156,43 @@ body {
 .rangeslider__thinline:hover {
   border-left: 1px dashed blue;
 }
+
 .rangeslider__thinline-half:hover {
   border-left: 1px dashed orange;
 }
+
+.rangeslider_is-vertical {
+
+  .rangeslider__tip-min,
+  .rangeslider__tip-max,
+  .rangeslider__tip-from,
+  .rangeslider__tip-to {
+    left: 20px;
+  }
+
+  .rangeslider__tip-max {
+    bottom: 0px;
+    top: auto;
+  }
+
+  .rangeslider__handle-from,
+  .rangeslider__handle-to {
+    left: 0px;
+  }
+
+  .rangeslider__line {
+    top: 0px;
+    left: 5px;
+    height: 100%;
+    width: 6px;
+  }
+
+  .rangeslider__line-selected {
+    left: 6px;
+    height: 84px;
+    width: 4px;
+  }
+}
+
 
 //.test1 {width: 260px;}.rangeslider{width: 260px;}.rangeslider__line{width: 260px;}

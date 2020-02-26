@@ -51,7 +51,6 @@ export default class TRSView {
         this.tipMax = new Tip(el.find('.rangeslider__tip-max'));
 
         this.handleFrom = new Handle(this.rangeslider.el.find('.rangeslider__handle-from'), this.tipFrom);
-
         this.handleFrom.el.mousedown(e => this.onMouseDown(e));
         this.offsetLeft = this.handleFrom.width / 2;
 
@@ -297,7 +296,7 @@ export default class TRSView {
     }
     setPositionsForElements(isVertical: boolean) {
         const posTips = 0;
-        const posLine = posTips + (isVertical ? 34 : 24);
+        const posLine = posTips + 24;
         const posLineSelected = posLine + 1;
         const posHandles = posLine - 5;
 
@@ -305,31 +304,27 @@ export default class TRSView {
         const sizeLineSelected = sizeLine - 2;
 
         if (isVertical) {
-            this.tipMin.x = this.tipFrom.x = this.tipTo.x = this.tipMax.x = 20;
-            this.tipMin.y = 0;
-            this.tipMax.bottom = 0;
-            this.handleFrom.x = this.handleTo.x = 0;
-            this.line.x = 5;
-            this.lineSelected.x = this.line.x + 1;
-            this.line.y = 0;
-            this.line.width = sizeLine;
-            this.lineSelected.width = sizeLineSelected;
-
-            this.lineSelected.y = 140;
-            this.lineSelected.height = 84;
-            this.tipFrom.y = this.handleFrom.y = 123;
-            this.tipTo.y = this.handleTo.y = 224;
+            // this.tipMin.x = this.tipFrom.x = this.tipTo.x = this.tipMax.x = 20;
+            // this.tipMax.bottom = 0;
+            // this.handleFrom.x = this.handleTo.x = 0;
+            // this.line.x = 5;
+            // this.lineSelected.x = this.line.x + 1;
+            //this.line.width = sizeLine;
+            // this.lineSelected.width = sizeLineSelected;
         } else {
-            this.tipMin.y = this.tipFrom.y = this.tipTo.y = this.tipMax.y = posTips;
-            this.tipMin.x = 0;
-            this.tipMax.right = 0;
-            this.handleFrom.y = this.handleTo.y = posHandles;
-            this.line.y = posLine;
-            this.lineSelected.y = posLineSelected;
-            this.line.x = 0;
-            this.line.height = sizeLine;
-            this.lineSelected.height = sizeLineSelected;
+            //this.tipMin.y = this.tipFrom.y = this.tipTo.y = this.tipMax.y = posTips;
+            //this.tipMax.right = 0;
+            //this.handleFrom.y = this.handleTo.y = posHandles;
+            //this.line.y = posLine;
+            //this.lineSelected.y = posLineSelected;
+            //this.line.height = 6;
+            //this.lineSelected.height = 6 - 2;
         }
+        //this.tipMin.pos = 0;
+        //this.line.pos = 0;
+
+        this.handleFrom.pos = 0;
+        this.handleTo.pos = this.line.size - this.handleTo.size;
     }
     drawSlider(os: ExamplePluginOptions, ns: ExamplePluginOptions, isFirstDraw = false) {
         this.settings = ns;
@@ -338,7 +333,7 @@ export default class TRSView {
 
         //-------------------------------------------------------------------
         if (ns.isVertical != os?.isVertical) {
-            this.rangeslider.isVertical = ns.isVertical;
+            //this.rangeslider.isVertical = ns.isVertical;
             this.handleFrom.isVertical = ns.isVertical;
             this.handleTo.isVertical = ns.isVertical;
             this.tipFrom.isVertical = ns.isVertical;
@@ -349,7 +344,20 @@ export default class TRSView {
             this.lineSelected.isVertical = ns.isVertical;
         }
         //-------------------------------------------------------------------
-        if (isFirstDraw || ns.isVertical != os?.isVertical) this.setPositionsForElements(ns.isVertical);
+        if (isFirstDraw || ns.isVertical != os?.isVertical) {
+            ns.isVertical
+                ? this.rangeslider.el.addClass('rangeslider_is-vertical')
+                : this.rangeslider.el.removeClass('rangeslider_is-vertical');
+            this.tipMin.refresh();
+            this.tipMax.refresh();
+            this.tipTo.refresh();
+            this.tipFrom.refresh();
+            this.handleFrom.refresh();
+            this.handleTo.refresh();
+            this.line.refresh();
+            this.lineSelected.refresh();
+            this.setPositionsForElements(ns.isVertical);
+        }
         //-------------------------------------------------------------------
         if (ns.isVertical) {
             this.el.css('width', this.evalThickness(ns.isVertical));
