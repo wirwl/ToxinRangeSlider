@@ -131,14 +131,14 @@ export default class TRSView {
         const nearHandle = this.getNearestHandle(pos);
         const posWithoutStep =
             pos - (nearHandle.is(this.handleFrom) ? this.offsetLeft : this.handleTo.size - this.offsetRight);
-        const posWithStep = this.GetRightPosX(clientPos);
+        const posWithStep = this.getSteppedPos(clientPos);
         this.onHandlePositionUpdate(nearHandle, posWithStep == null ? posWithoutStep : posWithStep);
 
         const newEvent = e;
         newEvent.target = nearHandle.el;
         nearHandle.el.trigger(newEvent, 'mousedown');
     }
-    GetRightPosX(clientPos: number): number {
+    getSteppedPos(clientPos: number): number {
         const pxLength = this.line.size - this.offsetLeft - this.offsetRight;
         const isDefinedStep = this.settings.stepValue > 0;
         const isDefinedSetOfValues = this.settings.values.length > 1;
@@ -175,7 +175,7 @@ export default class TRSView {
     onHandleMove(e: JQuery.MouseMoveEvent, currentHandle: Handle, shiftPos: number) {
         const clientPos = this.settings.isVertical ? e.clientY : e.clientX;
         const newPosWithoutStep = clientPos - this.line.offset - shiftPos;
-        const newLeftWithStep = this.GetRightPosX(clientPos);
+        const newLeftWithStep = this.getSteppedPos(clientPos);
         this.onHandlePositionUpdate(currentHandle, newLeftWithStep == null ? newPosWithoutStep : newLeftWithStep);
     }
     getValue(val: number): any {
@@ -402,13 +402,13 @@ export default class TRSView {
                 ns.maxValue != os.maxValue
             ) {
                 const posXWithOutStep = this.convertRelativeValueToPixelValue(ns.valueFrom);
-                const posXWithStep = this.GetRightPosX(posXWithOutStep + this.line.offset + this.offsetLeft);
+                const posXWithStep = this.getSteppedPos(posXWithOutStep + this.line.offset + this.offsetLeft);
                 this.moveHandle(this.handleFrom, posXWithStep == null ? posXWithOutStep : posXWithStep);
             }
         //-----------------------------------------------------------------
         if (isFirstDraw || ns.valueTo != os.valueTo || ns.minValue != os.minValue || ns.maxValue != os.maxValue) {
             const posXWithOutStep = this.convertRelativeValueToPixelValue(ns.valueTo);
-            const posXWithStep = this.GetRightPosX(
+            const posXWithStep = this.getSteppedPos(
                 posXWithOutStep + this.line.offset + this.handleTo.width - this.offsetRight,
             );
             this.moveHandle(this.handleTo, posXWithStep == null ? posXWithOutStep : posXWithStep);
