@@ -138,14 +138,14 @@ export default class TRSView {
         newEvent.target = nearHandle.el;
         nearHandle.el.trigger(newEvent, 'mousedown');
     }
-    GetRightPosX(clientX: number): number {
-        const pxLength = this.line.width - this.offsetLeft - this.offsetRight;
+    GetRightPosX(clientPos: number): number {
+        const pxLength = this.line.size - this.offsetLeft - this.offsetRight;
         const isDefinedStep = this.settings.stepValue > 0;
         const isDefinedSetOfValues = this.settings.values.length > 1;
         const isTooLongLine = pxLength > this.settings.maxValue - this.settings.minValue;
 
         if (isDefinedStep || isTooLongLine || isDefinedSetOfValues) {
-            const posX = clientX - this.line.offset - this.offsetLeft;
+            const pos = clientPos - this.line.offset - this.offsetLeft;
 
             let pxStep: number;
 
@@ -161,15 +161,13 @@ export default class TRSView {
                 pxStep = pxLength / (this.settings.values.length - 1);
             }
 
-            const nStep = Math.round(posX / pxStep);
+            const nStep = Math.round(pos / pxStep);
             let newPos = nStep * pxStep;
 
-            if (posX / pxStep > Math.trunc(pxLength / pxStep)) {
-                console.log('kek');
+            if (pos / pxStep > Math.trunc(pxLength / pxStep)) {
                 const remainder = pxLength - newPos;
-                if (posX > newPos + remainder / 2) newPos += remainder;
+                if (pos > newPos + remainder / 2) newPos += remainder;
             }
-            this.drawThinLine(newPos + this.offsetLeft);
             return newPos;
         }
         return null;
