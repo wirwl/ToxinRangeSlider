@@ -184,11 +184,11 @@ export default class TRSView {
     }
     drawLineSelected(currentHandle: Handle) {
         if (this.settings.isInterval) {
-            if (currentHandle.is(this.handleFrom)) this.lineSelected.x = this.handleFrom.x + this.offsetLeft;
-            this.lineSelected.width =
-                this.handleTo.x - this.handleFrom.x + this.handleTo.width - this.offsetLeft - this.offsetRight + 1;
+            if (currentHandle.is(this.handleFrom)) this.lineSelected.pos = this.handleFrom.pos + this.offsetLeft;
+            this.lineSelected.size =
+                this.handleTo.pos - this.handleFrom.pos + this.handleTo.size - this.offsetLeft - this.offsetRight + 1;
         } else {
-            this.lineSelected.width = currentHandle.x + currentHandle.width - this.offsetRight + 1;
+            this.lineSelected.width = currentHandle.pos + currentHandle.size - this.offsetRight + 1;
         }
     }
     drawTips(currentHandle: Handle) {
