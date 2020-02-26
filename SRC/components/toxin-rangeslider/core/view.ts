@@ -98,14 +98,14 @@ export default class TRSView {
     }
     getNearestHandle(pos: number): Handle {
         if (this.settings.isInterval) {
-            if (pos < this.handleFrom.x) return this.handleFrom;
-            if (pos > this.handleTo.x) return this.handleTo;
-            const distanceBetweenHandles = this.handleTo.x - this.handleFrom.x - this.handleFrom.width;
-            const half = this.handleFrom.x + this.handleFrom.width + distanceBetweenHandles / 2;
+            if (pos < this.handleFrom.pos) return this.handleFrom;
+            if (pos > this.handleTo.pos) return this.handleTo;
+            const distanceBetweenHandles = this.handleTo.pos - this.handleFrom.pos - this.handleFrom.size;
+            const half = this.handleFrom.pos + this.handleFrom.size + distanceBetweenHandles / 2;
             if (pos < half) return this.handleFrom;
             else return this.handleTo;
         } else {
-            if (pos < this.handleTo.x) return this.handleFrom;
+            if (pos < this.handleTo.pos) return this.handleFrom;
             else return this.handleTo;
         }
     }
@@ -127,7 +127,7 @@ export default class TRSView {
     onMouseDownByLine(e: JQuery.MouseDownEvent) {
         e.preventDefault();
         const line: JQuery<HTMLElement> = $(e.target);
-        const pos = e.clientX - line.offset().left;
+        const pos = this.settings.isVertical ? e.clientY - line.offset().top : e.clientX - line.offset().left;
         const nearHandle = this.getNearestHandle(pos);
         const posWithoutStep =
             pos - (nearHandle.is(this.handleFrom) ? this.offsetLeft : this.handleTo.width - this.offsetRight);
