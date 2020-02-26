@@ -130,9 +130,8 @@ export default class TRSView {
         const pos = this.settings.isVertical ? e.clientY - line.offset().top : e.clientX - line.offset().left;
         const nearHandle = this.getNearestHandle(pos);
         const posWithoutStep =
-            pos - (nearHandle.is(this.handleFrom) ? this.offsetLeft : this.handleTo.width - this.offsetRight);
-
-        const posWithStep = this.GetRightPosX(e.clientX);
+            pos - (nearHandle.is(this.handleFrom) ? this.offsetLeft : this.handleTo.size - this.offsetRight);
+        const posWithStep = this.GetRightPosX(this.settings.isVertical ? e.clientY : e.clientX);
         this.onHandlePositionUpdate(nearHandle, posWithStep == null ? posWithoutStep : posWithStep);
 
         const newEvent = e;
