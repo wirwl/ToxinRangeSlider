@@ -175,10 +175,9 @@ export default class TRSView {
         return null;
     }
     onHandleMove(e: JQuery.MouseMoveEvent, currentHandle: Handle, shiftPos: number) {
-        const newPosWithoutStep = this.settings.isVertical
-            ? e.clientY - this.line.el.offset().top - shiftPos
-            : e.clientX - this.line.el.offset().left - shiftPos;
-        const newLeftWithStep = this.GetRightPosX(this.settings.isVertical ? e.clientY : e.clientX);
+        const clientPos = this.settings.isVertical ? e.clientY : e.clientX;
+        const newPosWithoutStep = clientPos - this.line.offset - shiftPos;
+        const newLeftWithStep = this.GetRightPosX(clientPos);
         this.onHandlePositionUpdate(currentHandle, newLeftWithStep == null ? newPosWithoutStep : newLeftWithStep);
     }
     getValue(val: number): any {
