@@ -125,12 +125,13 @@ export default class TRSView {
     }
     onMouseDownByLine(e: JQuery.MouseDownEvent) {
         e.preventDefault();
-        const line: JQuery<HTMLElement> = $(e.target);
-        const pos = this.settings.isVertical ? e.clientY - line.offset().top : e.clientX - line.offset().left;
+        const clientPos = this.settings.isVertical ? e.clientY : e.clientX;
+        const pos = clientPos - this.line.offset;
+
         const nearHandle = this.getNearestHandle(pos);
         const posWithoutStep =
             pos - (nearHandle.is(this.handleFrom) ? this.offsetLeft : this.handleTo.size - this.offsetRight);
-        const posWithStep = this.GetRightPosX(this.settings.isVertical ? e.clientY : e.clientX);
+        const posWithStep = this.GetRightPosX(clientPos);
         this.onHandlePositionUpdate(nearHandle, posWithStep == null ? posWithoutStep : posWithStep);
 
         const newEvent = e;
