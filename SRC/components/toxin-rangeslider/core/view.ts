@@ -192,45 +192,45 @@ export default class TRSView {
         }
     }
     drawTips(currentHandle: Handle) {
-        const lw = this.line.width;
+        const lw = this.line.size;
 
-        currentHandle.value = this.convertPixelValueToRelativeValue(currentHandle.x);
+        currentHandle.value = this.convertPixelValueToRelativeValue(currentHandle.pos);
         currentHandle.displayValue = this.getValue(currentHandle.value);
         //-----------------------------------------------------------
         this.tipFrom.text = this.handleFrom.displayValue;
         this.tipTo.text = this.handleTo.displayValue;
         //-------------------------------------------
-        this.tipFrom.x = this.handleFrom.x + (this.handleFrom.width - this.tipFrom.width) / 2;
-        this.tipTo.x = this.handleTo.x + (this.handleTo.width - this.tipTo.width) / 2;
+        this.tipFrom.pos = this.handleFrom.pos + (this.handleFrom.size - this.tipFrom.size) / 2;
+        this.tipTo.pos = this.handleTo.pos + (this.handleTo.size - this.tipTo.size) / 2;
         //------------------------------------------------------------
         if (this.settings.isInterval) {
-            const distanceBetweenHandles = this.tipTo.x - this.tipFrom.x - this.tipFrom.width;
+            const distanceBetweenHandles = this.tipTo.pos - this.tipFrom.pos - this.tipFrom.size;
             if (distanceBetweenHandles < 1) {
                 this.tipTo.hide();
                 this.tipFrom.text = this.tipFrom.text + '-' + this.tipTo.text;
-                this.tipFrom.x =
-                    this.handleFrom.x +
-                    (this.handleTo.x - this.handleFrom.x + this.handleTo.width - this.tipFrom.width) / 2;
+                this.tipFrom.pos =
+                    this.handleFrom.pos +
+                    (this.handleTo.pos - this.handleFrom.pos + this.handleTo.size - this.tipFrom.size) / 2;
             } else {
                 this.tipTo.show();
             }
             if (this.handleFrom.displayValue == this.handleTo.displayValue) {
                 this.tipFrom.text = this.handleFrom.displayValue;
-                this.tipFrom.x = this.handleFrom.x + (this.handleFrom.width - this.tipFrom.width) / 2;
+                this.tipFrom.pos = this.handleFrom.pos + (this.handleFrom.size - this.tipFrom.size) / 2;
             }
         }
         //------------------------------------------------------------
-        const tax = lw - this.tipMax.width;
-        let distanceMin = this.tipFrom.x - this.tipMin.width;
-        const distanceMax = tax - this.tipTo.x - this.tipTo.width;
+        const tax = lw - this.tipMax.size;
+        let distanceMin = this.tipFrom.pos - this.tipMin.size;
+        const distanceMax = tax - this.tipTo.pos - this.tipTo.size;
         let distancBetweenTipFromAndTipMax = 1;
-        distancBetweenTipFromAndTipMax = tax - this.tipFrom.x - this.tipFrom.width;
+        distancBetweenTipFromAndTipMax = tax - this.tipFrom.pos - this.tipFrom.size;
         distanceMin < 1 ? this.tipMin.hide() : this.tipMin.show();
         distanceMax < 1 ? this.tipMax.hide() : this.tipMax.show();
         if (distancBetweenTipFromAndTipMax < 1) this.tipMax.hide();
 
         if (!this.settings.isInterval) {
-            distanceMin = this.tipTo.x - this.tipMin.width;
+            distanceMin = this.tipTo.pos - this.tipMin.size;
             distanceMin < 1 ? this.tipMin.hide() : this.tipMin.show();
         }
     }
