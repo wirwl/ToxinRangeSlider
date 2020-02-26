@@ -395,8 +395,6 @@ export default class TRSView {
                 }
             }
         }
-        //-------------------------------------------------------------------
-        //if (ns.isVertical) return;
         //-------------------------------------------------------------
         if (ns.isInterval)
             if (
@@ -406,14 +404,14 @@ export default class TRSView {
                 ns.maxValue != os.maxValue
             ) {
                 const posXWithOutStep = this.convertRelativeValueToPixelValue(ns.valueFrom);
-                const posXWithStep = this.GetRightPosX(posXWithOutStep + this.line.el.offset().left + this.offsetLeft);
+                const posXWithStep = this.GetRightPosX(posXWithOutStep + this.line.offset + this.offsetLeft);
                 this.moveHandle(this.handleFrom, posXWithStep == null ? posXWithOutStep : posXWithStep);
             }
         //-----------------------------------------------------------------
         if (isFirstDraw || ns.valueTo != os.valueTo || ns.minValue != os.minValue || ns.maxValue != os.maxValue) {
             const posXWithOutStep = this.convertRelativeValueToPixelValue(ns.valueTo);
             const posXWithStep = this.GetRightPosX(
-                posXWithOutStep + this.line.el.offset().left + this.handleTo.width - this.offsetRight,
+                posXWithOutStep + this.line.offset + this.handleTo.width - this.offsetRight,
             );
             this.moveHandle(this.handleTo, posXWithStep == null ? posXWithOutStep : posXWithStep);
         }
