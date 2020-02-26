@@ -145,7 +145,7 @@ export default class TRSView {
         const isTooLongLine = pxLength > this.settings.maxValue - this.settings.minValue;
 
         if (isDefinedStep || isTooLongLine || isDefinedSetOfValues) {
-            const posX = clientX - this.line.el.offset().left - this.offsetLeft;
+            const posX = clientX - this.line.offset - this.offsetLeft;
 
             let pxStep: number;
 
