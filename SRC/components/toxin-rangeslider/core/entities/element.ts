@@ -41,6 +41,18 @@ export default class TRSElement {
         this.el.css('top', value);
     }
 
+    get offsetTop(): number {
+        return this.el.offset().top;
+    }
+
+    get offsetLeft(): number {
+        return this.el.offset().left;
+    }
+
+    get offset(): number {
+        return this.isVertical ? this.offsetTop : this.offsetLeft;
+    }
+
     get pos(): number {
         return this.isVertical ? this.y : this.x;
     }
