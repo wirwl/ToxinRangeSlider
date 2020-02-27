@@ -261,7 +261,6 @@ export default class TRSView {
         this.drawLineSelected(currentHandle);
         this.drawTips(currentHandle);
 
-        currentHandle.isMoving = false;
         return currentHandle;
     }
 

@@ -4,7 +4,6 @@ export default class Handle extends TRSElement {
     value: number;
     displayValue: number;
     tip: Tip;
-    isMoving: boolean;
     constructor(el: JQuery<HTMLElement>, tip: Tip) {
         super(el);
         this.tip = tip;
