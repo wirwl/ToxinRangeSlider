@@ -57,6 +57,17 @@ export default class TRSView {
         this.handleTo = new Handle(this.rangeslider.el.find('.rangeslider__handle-to'), this.tipTo);
         this.handleTo.el.mousedown(e => this.onMouseDown(e));
         this.offsetRight = this.handleTo.width / 2;
+
+        this.rangeslider.addControls([
+            this.tipMin,
+            this.tipFrom,
+            this.tipTo,
+            this.tipMax,
+            this.handleFrom,
+            this.handleTo,
+            this.line,
+            this.lineSelected,
+        ]);
     }
 
     convertRelativeValueToPixelValue(val: number): number {
@@ -83,10 +94,11 @@ export default class TRSView {
         }
         return result;
     }
-    validate(pos: number): number {
+    validate(pos: number, currentHandle: Handle): number {
         let result = pos;
         const lw = this.line.size;
-        const ch = this.handleFrom.isMoving ? this.handleFrom : this.handleTo;
+        const ch = currentHandle;
+        //this.handleFrom.isMoving ? this.handleFrom : this.handleTo;
         if (pos < 0) result = 0;
         if (pos > lw - ch.size) result = lw - ch.size;
         if (this.settings.isInterval) {
@@ -175,7 +187,9 @@ export default class TRSView {
         const clientPos = this.settings.isVertical ? e.clientY : e.clientX;
         const newPosWithoutStep = clientPos - this.line.offset - shiftPos;
         const newLeftWithStep = this.getSteppedPos(clientPos);
-        this.onHandlePositionUpdate(currentHandle, newLeftWithStep == null ? newPosWithoutStep : newLeftWithStep);
+        let newPos = newLeftWithStep == null ? newPosWithoutStep : newLeftWithStep;
+        newPos = this.validate(newPos, currentHandle);
+        this.onHandlePositionUpdate(currentHandle, newPos);
     }
     getValue(val: number): any {
         const isValues = this.settings.values.length > 1;
@@ -236,7 +250,8 @@ export default class TRSView {
     moveHandle(currentHandle: Handle, pxX: number): Handle {
         currentHandle.isMoving = true;
 
-        currentHandle.pos = this.validate(pxX);
+        currentHandle.pos = pxX;
+        //this.validate(pxX, currentHandle);
         if (currentHandle.is(this.handleFrom)) {
             this.handleFrom.incZIndex();
             this.handleTo.decZIndex();
@@ -294,38 +309,7 @@ export default class TRSView {
             return maxHandlePos;
         }
     }
-    setPositionsForElements(isVertical: boolean) {
-        const posTips = 0;
-        const posLine = posTips + 24;
-        const posLineSelected = posLine + 1;
-        const posHandles = posLine - 5;
 
-        const sizeLine = 6;
-        const sizeLineSelected = sizeLine - 2;
-
-        if (isVertical) {
-            // this.tipMin.x = this.tipFrom.x = this.tipTo.x = this.tipMax.x = 20;
-            // this.tipMax.bottom = 0;
-            // this.handleFrom.x = this.handleTo.x = 0;
-            // this.line.x = 5;
-            // this.lineSelected.x = this.line.x + 1;
-            //this.line.width = sizeLine;
-            // this.lineSelected.width = sizeLineSelected;
-        } else {
-            //this.tipMin.y = this.tipFrom.y = this.tipTo.y = this.tipMax.y = posTips;
-            //this.tipMax.right = 0;
-            //this.handleFrom.y = this.handleTo.y = posHandles;
-            //this.line.y = posLine;
-            //this.lineSelected.y = posLineSelected;
-            //this.line.height = 6;
-            //this.lineSelected.height = 6 - 2;
-        }
-        //this.tipMin.pos = 0;
-        //this.line.pos = 0;
-
-        this.handleFrom.pos = 0;
-        this.handleTo.pos = this.line.size - this.handleTo.size;
-    }
     drawSlider(os: ExamplePluginOptions, ns: ExamplePluginOptions, isFirstDraw = false) {
         this.settings = ns;
         //if (ns.stepValue > 0) this.drawLineByStep(ns.stepValue);
@@ -356,7 +340,9 @@ export default class TRSView {
             this.handleTo.refresh();
             this.line.refresh();
             this.lineSelected.refresh();
-            this.setPositionsForElements(ns.isVertical);
+
+            // this.handleFrom.pos = 0;
+            // this.handleTo.pos = this.line.size - this.handleTo.size;
         }
         //-------------------------------------------------------------------
         if (ns.isVertical) {

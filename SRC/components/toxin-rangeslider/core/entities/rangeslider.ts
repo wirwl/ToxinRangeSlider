@@ -1,6 +1,17 @@
 import TRSElement from '../entities/element';
-
+import Tip from './tip';
+import Handle from './handle';
+import Line from './line';
 export default class Rangeslider extends TRSElement {
+    controls: Tip | Handle | Line[];
+    private _isVertical = false;
+    get isVertical(): boolean {
+        return this._isVertical;
+    }
+    set isVertical(value: boolean) {
+        this._isVertical = value;
+    }
+
     get thickness(): number {
         return this.isVertical ? this.width : this.height;
     }
@@ -21,5 +32,8 @@ export default class Rangeslider extends TRSElement {
     // }
     constructor(el: JQuery<HTMLElement>) {
         super(el);
+    }
+    addControls(controls: Tip | Handle | Line[]) {
+        this.controls = controls;
     }
 }
