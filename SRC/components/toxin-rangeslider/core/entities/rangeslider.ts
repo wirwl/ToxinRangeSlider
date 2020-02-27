@@ -3,13 +3,18 @@ import Tip from './tip';
 import Handle from './handle';
 import Line from './line';
 export default class Rangeslider extends TRSElement {
-    controls: Tip | Handle | Line[];
-    private _isVertical = false;
+    public controls: (Tip | Handle | Line)[];
+    protected _isVertical = false;
     get isVertical(): boolean {
         return this._isVertical;
     }
     set isVertical(value: boolean) {
         this._isVertical = value;
+        value ? this.el.addClass('rangeslider_is-vertical') : this.el.removeClass('rangeslider_is-vertical');
+        this.controls.forEach(val => {
+            val.isVertical = value;
+            val.refresh();
+        });
     }
 
     get thickness(): number {
@@ -27,13 +32,11 @@ export default class Rangeslider extends TRSElement {
     get length(): number {
         return this.isVertical ? this.height : this.width;
     }
-    // set length(value: number) {
-    //     this.isVertical ? (this.height = value) : (this.width = value);
-    // }
+
     constructor(el: JQuery<HTMLElement>) {
         super(el);
     }
-    addControls(controls: Tip | Handle | Line[]) {
+    addControls(controls: (Tip | Handle | Line)[]) {
         this.controls = controls;
     }
 }

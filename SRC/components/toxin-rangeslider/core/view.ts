@@ -68,6 +68,7 @@ export default class TRSView {
             this.line,
             this.lineSelected,
         ]);
+        console.log(this.rangeslider.controls);
     }
 
     convertRelativeValueToPixelValue(val: number): number {
@@ -316,34 +317,7 @@ export default class TRSView {
         //-------------------------------------------------------------------
 
         //-------------------------------------------------------------------
-        if (ns.isVertical != os?.isVertical) {
-            //this.rangeslider.isVertical = ns.isVertical;
-            this.handleFrom.isVertical = ns.isVertical;
-            this.handleTo.isVertical = ns.isVertical;
-            this.tipFrom.isVertical = ns.isVertical;
-            this.tipTo.isVertical = ns.isVertical;
-            this.tipMin.isVertical = ns.isVertical;
-            this.tipMax.isVertical = ns.isVertical;
-            this.line.isVertical = ns.isVertical;
-            this.lineSelected.isVertical = ns.isVertical;
-        }
-        //-------------------------------------------------------------------
-        if (isFirstDraw || ns.isVertical != os?.isVertical) {
-            ns.isVertical
-                ? this.rangeslider.el.addClass('rangeslider_is-vertical')
-                : this.rangeslider.el.removeClass('rangeslider_is-vertical');
-            this.tipMin.refresh();
-            this.tipMax.refresh();
-            this.tipTo.refresh();
-            this.tipFrom.refresh();
-            this.handleFrom.refresh();
-            this.handleTo.refresh();
-            this.line.refresh();
-            this.lineSelected.refresh();
-
-            // this.handleFrom.pos = 0;
-            // this.handleTo.pos = this.line.size - this.handleTo.size;
-        }
+        if (ns.isVertical != os?.isVertical) this.rangeslider.isVertical = ns.isVertical;
         //-------------------------------------------------------------------
         if (ns.isVertical) {
             this.el.css('width', this.evalThickness(ns.isVertical));

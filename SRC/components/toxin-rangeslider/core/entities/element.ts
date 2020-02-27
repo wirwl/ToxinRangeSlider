@@ -1,6 +1,13 @@
 export default class TRSElement {
     el: JQuery<HTMLElement>;
-    isVertical = false;
+
+    protected _isVertical = false;
+    get isVertical(): boolean {
+        return this._isVertical;
+    }
+    set isVertical(value: boolean) {
+        this._isVertical = value;
+    }
 
     protected _x: number;
     get x(): number {
@@ -9,7 +16,6 @@ export default class TRSElement {
     set x(value: number) {
         this._x = value;
         this.el.css('left', value);
-        //this.el.css('right', 'auto');
     }
 
     protected _right: number;
@@ -19,7 +25,6 @@ export default class TRSElement {
     set right(value: number) {
         this._right = value;
         this.el.css('right', value);
-        //this.el.css('left', 'auto');
     }
 
     protected _bottom: number;
@@ -29,7 +34,6 @@ export default class TRSElement {
     set bottom(value: number) {
         this._bottom = value;
         this.el.css('bottom', value);
-        //this.el.css('top', 'auto');
     }
 
     private _y: number;
