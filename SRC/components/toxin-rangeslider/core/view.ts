@@ -4,8 +4,8 @@ import Line from './entities/line';
 import Rangeslider from './entities/rangeslider';
 export default class TRSView {
     private settings: ExamplePluginOptions;
-    private offsetLeft: number;
-    private offsetRight: number;
+    private offsetFrom: number;
+    private offsetTo: number;
     private template =
         "<div class='rangeslider'>" +
         "<div class='rangeslider__tip-min'>00</div>" +
@@ -51,11 +51,11 @@ export default class TRSView {
 
         this.handleFrom = new Handle(this.rangeslider.el.find('.rangeslider__handle-from'), this.tipFrom);
         this.handleFrom.el.mousedown(e => this.onMouseDown(e));
-        this.offsetLeft = this.handleFrom.width / 2;
+        this.offsetFrom = this.handleFrom.width / 2;
 
         this.handleTo = new Handle(this.rangeslider.el.find('.rangeslider__handle-to'), this.tipTo);
         this.handleTo.el.mousedown(e => this.onMouseDown(e));
-        this.offsetRight = this.handleTo.width / 2;
+        this.offsetTo = this.handleTo.width / 2;
 
         this.rangeslider.addControls([
             this.tipMin,
@@ -70,9 +70,10 @@ export default class TRSView {
     }
 
     convertRelativeValueToPixelValue(val: number): number {
-        const lw = this.line.size - this.offsetLeft - this.offsetRight;
+        const lw = this.line.size - this.offsetFrom - this.offsetTo;
+        const isHasValues = this.settings.values.length > 1;
         let result;
-        if (this.settings.values && this.settings.values.length > 1) {
+        if (isHasValues) {
             const pxStep = lw / (this.settings.values.length - 1);
             result = val * pxStep;
         } else {
@@ -82,9 +83,10 @@ export default class TRSView {
         return result;
     }
     convertPixelValueToRelativeValue(val: number): number {
-        const lw = this.line.size - this.offsetLeft - this.offsetRight;
+        const lw = this.line.size - this.offsetFrom - this.offsetTo;
+        const isHasValues = this.settings.values.length > 1;
         let result;
-        if (this.settings.values && this.settings.values.length > 1) {
+        if (isHasValues) {
             const pxStep = lw / (this.settings.values.length - 1);
             result = Math.round(val / pxStep);
         } else {
@@ -120,6 +122,8 @@ export default class TRSView {
     onMouseUp(e: JQuery.MouseUpEvent, currentHandle: Handle) {
         this.rangeslider.el.off('mousemove');
         currentHandle.el.off('mouseup');
+        $(document).off('mousemove');
+        $(document).off('mouseup');
     }
     onMouseDown(e: JQuery.MouseDownEvent) {
         e.preventDefault();
@@ -128,6 +132,7 @@ export default class TRSView {
         const shiftPos = clientPos - currentHandle.offset;
 
         this.rangeslider.el.mousemove(e => this.onHandleMove(e, currentHandle, shiftPos));
+        $(document).mousemove(e => this.onHandleMove(e, currentHandle, shiftPos));
         currentHandle.el.mouseup(e => this.onMouseUp(e, currentHandle));
         $(document).mouseup(e => this.onMouseUp(e, currentHandle));
     }
@@ -139,7 +144,7 @@ export default class TRSView {
         const nearHandle = this.getNearestHandle(pos);
         console.log(nearHandle);
         const posWithoutStep =
-            pos - (nearHandle.is(this.handleFrom) ? this.offsetLeft : this.handleTo.size - this.offsetRight);
+            pos - (nearHandle.is(this.handleFrom) ? this.offsetFrom : this.handleTo.size - this.offsetTo);
         const posWithStep = this.getSteppedPos(clientPos);
         this.onHandlePositionUpdate(nearHandle, posWithStep == null ? posWithoutStep : posWithStep);
 
@@ -148,13 +153,14 @@ export default class TRSView {
         nearHandle.el.trigger(newEvent, 'mousedown');
     }
     getSteppedPos(clientPos: number): number {
-        const pxLength = this.line.size - this.offsetLeft - this.offsetRight;
+        const pxLength = this.line.size - this.offsetFrom - this.offsetTo;
         const isDefinedStep = this.settings.stepValue > 0;
         const isDefinedSetOfValues = this.settings.values.length > 1;
         const isTooLongLine = pxLength > this.settings.maxValue - this.settings.minValue;
+        const isNeedStep = isDefinedStep || isTooLongLine || isDefinedSetOfValues;
 
-        if (isDefinedStep || isTooLongLine || isDefinedSetOfValues) {
-            const pos = clientPos - this.line.offset - this.offsetLeft;
+        if (isNeedStep) {
+            const pos = clientPos - this.line.offset - this.offsetFrom;
 
             let pxStep: number;
 
@@ -195,11 +201,11 @@ export default class TRSView {
     }
     drawLineSelected(currentHandle: Handle) {
         if (this.settings.isInterval) {
-            if (currentHandle.is(this.handleFrom)) this.lineSelected.pos = this.handleFrom.pos + this.offsetLeft;
+            if (currentHandle.is(this.handleFrom)) this.lineSelected.pos = this.handleFrom.pos + this.offsetFrom;
             this.lineSelected.size =
-                this.handleTo.pos - this.handleFrom.pos + this.handleTo.size - this.offsetLeft - this.offsetRight + 1;
+                this.handleTo.pos - this.handleFrom.pos + this.handleTo.size - this.offsetFrom - this.offsetTo + 1;
         } else {
-            this.lineSelected.size = currentHandle.pos + currentHandle.size - this.offsetRight + 1;
+            this.lineSelected.size = currentHandle.pos + currentHandle.size - this.offsetTo + 1;
         }
     }
     drawTips(currentHandle: Handle) {
@@ -301,14 +307,14 @@ export default class TRSView {
                 ns.maxValue != os.maxValue
             ) {
                 const posXWithOutStep = this.convertRelativeValueToPixelValue(ns.valueFrom);
-                const posXWithStep = this.getSteppedPos(posXWithOutStep + this.line.offset + this.offsetLeft);
+                const posXWithStep = this.getSteppedPos(posXWithOutStep + this.line.offset + this.offsetFrom);
                 this.moveHandle(this.handleFrom, posXWithStep == null ? posXWithOutStep : posXWithStep);
             }
 
         if (isFirstDraw || ns.valueTo != os.valueTo || ns.minValue != os.minValue || ns.maxValue != os.maxValue) {
             const posXWithOutStep = this.convertRelativeValueToPixelValue(ns.valueTo);
             const posXWithStep = this.getSteppedPos(
-                posXWithOutStep + this.line.offset + this.handleTo.size - this.offsetRight,
+                posXWithOutStep + this.line.offset + this.handleTo.size - this.offsetTo,
             );
             this.moveHandle(this.handleTo, posXWithStep == null ? posXWithOutStep : posXWithStep);
         }
