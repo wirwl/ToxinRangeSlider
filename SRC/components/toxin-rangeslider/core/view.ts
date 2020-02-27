@@ -18,7 +18,6 @@ export default class TRSView {
         "<div class='rangeslider__handle rangeslider__handle-to'></div>" +
         '</div>';
     el: JQuery<Element>;
-    //$rangeslider: JQuery<HTMLElement>;
     rangeslider: Rangeslider;
     list: HTMLUListElement | null;
     onSubmitCb: Function;
@@ -99,7 +98,6 @@ export default class TRSView {
         let result = pos;
         const lw = this.line.size;
         const ch = currentHandle;
-        //this.handleFrom.isMoving ? this.handleFrom : this.handleTo;
         if (pos < 0) result = 0;
         if (pos > lw - ch.size) result = lw - ch.size;
         if (this.settings.isInterval) {
@@ -210,13 +208,13 @@ export default class TRSView {
 
         currentHandle.value = this.convertPixelValueToRelativeValue(currentHandle.pos);
         currentHandle.displayValue = this.getValue(currentHandle.value);
-        //-----------------------------------------------------------
+
         this.tipFrom.text = this.handleFrom.displayValue;
         this.tipTo.text = this.handleTo.displayValue;
-        //-------------------------------------------
+
         this.tipFrom.pos = this.handleFrom.pos + (this.handleFrom.size - this.tipFrom.size) / 2;
         this.tipTo.pos = this.handleTo.pos + (this.handleTo.size - this.tipTo.size) / 2;
-        //------------------------------------------------------------
+
         if (this.settings.isInterval) {
             const distanceBetweenHandles = this.tipTo.pos - this.tipFrom.pos - this.tipFrom.size;
             if (distanceBetweenHandles < 1) {
@@ -233,7 +231,7 @@ export default class TRSView {
                 this.tipFrom.pos = this.handleFrom.pos + (this.handleFrom.size - this.tipFrom.size) / 2;
             }
         }
-        //------------------------------------------------------------
+
         const tax = lw - this.tipMax.size;
         let distanceMin = this.tipFrom.pos - this.tipMin.size;
         const distanceMax = tax - this.tipTo.pos - this.tipTo.size;
@@ -249,10 +247,7 @@ export default class TRSView {
         }
     }
     moveHandle(currentHandle: Handle, pxX: number): Handle {
-        currentHandle.isMoving = true;
-
         currentHandle.pos = pxX;
-        //this.validate(pxX, currentHandle);
         if (currentHandle.is(this.handleFrom)) {
             this.handleFrom.incZIndex();
             this.handleTo.decZIndex();
@@ -260,7 +255,6 @@ export default class TRSView {
             this.handleTo.incZIndex();
             this.handleFrom.decZIndex();
         }
-
         this.drawLineSelected(currentHandle);
         this.drawTips(currentHandle);
 
@@ -297,34 +291,12 @@ export default class TRSView {
             .css('left', pos);
         $('.rangeslider').append(newdiv);
     }
-    evalThickness(isVertical: boolean): number {
-        if (isVertical) {
-            return 60;
-        } else {
-            let minTipPos = this.tipTo.y;
-            if (this.settings.isInterval && this.tipFrom.y < minTipPos) minTipPos = this.tipFrom.y;
-            let maxHandlePos = this.handleTo.y + this.handleTo.height;
-            if (this.settings.isInterval && this.handleFrom.y + this.handleFrom.height > maxHandlePos)
-                maxHandlePos = this.handleFrom.y + this.handleFrom.height;
-            //return maxHandlePos - minTipPos;
-            return maxHandlePos;
-        }
-    }
 
     drawSlider(os: ExamplePluginOptions, ns: ExamplePluginOptions, isFirstDraw = false) {
         this.settings = ns;
-        //if (ns.stepValue > 0) this.drawLineByStep(ns.stepValue);
-        //-------------------------------------------------------------------
 
-        //-------------------------------------------------------------------
         if (ns.isVertical != os?.isVertical) this.rangeslider.isVertical = ns.isVertical;
-        //-------------------------------------------------------------------
-        if (ns.isVertical) {
-            this.el.css('width', this.evalThickness(ns.isVertical));
-        } else {
-            this.el.css('height', this.evalThickness(ns.isVertical));
-        }
-        //-------------------------------------------------------------------
+
         if (isFirstDraw || ns.isInterval != os.isInterval) {
             if (ns.isInterval) {
                 this.handleFrom.show();
@@ -336,7 +308,7 @@ export default class TRSView {
                 this.lineSelected.pos = 0;
             }
         }
-        //------------------------------------------------------------
+
         if (ns.isTip) {
             if (ns.isInterval) this.tipFrom.show();
             this.tipTo.show();
@@ -344,14 +316,14 @@ export default class TRSView {
             if (ns.isInterval) this.tipFrom.hide();
             this.tipTo.hide();
         }
-        //------------------------------------------------------------
+
         if (isFirstDraw || ns.minValue != os.minValue) {
             this.tipMin.text = ns.minValue;
         }
         if (isFirstDraw || ns.maxValue != os.maxValue) {
             this.tipMax.text = ns.maxValue;
         }
-        //-------------------------------------------------------------
+
         if (isFirstDraw || ns.values != os.values) {
             if (ns.values) {
                 const count = ns.values.length;
@@ -361,7 +333,7 @@ export default class TRSView {
                 }
             }
         }
-        //-------------------------------------------------------------
+
         if (ns.isInterval)
             if (
                 isFirstDraw ||
@@ -373,7 +345,7 @@ export default class TRSView {
                 const posXWithStep = this.getSteppedPos(posXWithOutStep + this.line.offset + this.offsetLeft);
                 this.moveHandle(this.handleFrom, posXWithStep == null ? posXWithOutStep : posXWithStep);
             }
-        //-----------------------------------------------------------------
+
         if (isFirstDraw || ns.valueTo != os.valueTo || ns.minValue != os.minValue || ns.maxValue != os.maxValue) {
             const posXWithOutStep = this.convertRelativeValueToPixelValue(ns.valueTo);
             const posXWithStep = this.getSteppedPos(
