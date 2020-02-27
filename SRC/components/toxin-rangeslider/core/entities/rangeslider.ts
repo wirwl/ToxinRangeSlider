@@ -4,6 +4,15 @@ import Handle from './handle';
 import Line from './line';
 export default class Rangeslider extends TRSElement {
     public controls: (Tip | Handle | Line)[];
+
+    private _isInterval = false;
+    get isInterval(): boolean {
+        return this._isInterval;
+    }
+    set isInterval(value: boolean) {
+        value ? this.el.removeClass('rangeslider_one-handle') : this.el.addClass('rangeslider_one-handle');
+    }
+
     protected _isVertical = false;
     get isVertical(): boolean {
         return this._isVertical;

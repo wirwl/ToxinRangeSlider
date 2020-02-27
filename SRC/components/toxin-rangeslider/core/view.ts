@@ -265,15 +265,7 @@ export default class TRSView {
         if (ns.isVertical != os?.isVertical) this.rangeslider.isVertical = ns.isVertical;
 
         if (isFirstDraw || ns.isInterval != os.isInterval) {
-            if (ns.isInterval) {
-                this.handleFrom.show();
-                this.rangeslider.el.removeClass('rangeslider_one-handle');
-            } else {
-                this.handleFrom.hide();
-                this.rangeslider.el.addClass('rangeslider_one-handle');
-                this.tipFrom.hide();
-                this.lineSelected.pos = 0;
-            }
+            this.rangeslider.isInterval = ns.isInterval;
         }
 
         if (ns.isTip) {

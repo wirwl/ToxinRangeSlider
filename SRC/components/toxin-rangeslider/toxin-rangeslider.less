@@ -153,9 +153,15 @@
   border-left: 1px dashed orange;
 }
 
-.rangeslider_one-handle .rangeslider__line-selected {
+.rangeslider_one-handle {
+.rangeslider__line-selected {
   border-top-left-radius: 5px;
   border-bottom-left-radius: 5px;
+  left: 0;
+}
+.rangeslider__tip-from, .rangeslider__handle-from {
+  display: none;
+}
 }
 
 
@@ -164,6 +170,7 @@
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
     border-bottom-left-radius: 0px;
+    top: 0;
   }
 
   .rangeslider__tip-min,
@@ -176,6 +183,7 @@
   .rangeslider__tip-max {
     bottom: 0px;
     top: auto;
+    right: auto;
   }
 
   .rangeslider__handle-from,
