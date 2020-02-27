@@ -3,7 +3,7 @@ export default class TRSModel {
     settings: ExamplePluginOptions;
     static defaults: ExamplePluginOptions = {
         isVertical: false,
-        isInterval: true,
+        isInterval: false,
         isTip: true,
         minValue: 0,
         maxValue: 1220,

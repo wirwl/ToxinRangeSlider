@@ -67,7 +67,6 @@ export default class TRSView {
             this.line,
             this.lineSelected,
         ]);
-        console.log(this.rangeslider.controls);
     }
 
     convertRelativeValueToPixelValue(val: number): number {
@@ -115,8 +114,7 @@ export default class TRSView {
             if (pos < half) return this.handleFrom;
             else return this.handleTo;
         } else {
-            if (pos < this.handleTo.pos) return this.handleFrom;
-            else return this.handleTo;
+            return this.handleTo;
         }
     }
     onMouseUp(e: JQuery.MouseUpEvent, currentHandle: Handle) {
@@ -139,6 +137,7 @@ export default class TRSView {
         const pos = clientPos - this.line.offset;
 
         const nearHandle = this.getNearestHandle(pos);
+        console.log(nearHandle);
         const posWithoutStep =
             pos - (nearHandle.is(this.handleFrom) ? this.offsetLeft : this.handleTo.size - this.offsetRight);
         const posWithStep = this.getSteppedPos(clientPos);
@@ -190,7 +189,7 @@ export default class TRSView {
         newPos = this.validate(newPos, currentHandle);
         this.onHandlePositionUpdate(currentHandle, newPos);
     }
-    getValue(val: number): any {
+    getValue(val: number): number {
         const isValues = this.settings.values.length > 1;
         return isValues ? this.settings.values[val] : Math.round(val);
     }
@@ -200,12 +199,10 @@ export default class TRSView {
             this.lineSelected.size =
                 this.handleTo.pos - this.handleFrom.pos + this.handleTo.size - this.offsetLeft - this.offsetRight + 1;
         } else {
-            this.lineSelected.width = currentHandle.pos + currentHandle.size - this.offsetRight + 1;
+            this.lineSelected.size = currentHandle.pos + currentHandle.size - this.offsetRight + 1;
         }
     }
     drawTips(currentHandle: Handle) {
-        const lw = this.line.size;
-
         currentHandle.value = this.convertPixelValueToRelativeValue(currentHandle.pos);
         currentHandle.displayValue = this.getValue(currentHandle.value);
 
@@ -232,7 +229,7 @@ export default class TRSView {
             }
         }
 
-        const tax = lw - this.tipMax.size;
+        const tax = this.line.size - this.tipMax.size;
         let distanceMin = this.tipFrom.pos - this.tipMin.size;
         const distanceMax = tax - this.tipTo.pos - this.tipTo.size;
         let distancBetweenTipFromAndTipMax = 1;
@@ -261,36 +258,6 @@ export default class TRSView {
         currentHandle.isMoving = false;
         return currentHandle;
     }
-    drawLineByStep(step: number) {
-        $('.rangeslider__thinline').remove();
-        $('.rangeslider__thinline-half').remove();
-
-        const isValues = this.settings.values && this.settings.values.length > 1;
-        const pxLength = parseFloat($('.rangeslider__line').css('width')) - this.offsetRight;
-        const pxStep = isValues
-            ? (pxLength - this.offsetLeft) / (this.settings.values.length - 1)
-            : this.convertRelativeValueToPixelValue(step);
-        console.log(pxStep);
-        console.log(pxLength);
-        console.log('------');
-        let lastStep = 0;
-        for (let i = this.offsetLeft; i < pxLength; i += pxStep) {
-            console.log(i);
-            this.drawThinLine(i);
-            if (i + pxStep < pxLength) this.drawThinLine(i + pxStep / 2, 'rangeslider__thinline-half');
-            else lastStep = i + (pxLength - i) / 2;
-        }
-        this.drawThinLine(pxLength);
-        this.drawThinLine(lastStep, 'rangeslider__thinline-half');
-        //----------------------------------------------------------
-    }
-    drawThinLine(pos: number, cls = 'rangeslider__thinline') {
-        const newdiv = document.createElement('div');
-        $(newdiv)
-            .addClass(cls)
-            .css('left', pos);
-        $('.rangeslider').append(newdiv);
-    }
 
     drawSlider(os: ExamplePluginOptions, ns: ExamplePluginOptions, isFirstDraw = false) {
         this.settings = ns;
@@ -300,10 +267,10 @@ export default class TRSView {
         if (isFirstDraw || ns.isInterval != os.isInterval) {
             if (ns.isInterval) {
                 this.handleFrom.show();
-                this.lineSelected.el.removeClass('rangeslider__line-selected_isOneHandle');
+                this.rangeslider.el.removeClass('rangeslider_one-handle');
             } else {
                 this.handleFrom.hide();
-                this.lineSelected.el.addClass('rangeslider__line-selected_isOneHandle');
+                this.rangeslider.el.addClass('rangeslider_one-handle');
                 this.tipFrom.hide();
                 this.lineSelected.pos = 0;
             }
@@ -349,7 +316,7 @@ export default class TRSView {
         if (isFirstDraw || ns.valueTo != os.valueTo || ns.minValue != os.minValue || ns.maxValue != os.maxValue) {
             const posXWithOutStep = this.convertRelativeValueToPixelValue(ns.valueTo);
             const posXWithStep = this.getSteppedPos(
-                posXWithOutStep + this.line.offset + this.handleTo.width - this.offsetRight,
+                posXWithOutStep + this.line.offset + this.handleTo.size - this.offsetRight,
             );
             this.moveHandle(this.handleTo, posXWithStep == null ? posXWithOutStep : posXWithStep);
         }

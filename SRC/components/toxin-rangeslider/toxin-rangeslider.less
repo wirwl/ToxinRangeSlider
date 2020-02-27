@@ -94,10 +94,8 @@
   height: @size-lineselected;
 }
 
-.rangeslider__line-selected_isOneHandle {
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px;
-}
+
+
 
 .rangeslider__handle-from {
   cursor: pointer;
@@ -155,7 +153,18 @@
   border-left: 1px dashed orange;
 }
 
+.rangeslider_one-handle .rangeslider__line-selected {
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+
+
 .rangeslider_is-vertical {
+&.rangeslider_one-handle .rangeslider__line-selected {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-left-radius: 0px;
+  }
 
   .rangeslider__tip-min,
   .rangeslider__tip-max,
