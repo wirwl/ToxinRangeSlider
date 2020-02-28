@@ -1,4 +1,3 @@
-//const $ = require('../../../jquery/dist/jquery');
 export default class TRSModel {
     settings: RangeSliderOptions;
     static defaults: RangeSliderOptions = {

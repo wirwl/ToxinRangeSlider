@@ -140,7 +140,10 @@ export default class TRSView {
     onMouseDownByLine(e: JQuery.MouseDownEvent) {
         e.preventDefault();
         const clientPos = this.settings.isVertical ? e.clientY : e.clientX;
-        const pos = clientPos - this.line.offset;
+
+        let pos = clientPos - this.line.offset;
+        if (pos < this.offsetFrom) pos = this.offsetFrom;
+        if (pos > this.line.size - this.offsetTo) pos = this.line.size - this.offsetTo;
 
         const nearHandle = this.getNearestHandle(pos);
         const posWithoutStep =
