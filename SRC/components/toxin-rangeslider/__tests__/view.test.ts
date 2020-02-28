@@ -71,7 +71,7 @@ function ConfigureJSDOM() {
 beforeAll(async () => {
     ConfigureJSDOM();
     plugin = $('.test-in-jest');
-    plugin.examplePlugin({
+    plugin.toxinRangeSlider({
         isVertical: false,
         isInterval: true,
         isTip: true,

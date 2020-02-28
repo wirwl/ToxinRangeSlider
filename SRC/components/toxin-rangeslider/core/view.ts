@@ -3,7 +3,7 @@ import Tip from './entities/tip';
 import Line from './entities/line';
 import Rangeslider from './entities/rangeslider';
 export default class TRSView {
-    private settings: ExamplePluginOptions;
+    private settings: RangeSliderOptions;
     private offsetFrom: number;
     private offsetTo: number;
     private template =
@@ -23,7 +23,7 @@ export default class TRSView {
     onSubmitCb: Function;
     onRemoveTaskCb: Function;
     onHandlePositionUpdate: Function;
-    data: ExamplePluginOptions;
+    data: RangeSliderOptions;
     handleFrom: Handle;
     handleTo: Handle;
     tipFrom: Tip;
@@ -32,6 +32,7 @@ export default class TRSView {
     tipMax: Tip;
     line: Line;
     lineSelected: Line;
+
     constructor(el: JQuery<HTMLElement>) {
         this.el = el;
         this.el.html(this.template);
@@ -142,7 +143,6 @@ export default class TRSView {
         const pos = clientPos - this.line.offset;
 
         const nearHandle = this.getNearestHandle(pos);
-        console.log(nearHandle);
         const posWithoutStep =
             pos - (nearHandle.is(this.handleFrom) ? this.offsetFrom : this.handleTo.size - this.offsetTo);
         const posWithStep = this.getSteppedPos(clientPos);
@@ -266,7 +266,7 @@ export default class TRSView {
         return currentHandle;
     }
 
-    drawSlider(os: ExamplePluginOptions, ns: ExamplePluginOptions, isFirstDraw = false) {
+    drawSlider(os: RangeSliderOptions, ns: RangeSliderOptions, isFirstDraw = false) {
         this.settings = ns;
 
         if (ns.isVertical != os?.isVertical) this.rangeslider.isVertical = ns.isVertical;

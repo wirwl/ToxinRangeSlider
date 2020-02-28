@@ -13,8 +13,13 @@ import '../../favicons/favicons.js';
 // (window as any).$ = $;
 
 $(document).ready(() => {
-    $('.test1').examplePlugin();
-    $('.test2').examplePlugin({ isVertical: true });
+    $('.test1').toxinRangeSlider({
+        onHandlePositionChange() {
+            console.log(this);
+        },
+    });
+    $('.test2').toxinRangeSlider({ isVertical: true });
     const trs1 = $('.test1').data('toxinRangeSlider');
     const trs2 = $('.test2').data('toxinRangeSlider');
+    trs2.update({});
 });

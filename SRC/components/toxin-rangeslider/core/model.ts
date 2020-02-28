@@ -1,7 +1,7 @@
 //const $ = require('../../../jquery/dist/jquery');
 export default class TRSModel {
-    settings: ExamplePluginOptions;
-    static defaults: ExamplePluginOptions = {
+    settings: RangeSliderOptions;
+    static defaults: RangeSliderOptions = {
         isVertical: false,
         isInterval: true,
         isTip: true,
@@ -26,8 +26,9 @@ export default class TRSModel {
         //     'ноябрь',
         //     'декабрь',
         // ],
+        onHandlePositionChange: function() {},
     };
-    constructor(options: ExamplePluginOptions) {
+    constructor(options: RangeSliderOptions) {
         this.settings = $.extend({}, TRSModel.defaults, options);
     }
     calcLastStepValue(): number {
