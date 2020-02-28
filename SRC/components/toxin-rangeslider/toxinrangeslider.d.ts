@@ -1,5 +1,5 @@
 /**
- * Options for the example plugin.
+ * Options for the rangeslider plugin.
  */
 interface RangeSliderOptions {
     isVertical?: boolean;
@@ -17,39 +17,39 @@ interface RangeSliderOptions {
     //onHandlePositionChange?(pos: number): Function;
 }
 /**
- * Global options of the example plugin available as properties on $.fn object.
+ * Global options of the rangeslider plugin available as properties on $.fn object.
  */
 interface RangeSliderGlobalOptions {
     /**
-     * Global options of the example plugin.
+     * Global options of the rangeslider plugin.
      */
     options?: RangeSliderOptions;
 }
 
 /**
- * Function to apply the example plugin to the selected elements of a jQuery result.
+ * Function to apply the rangeslider plugin to the selected elements of a jQuery result.
  */
 interface RangeSliderFunction {
     /**
-     * Apply the example plugin to the elements selected in the jQuery result.
+     * Apply the rangeslider plugin to the elements selected in the jQuery result.
      *
-     * @param options Options to use for this application of the example plugin.
+     * @param options Options to use for this application of the rangeslider plugin.
      * @returns jQuery result.
      */
     (options?: RangeSliderOptions): JQuery;
 }
 
 /**
- * Declaration of the example plugin.
+ * Declaration of the rangeslider plugin.
  */
 interface RangeSlider extends RangeSliderGlobalOptions, RangeSliderFunction {}
 
 /**
- * Extend the jQuery result declaration with the example plugin.
+ * Extend the jQuery result declaration with the rangeslider plugin.
  */
 interface JQuery {
     /**
-     * Extension of the example plugin.
+     * Extension of the rangeslider plugin.
      */
     toxinRangeSlider: RangeSlider;
 }

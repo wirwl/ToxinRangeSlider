@@ -31,24 +31,5 @@ export default class TRSModel {
     constructor(options: RangeSliderOptions) {
         this.settings = $.extend({}, TRSModel.defaults, options);
     }
-    calcLastStepValue(): number {
-        const length = this.settings.maxValue - this.settings.minValue;
-        const stepCount = Math.trunc(length / this.settings.stepValue);
-        return length - stepCount * this.settings.stepValue;
-    }
     validate() {}
-    getTasks() {
-        return JSON.parse(localStorage.todo || '[]');
-    }
-    removeTask(inx: number) {
-        const list = this.getTasks().filter((task: any, i: number) => {
-            return i !== inx;
-        });
-        localStorage.todo = JSON.stringify(list);
-    }
-    addTask(val: string) {
-        const list = this.getTasks();
-        list.push(val);
-        localStorage.todo = JSON.stringify(list);
-    }
 }
