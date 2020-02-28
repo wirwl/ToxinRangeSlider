@@ -1,5 +1,5 @@
 include ../../common
-include ../../components/todo/todo
+include ../../components/panel/panel
 
 doctype html
 html(lang="en")
@@ -12,6 +12,8 @@ html(lang="en")
     //-script(type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js")
 
   body
+    +panel
+    +panel({isVertical:true})
     .test1
     .test2
     script(type="text/javascript" src="jquery/jquery.js")

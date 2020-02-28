@@ -1,0 +1,39 @@
+.panel {
+  display: flex; 
+  flex-direction: column;   
+}
+
+.panel__checkbox-is-vertical,
+.panel__checkbox-is-interval {
+  margin-bottom: 3px;
+}
+
+.panel__boolean-values {
+  display: flex;  
+  padding-right: 5px;
+  margin-right: 5px;
+  font-size: 16px;
+}
+
+.panel__number-values {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+}
+
+.panel__boolean-values > *:not(:last-child) {
+  margin-right: 5px;
+}
+
+.panel__section1, .panel__section2 {
+  display: flex;
+}
+
+.panel__section1 {
+  margin-bottom: 5px;
+}
+
+.panel__section1 > *:not(:last-child),
+.panel__section2 > *:not(:last-child) {
+  margin-right: 5px;
+}
