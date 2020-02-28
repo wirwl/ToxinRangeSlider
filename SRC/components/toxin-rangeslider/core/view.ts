@@ -227,7 +227,7 @@ export default class TRSView {
                     this.handleFrom.pos +
                     (this.handleTo.pos - this.handleFrom.pos + this.handleTo.size - this.tipFrom.size) / 2;
             } else {
-                this.tipTo.show();
+                if (this.settings.isTip) this.tipTo.show();
             }
             if (this.handleFrom.displayValue == this.handleTo.displayValue) {
                 this.tipFrom.text = this.handleFrom.displayValue;
@@ -235,18 +235,20 @@ export default class TRSView {
             }
         }
 
-        const tax = this.line.size - this.tipMax.size;
-        let distanceMin = this.tipFrom.pos - this.tipMin.size;
-        const distanceMax = tax - this.tipTo.pos - this.tipTo.size;
-        let distancBetweenTipFromAndTipMax = 1;
-        distancBetweenTipFromAndTipMax = tax - this.tipFrom.pos - this.tipFrom.size;
-        distanceMin < 1 ? this.tipMin.hide() : this.tipMin.show();
-        distanceMax < 1 ? this.tipMax.hide() : this.tipMax.show();
-        if (distancBetweenTipFromAndTipMax < 1) this.tipMax.hide();
-
-        if (!this.settings.isInterval) {
-            distanceMin = this.tipTo.pos - this.tipMin.size;
+        if (this.settings.isTip) {
+            const tax = this.line.size - this.tipMax.size;
+            let distanceMin = this.tipFrom.pos - this.tipMin.size;
+            const distanceMax = tax - this.tipTo.pos - this.tipTo.size;
+            let distancBetweenTipFromAndTipMax = 1;
+            distancBetweenTipFromAndTipMax = tax - this.tipFrom.pos - this.tipFrom.size;
             distanceMin < 1 ? this.tipMin.hide() : this.tipMin.show();
+            distanceMax < 1 ? this.tipMax.hide() : this.tipMax.show();
+            if (distancBetweenTipFromAndTipMax < 1) this.tipMax.hide();
+
+            if (!this.settings.isInterval) {
+                distanceMin = this.tipTo.pos - this.tipMin.size;
+                distanceMin < 1 ? this.tipMin.hide() : this.tipMin.show();
+            }
         }
     }
     moveHandle(currentHandle: Handle, pxX: number): Handle {
@@ -276,9 +278,13 @@ export default class TRSView {
         if (ns.isTip) {
             if (ns.isInterval) this.tipFrom.show();
             this.tipTo.show();
+            this.tipMin.show();
+            this.tipMax.show();
         } else {
             if (ns.isInterval) this.tipFrom.hide();
             this.tipTo.hide();
+            this.tipMin.hide();
+            this.tipMax.hide();
         }
 
         if (isFirstDraw || ns.minValue != os.minValue) {
