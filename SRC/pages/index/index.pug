@@ -12,8 +12,28 @@ html(lang="en")
     //-script(type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js")
 
   body
-    +panel
-    +panel({isVertical:true})
+    +panel({id:'p1', 
+      slider: { isVertical: false, isTwoHandles: true, isTip: true,
+      minValue: 0, maxValue: 1220, stepValue: 0,
+      valueFrom: 0, valueTo: 610, values: []} 
+      })
+    +panel({id:'p2', 
+      slider: { isVertical: false, isTwoHandles: true, isTip: true,
+      minValue: 0, maxValue: 1220, stepValue: 0,
+      valueFrom: 0, valueTo: 610, values: []} 
+      })
+    .panelv__wrapper
+      +panel({id:'p3', isVertical: true,
+      slider: { isVertical: true, isTwoHandles: true, isTip: true,
+      minValue: 0, maxValue: 1220, stepValue: 0,
+      valueFrom: 0, valueTo: 610, values: []} 
+      })
+      +panel({id:'p4', isVertical: true,
+      slider: { isVertical: true, isTwoHandles: true, isTip: true,
+      minValue: 0, maxValue: 1220, stepValue: 0,
+      valueFrom: 0, valueTo: 610, values: []} 
+      })
+
     .test1
     .test2
     script(type="text/javascript" src="jquery/jquery.js")

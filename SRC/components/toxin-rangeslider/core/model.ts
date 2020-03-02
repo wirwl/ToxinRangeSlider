@@ -2,7 +2,7 @@ export default class TRSModel {
     settings: RangeSliderOptions;
     static defaults: RangeSliderOptions = {
         isVertical: false,
-        isInterval: true,
+        isTwoHandles: true,
         isTip: true,
         minValue: 0,
         maxValue: 1220,

@@ -2,27 +2,29 @@ include ../select-items/select-items
 include ../checkbox/checkbox
 include ../number/number
 
-mixin panel(data={isVertical:false})  
-  .panel(class = data.isVertical ? 'panel_is-vertical' : '')
-    .panel__boolean-values
-      .panel__checkbox-is-vertical
-        +checkbox({text:'Vertical orientation', isChecked: false})
-      .panel__checkbox-is-interval
-        +checkbox({text:'Two handles', isChecked: true})
-      .panel__checkbox-is-tip
-        +checkbox({text:'Show tips', isChecked: false})    
-    .panel__number-values
-      .panel__section1
-        .panel__input-min-value
-          +number({text:'Min. value', value:15})      
-        .panel__input-max-value
-          +number({text:'Max. value', value:15})
-        .panel__input-step-value
-          +number({text:'Step value', value:15})
-      .panel__section2
-        .panel__input-value-from
-          +number({text:'From value', value:15})
-        .panel__input-value-to
-          +number({text:'To value', value:15})
-        .panel__input-values      
-          +select-items({title:'Items', items:[2,4,8,16,32,64,128, 256, 512, 1024]})
+mixin panel(data={isVertical:true, slider:{isVertical: false, isTwoHandles: true, isTip: true, minValue: 0, maxValue: 1220, stepValue: 0, valueFrom: 0, valueTo: 610, values: []}})  
+  .panel(class = (data.isVertical ? 'panel_is-vertical' : '') id=data.id)
+    .panel__values
+      .panel__boolean-values
+        .panel__checkbox-is-vertical
+          +checkbox({text:'Vertical orientation', isChecked: data.slider.isVertical})
+        .panel__checkbox-is-interval
+          +checkbox({text:'Two handles', isChecked: data.slider.isTwoHandles})
+        .panel__checkbox-is-tip
+          +checkbox({text:'Show tips', isChecked: data.slider.isTip})    
+      .panel__number-values
+        .panel__section1
+          .panel__input-min-value
+            +number({text:'Min. value', value:data.slider.minValue})      
+          .panel__input-max-value
+            +number({text:'Max. value', value:data.slider.maxValue})
+          .panel__input-step-value
+            +number({text:'Step value', value:data.slider.stepValue})
+        .panel__section2
+          .panel__input-value-from
+            +number({text:'From value', value:data.slider.valueFrom})
+          .panel__input-value-to
+            +number({text:'To value', value:data.slider.valueTo})
+          .panel__input-values      
+            +select-items({title:'Items', items: data.slider.values ?  data.slider.values : []})
+    .panel__toxin-rangeslider.toxin-rangeslider-here(data-options=data.slider)

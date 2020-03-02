@@ -18,6 +18,7 @@ body {
   min-height: 360px;
   align-items: center;
   justify-content: center;
+  padding-top: 50px;
 }
 
 .test1 {    
@@ -31,6 +32,11 @@ body {
   width: 80px;
 }
 
-.panel:first-child {
-  margin-bottom: 30px;
-}
+ .panel {
+   margin-bottom: 30px;
+ }
+
+ .panelv__wrapper {
+   display: flex;
+   > *:not(:last-child) { margin-right: 120px;}
+ }

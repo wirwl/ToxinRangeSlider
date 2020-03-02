@@ -3,7 +3,7 @@
  */
 interface RangeSliderOptions {
     isVertical?: boolean;
-    isInterval?: boolean;
+    isTwoHandles?: boolean;
     isTip?: boolean;
     isScale?: boolean;
     minValue?: number;

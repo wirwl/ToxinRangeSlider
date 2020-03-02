@@ -102,14 +102,14 @@ export default class TRSView {
         const ch = currentHandle;
         if (pos < 0) result = 0;
         if (pos > lw - ch.size) result = lw - ch.size;
-        if (this.settings.isInterval) {
+        if (this.settings.isTwoHandles) {
             if (ch.is(this.handleFrom)) if (pos > this.handleTo.pos) result = this.handleTo.pos;
             if (ch.is(this.handleTo)) if (pos < this.handleFrom.pos) result = this.handleFrom.pos;
         }
         return result;
     }
     getNearestHandle(pos: number): Handle {
-        if (this.settings.isInterval) {
+        if (this.settings.isTwoHandles) {
             if (pos < this.handleFrom.pos) return this.handleFrom;
             if (pos > this.handleTo.pos) return this.handleTo;
             const distanceBetweenHandles = this.handleTo.pos - this.handleFrom.pos - this.handleFrom.size;
@@ -203,7 +203,7 @@ export default class TRSView {
         return isValues ? this.settings.values[val] : Math.round(val);
     }
     drawLineSelected(currentHandle: Handle) {
-        if (this.settings.isInterval) {
+        if (this.settings.isTwoHandles) {
             if (currentHandle.is(this.handleFrom)) this.lineSelected.pos = this.handleFrom.pos + this.offsetFrom;
             this.lineSelected.size =
                 this.handleTo.pos - this.handleFrom.pos + this.handleTo.size - this.offsetFrom - this.offsetTo + 1;
@@ -221,7 +221,7 @@ export default class TRSView {
         this.tipFrom.pos = this.handleFrom.pos + (this.handleFrom.size - this.tipFrom.size) / 2;
         this.tipTo.pos = this.handleTo.pos + (this.handleTo.size - this.tipTo.size) / 2;
 
-        if (this.settings.isInterval) {
+        if (this.settings.isTwoHandles) {
             const distanceBetweenHandles = this.tipTo.pos - this.tipFrom.pos - this.tipFrom.size;
             if (distanceBetweenHandles < 1) {
                 this.tipTo.hide();
@@ -248,7 +248,7 @@ export default class TRSView {
             distanceMax < 1 ? this.tipMax.hide() : this.tipMax.show();
             if (distancBetweenTipFromAndTipMax < 1) this.tipMax.hide();
 
-            if (!this.settings.isInterval) {
+            if (!this.settings.isTwoHandles) {
                 distanceMin = this.tipTo.pos - this.tipMin.size;
                 distanceMin < 1 ? this.tipMin.hide() : this.tipMin.show();
             }
@@ -274,17 +274,17 @@ export default class TRSView {
 
         if (ns.isVertical != os?.isVertical) this.rangeslider.isVertical = ns.isVertical;
 
-        if (isFirstDraw || ns.isInterval != os.isInterval) {
-            this.rangeslider.isInterval = ns.isInterval;
+        if (isFirstDraw || ns.isTwoHandles != os.isTwoHandles) {
+            this.rangeslider.isInterval = ns.isTwoHandles;
         }
 
         if (ns.isTip) {
-            if (ns.isInterval) this.tipFrom.show();
+            if (ns.isTwoHandles) this.tipFrom.show();
             this.tipTo.show();
             this.tipMin.show();
             this.tipMax.show();
         } else {
-            if (ns.isInterval) this.tipFrom.hide();
+            if (ns.isTwoHandles) this.tipFrom.hide();
             this.tipTo.hide();
             this.tipMin.hide();
             this.tipMax.hide();
@@ -307,7 +307,7 @@ export default class TRSView {
             }
         }
 
-        if (ns.isInterval)
+        if (ns.isTwoHandles)
             if (
                 isFirstDraw ||
                 ns.valueFrom != os.valueFrom ||

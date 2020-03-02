@@ -73,7 +73,7 @@ beforeAll(async () => {
     plugin = $('.test-in-jest');
     plugin.toxinRangeSlider({
         isVertical: false,
-        isInterval: true,
+        isTwoHandles: true,
         isTip: true,
         minValue: 0,
         maxValue: 1060,
@@ -103,7 +103,7 @@ describe('Check result of getNearestHandle() function. Six diffrent tests.', () 
     describe('If there are one handle.', () => {
         beforeAll(() => {
             rangeslider.update({
-                isInterval: false,
+                isTwoHandles: false,
                 valueTo: 491,
             });
         });
