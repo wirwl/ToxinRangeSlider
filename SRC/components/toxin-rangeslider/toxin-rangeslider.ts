@@ -4,10 +4,13 @@ import TRSModel from './core/model';
 
 // eslint-disable-next-line prettier/prettier
 ;(function($) {
-    $.fn.toxinRangeSlider = function(this: JQuery, options: RangeSliderOptions): JQuery {
-        if (!$.data(this, 'toxinRangeSlider')) {
-            $.data(this, 'toxinRangeSlider', new TRSPresenter(new TRSModel(options), new TRSView(this)));
-        }
+    $.fn.toxinRangeSlider = function(this: JQuery<HTMLElement>, options: RangeSliderOptions): JQuery {
+        this.each(function() {
+            if (!$.data(this, 'toxinRangeSlider')) {
+                $.data(this, 'toxinRangeSlider', new TRSPresenter(new TRSModel(options), new TRSView($(this))));
+            }
+        });
+
         return this;
     };
 

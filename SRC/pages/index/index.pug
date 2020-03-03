@@ -12,30 +12,65 @@ html(lang="en")
     //-script(type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js")
 
   body
-    +panel({id:'p1', 
-      slider: { isVertical: false, isTwoHandles: true, isTip: true,
-      minValue: 0, maxValue: 1220, stepValue: 0,
-      valueFrom: 0, valueTo: 610, values: []} 
-      })
-    +panel({id:'p2', 
-      slider: { isVertical: false, isTwoHandles: true, isTip: true,
-      minValue: 0, maxValue: 1220, stepValue: 0,
-      valueFrom: 0, valueTo: 610, values: []} 
-      })
-    .panelv__wrapper
-      +panel({id:'p3', isVertical: true,
-      slider: { isVertical: true, isTwoHandles: true, isTip: true,
-      minValue: 0, maxValue: 1220, stepValue: 0,
-      valueFrom: 0, valueTo: 610, values: []} 
-      })
-      +panel({id:'p4', isVertical: true,
-      slider: { isVertical: true, isTwoHandles: true, isTip: true,
-      minValue: 0, maxValue: 1220, stepValue: 0,
-      valueFrom: 0, valueTo: 610, values: []} 
-      })
+    .columns
+      .column1
+        +panel({id:'p1', 
+          slider: { isVertical: false, isTwoHandles: true, isTip: true,
+          minValue: 0, maxValue: 1200, stepValue: 0,
+          valueFrom: 2, valueTo: 7, values: [2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]} 
+          })
+        +panel({id:'p2', 
+          slider: { isVertical: false, isTwoHandles: false, isTip: true,
+          minValue: 0, maxValue: 1200, stepValue: 0,
+          valueFrom: 2, valueTo: 8, values: ['январь','февраль','март','апрель','май','июнь','июль','август','сентябрь','октябрь','ноябрь','декабрь']}
+          })
+        +panel({id:'p21', 
+          slider: { isVertical: false, isTwoHandles: false, isTip: true,
+          minValue: 0, maxValue: 1200, stepValue: 0,
+          valueFrom: 2, valueTo: 8, values: ['январь','февраль','март','апрель','май','июнь','июль','август','сентябрь','октябрь','ноябрь','декабрь']}
+          })
+        +panel({id:'p21', 
+          slider: { isVertical: false, isTwoHandles: false, isTip: true,
+          minValue: 0, maxValue: 1200, stepValue: 0,
+          valueFrom: 2, valueTo: 8, values: ['январь','февраль','март','апрель','май','июнь','июль','август','сентябрь','октябрь','ноябрь','декабрь']}
+          })
+      .column2
+        .panelv__wrapper
+          +panel({id:'p3', isVertical: true,
+          slider: { isVertical: true, isTwoHandles: true, isTip: true,
+          minValue: 0, maxValue: 1220, stepValue: 0,
+          valueFrom: 100, valueTo: 600, values: []} 
+          })
+          +panel({id:'p4', isVertical: true,
+          slider: { isVertical: true, isTwoHandles: true, isTip: true,
+          minValue: 1000, maxValue: 2220, stepValue: 100,
+          valueFrom: 1100, valueTo: 1600, values: []} 
+          })
+          +panel({id:'p41', isVertical: true,
+          slider: { isVertical: true, isTwoHandles: true, isTip: true,
+          minValue: 1000, maxValue: 2220, stepValue: 100,
+          valueFrom: 1100, valueTo: 1600, values: []} 
+          })
+        .panelv__wrapper
+          +panel({id:'p3', isVertical: true,
+          slider: { isVertical: true, isTwoHandles: true, isTip: true,
+          minValue: 0, maxValue: 1220, stepValue: 0,
+          valueFrom: 100, valueTo: 600, values: []} 
+          })
+          +panel({id:'p4', isVertical: true,
+          slider: { isVertical: true, isTwoHandles: true, isTip: true,
+          minValue: 1000, maxValue: 2220, stepValue: 100,
+          valueFrom: 1100, valueTo: 1600, values: []} 
+          })
+          +panel({id:'p41', isVertical: true,
+          slider: { isVertical: true, isTwoHandles: true, isTip: true,
+          minValue: 1000, maxValue: 2220, stepValue: 100,
+          valueFrom: 1100, valueTo: 1600, values: []} 
+          })
 
-    .test1
-    .test2
+
+    //- .test1
+    //- .test2
     script(type="text/javascript" src="jquery/jquery.js")
     script(type="text/javascript" src="jquery-plugins/toxin-rangeslider/toxin-rangeslider.js")
     script(type="text/javascript" src="index.js")

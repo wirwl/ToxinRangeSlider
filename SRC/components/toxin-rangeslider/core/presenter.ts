@@ -25,7 +25,9 @@ export default class TRSPresenter {
         result.is(this.view.handleFrom)
             ? (this.model.settings.valueFrom = result.value)
             : (this.model.settings.valueTo = result.value);
-        this.model.settings.onHandlePositionChange.call(result);
+        const value: number | string = result.value;
+        const isFromHandle: boolean = result.is(this.view.handleFrom) ? true : false;
+        this.model.settings.onHandlePositionChange.call(result, value, isFromHandle, this.model.settings);
     }
     update(opt: RangeSliderOptions, isForceRedraw = false) {
         const oldSettings = $.extend({}, this.model.settings);

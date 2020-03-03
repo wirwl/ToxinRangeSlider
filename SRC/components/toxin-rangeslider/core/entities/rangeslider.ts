@@ -10,6 +10,8 @@ export default class Rangeslider extends TRSElement {
         return this._isInterval;
     }
     set isInterval(value: boolean) {
+        this._isInterval = value;
+        this.el.find('.rangeslider__line-selected').removeAttr('style');
         value ? this.el.removeClass('rangeslider_one-handle') : this.el.addClass('rangeslider_one-handle');
     }
 

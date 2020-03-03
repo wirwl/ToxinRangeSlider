@@ -8,7 +8,7 @@ mixin panel(data={isVertical:true, slider:{isVertical: false, isTwoHandles: true
       .panel__boolean-values
         .panel__checkbox-is-vertical
           +checkbox({text:'Vertical orientation', isChecked: data.slider.isVertical})
-        .panel__checkbox-is-interval
+        .panel__checkbox-is-two-handles
           +checkbox({text:'Two handles', isChecked: data.slider.isTwoHandles})
         .panel__checkbox-is-tip
           +checkbox({text:'Show tips', isChecked: data.slider.isTip})    

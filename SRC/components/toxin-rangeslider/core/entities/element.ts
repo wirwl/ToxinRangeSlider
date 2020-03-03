@@ -7,6 +7,7 @@ export default class TRSElement {
     }
     set isVertical(value: boolean) {
         this._isVertical = value;
+        this.el.removeAttr('style');
     }
 
     protected _x: number;

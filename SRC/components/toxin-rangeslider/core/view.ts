@@ -272,10 +272,14 @@ export default class TRSView {
     drawSlider(os: RangeSliderOptions, ns: RangeSliderOptions, isFirstDraw = false) {
         this.settings = ns;
 
-        if (ns.isVertical != os?.isVertical) this.rangeslider.isVertical = ns.isVertical;
+        if (ns.isVertical != os?.isVertical) {
+            this.rangeslider.isVertical = ns.isVertical;
+            isFirstDraw = true;
+        }
 
         if (isFirstDraw || ns.isTwoHandles != os.isTwoHandles) {
             this.rangeslider.isInterval = ns.isTwoHandles;
+            isFirstDraw = true;
         }
 
         if (ns.isTip) {

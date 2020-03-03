@@ -11,7 +11,7 @@ interface RangeSliderOptions {
     stepValue?: number;
     valueFrom?: number;
     valueTo?: number;
-    values?: any[] | null;
+    values?: any[];
     length?: number;
     onHandlePositionChange?: Function;
     //onHandlePositionChange?(pos: number): Function;

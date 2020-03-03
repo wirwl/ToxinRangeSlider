@@ -221,7 +221,7 @@ module.exports = ((env, argv) => {
             ])
         ]
     }
-    console.log(__dirname);
+    //console.log(__dirname);
     var pluginCFG = merge({}, common, {
         entry: {
             plugin: [

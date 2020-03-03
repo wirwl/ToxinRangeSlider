@@ -1,16 +1,18 @@
 .panel {
   display: flex; 
   flex-direction: column;     
+  //outline: 1px dashed gray;
 }
 
-.panel__checkbox-is-vertical,
-.panel__checkbox-is-interval {
-  margin-bottom: 3px;
-}
+// .panel__checkbox-is-vertical,
+// .panel__checkbox-is-interval {
+//   margin-bottom: 3px;
+// }
 
 .panel__boolean-values {
   display: flex;    
   font-size: 16px;
+  margin-bottom: 5px;
 }
 
 .panel__number-values {
@@ -45,17 +47,26 @@
 }
 
 .panel_is-vertical {
-  height: 291px;
+  height: 316px;
   flex-direction: row;
   .panel__boolean-values {
     flex-direction: column;
+    margin-bottom: 10px;
   }
   .panel__section1, .panel__section2 {
     flex-direction: column;
   }
   .panel__toxin-rangeslider {
     height: 100%;
-    width: 35px;
+    width: 60px;
+  }
+  .panel__section1 > *:not(:last-child), .panel__section2 > *:not(:last-child) {
+    margin-right: 0px;
+    margin-bottom: 5px;
+  }
+  .panel__boolean-values > *:not(:last-child) {
+    margin-right: 0px;
+    margin-bottom: 5px;
   }
     
 }
