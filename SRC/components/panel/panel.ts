@@ -27,11 +27,11 @@ $(document).ready(() => {
         rangeslider.update({
             onHandlePositionChange(value: number | string, isFromHandle: boolean, settings: RangeSliderOptions) {
                 //isFromHandle ? $valueFrom.val(value) : $valueTo.val(value);
-                const isValues = settings.values.length > 1;
+                const isValues = settings.items.values.length > 1;
                 if (isFromHandle) {
-                    isValues ? $valueFrom.val(settings.values[value as number]) : value;
+                    isValues ? $valueFrom.val(settings.items.values[value as number]) : value;
                 } else {
-                    isValues ? $valueTo.val(settings.values[value as number]) : value;
+                    isValues ? $valueTo.val(settings.items.values[value as number]) : value;
                 }
             },
         });

@@ -26,5 +26,5 @@ mixin panel(data={isVertical:true, slider:{isVertical: false, isTwoHandles: true
           .panel__input-value-to
             +number({text:'To value', value:data.slider.valueTo})
           .panel__input-values      
-            +select-items({title:'Items', items: data.slider.values ?  data.slider.values : []})
+            +select-items({title:'Items', items: (data.slider.items && data.slider.items.values) ?  data.slider.items.values : []})
     .panel__toxin-rangeslider.toxin-rangeslider-here(data-options=data.slider)

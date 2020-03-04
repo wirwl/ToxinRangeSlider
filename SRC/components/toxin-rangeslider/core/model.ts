@@ -9,7 +9,8 @@ export default class TRSModel {
         stepValue: 0,
         valueFrom: 0,
         valueTo: 610,
-        values: [],
+        //values: [],
+        items: { indexFrom: 0, indexTo: 1, values: [] },
         //values: [20000, 40000, 80000, 16, 32, 64000, 12800],
         // values: [
         //     'январь',

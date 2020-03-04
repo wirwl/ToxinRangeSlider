@@ -2,7 +2,7 @@ import TRSElement from '../entities/element';
 import Tip from './tip';
 export default class Handle extends TRSElement {
     value: number;
-    displayValue: number;
+    displayValue: number | string;
     tip: Tip;
     constructor(el: JQuery<HTMLElement>, tip: Tip) {
         super(el);

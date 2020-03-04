@@ -11,11 +11,17 @@ interface RangeSliderOptions {
     stepValue?: number;
     valueFrom?: number;
     valueTo?: number;
-    values?: any[];
-    length?: number;
+    //values?: any[];
+    items?: RangeSliderItems;
     onHandlePositionChange?: Function;
-    //onHandlePositionChange?(pos: number): Function;
 }
+
+interface RangeSliderItems {
+    values: (number | string)[];
+    indexFrom: number;
+    indexTo: number;
+}
+
 /**
  * Global options of the rangeslider plugin available as properties on $.fn object.
  */

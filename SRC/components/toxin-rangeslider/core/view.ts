@@ -72,10 +72,10 @@ export default class TRSView {
 
     convertRelativeValueToPixelValue(val: number): number {
         const lw = this.line.size - this.offsetFrom - this.offsetTo;
-        const isHasValues = this.settings.values.length > 1;
+        const isHasValues = this.settings.items.values.length > 1;
         let result;
         if (isHasValues) {
-            const pxStep = lw / (this.settings.values.length - 1);
+            const pxStep = lw / (this.settings.items.values.length - 1);
             result = val * pxStep;
         } else {
             const percent = ((val - this.settings.minValue) / (this.settings.maxValue - this.settings.minValue)) * 100;
@@ -85,10 +85,10 @@ export default class TRSView {
     }
     convertPixelValueToRelativeValue(val: number): number {
         const lw = this.line.size - this.offsetFrom - this.offsetTo;
-        const isHasValues = this.settings.values.length > 1;
+        const isHasValues = this.settings.items.values.length > 1;
         let result;
         if (isHasValues) {
-            const pxStep = lw / (this.settings.values.length - 1);
+            const pxStep = lw / (this.settings.items.values.length - 1);
             result = Math.round(val / pxStep);
         } else {
             const percent = val / lw;
@@ -158,7 +158,7 @@ export default class TRSView {
     getSteppedPos(clientPos: number): number {
         const pxLength = this.line.size - this.offsetFrom - this.offsetTo;
         const isDefinedStep = this.settings.stepValue > 0;
-        const isDefinedSetOfValues = this.settings.values.length > 1;
+        const isDefinedSetOfValues = this.settings.items.values.length > 1;
         const isTooLongLine = pxLength > this.settings.maxValue - this.settings.minValue;
         const isNeedStep = isDefinedStep || isTooLongLine || isDefinedSetOfValues;
 
@@ -176,7 +176,7 @@ export default class TRSView {
             }
 
             if (isDefinedSetOfValues) {
-                pxStep = pxLength / (this.settings.values.length - 1);
+                pxStep = pxLength / (this.settings.items.values.length - 1);
             }
 
             const nStep = Math.round(pos / pxStep);
@@ -198,9 +198,9 @@ export default class TRSView {
         newPos = this.validate(newPos, currentHandle);
         this.onHandlePositionUpdate(currentHandle, newPos);
     }
-    getValue(val: number): number {
-        const isValues = this.settings.values.length > 1;
-        return isValues ? this.settings.values[val] : Math.round(val);
+    getValue(val: number): number | string {
+        const isValues = this.settings.items.values.length > 1;
+        return isValues ? this.settings.items.values[val] : Math.round(val);
     }
     drawLineSelected(currentHandle: Handle) {
         if (this.settings.isTwoHandles) {
@@ -301,12 +301,12 @@ export default class TRSView {
             this.tipMax.text = ns.maxValue;
         }
 
-        if (isFirstDraw || ns.values != os.values) {
-            if (ns.values) {
-                const count = ns.values.length;
+        if (isFirstDraw || ns.items.values != os.items.values) {
+            if (ns.items.values) {
+                const count = ns.items.values.length;
                 if (count > 1) {
-                    this.tipMin.text = ns.values[0];
-                    this.tipMax.text = ns.values[count - 1];
+                    this.tipMin.text = ns.items.values[0];
+                    this.tipMax.text = ns.items.values[count - 1];
                 }
             }
         }
