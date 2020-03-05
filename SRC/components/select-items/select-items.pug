@@ -1,10 +1,10 @@
 mixin select-items(data)
-  .select-items
+  .select-items(class=data.isDisabled ? 'select-items_not-using' : '')
     .select-items__container
       .select-items__title #{data.title}
       .select-items__buttons
         button.select-items__button.select-items__button-add +
         button.select-items__button.select-items__button-remove ‒
-    select.select-items__options    
+    select.select-items__options
       for item in data.items
         option #{item}

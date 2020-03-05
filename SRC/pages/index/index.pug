@@ -16,13 +16,13 @@ html(lang="en")
       .column1
         +panel({id:'p1', 
           slider: { isVertical: false, isTwoHandles: true, isTip: true,
-          minValue: 0, maxValue: 1200, stepValue: 0,
-          valueFrom: 2, valueTo: 7, items: {indexFrom: 2, indexTo: 7, values: [2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]} } 
+          minValue: 2, maxValue: 1024, stepValue: 0, valueFrom: 2, valueTo: 7, 
+          items: {indexFrom: 2, indexTo: 7, values: [2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]} } 
           })
         +panel({id:'p2', 
-          slider: { isVertical: false, isTwoHandles: false, isTip: true,
-          minValue: 0, maxValue: 1200, stepValue: 0,
-          valueFrom: 2, valueTo: 8, values: ['январь','февраль','март','апрель','май','июнь','июль','август','сентябрь','октябрь','ноябрь','декабрь']}
+          slider: { isVertical: false, isTwoHandles: true, isTip: true,
+          minValue: 0, maxValue: 1220, stepValue: 100,
+          valueFrom: 0, valueTo: 1220 }
           })
         +panel({id:'p21', 
           slider: { isVertical: false, isTwoHandles: false, isTip: true,

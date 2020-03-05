@@ -120,10 +120,10 @@ describe('Check result of getNearestHandle() function. Six diffrent tests.', () 
 //     expect(rangeslider.view.validate(9999)).toBe(244);
 // });
 
-test('Check result of convertRelativeValueToPixelValue function', () => {
-    rangeslider.update({ minValue: 10, maxValue: 1000 });
-    expect(rangeslider.view.convertRelativeValueToPixelValue(750)).toBe(182.3838383838384);
-});
+// test('Check result of convertRelativeValueToPixelValue function', () => {
+//     rangeslider.update({ minValue: 10, maxValue: 1000 });
+//     expect(rangeslider.view.convertRelativeValueToPixelValue(750)).toBe(182.3838383838384);
+// });
 
 // test('Check result of evalThickness, if rangeslider is not vertical', () => {
 //     expect(rangeslider.view.evalThickness(false)).toBe(35);

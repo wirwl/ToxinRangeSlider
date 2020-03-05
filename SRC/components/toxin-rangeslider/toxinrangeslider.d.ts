@@ -6,11 +6,11 @@ interface RangeSliderOptions {
     isTwoHandles?: boolean;
     isTip?: boolean;
     isScale?: boolean;
-    minValue?: number;
-    maxValue?: number;
+    minValue?: number | string;
+    maxValue?: number | string;
     stepValue?: number;
-    valueFrom?: number;
-    valueTo?: number;
+    valueFrom?: number | string;
+    valueTo?: number | string;
     //values?: any[];
     items?: RangeSliderItems;
     onHandlePositionChange?: Function;
@@ -20,6 +20,13 @@ interface RangeSliderItems {
     values: (number | string)[];
     indexFrom: number;
     indexTo: number;
+}
+
+interface HandleMovingResult {
+    isFromHandle: boolean;
+    value: number | string;
+    isUsingItems: boolean;
+    index: number;
 }
 
 /**

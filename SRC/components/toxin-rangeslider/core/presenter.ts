@@ -21,13 +21,15 @@ export default class TRSPresenter {
         this.view.drawSlider(null, this.model.settings, true);
     }
     onHandlePositionUpdate(handle: Handle, newPos: number) {
-        const result: Handle = this.view.moveHandle(handle, newPos);
-        result.is(this.view.handleFrom)
-            ? (this.model.settings.valueFrom = result.value)
-            : (this.model.settings.valueTo = result.value);
-        const value: number | string = result.value;
-        const isFromHandle: boolean = result.is(this.view.handleFrom) ? true : false;
-        this.model.settings.onHandlePositionChange.call(result, value, isFromHandle, this.model.settings);
+        const result: HandleMovingResult = this.view.moveHandle(handle, newPos);
+        if (result.isFromHandle) {
+            if (result.isUsingItems) this.model.settings.items.indexFrom = result.index;
+            this.model.settings.valueFrom = result.value;
+        } else {
+            if (result.isUsingItems) this.model.settings.items.indexTo = result.index;
+            this.model.settings.valueTo = result.value;
+        }
+        this.model.settings.onHandlePositionChange.call(result, result.value, result.isFromHandle, this.model.settings);
     }
     update(opt: RangeSliderOptions, isForceRedraw = false) {
         const oldSettings = $.extend({}, this.model.settings);
