@@ -27,7 +27,7 @@ mixin panel(data)
           .panel__input-max-value
             +number({type: 'text', text:'Max. value', value:isUsingItems ? data.slider.items.values[lengthValues-1] : data.slider.maxValue, isDisabled : isUsingItems})
           .panel__input-step-value
-            +number({type:'number', text:'Step value', value: isUsingItems ? '' : data.slider.stepValue, isDisabled : isUsingItems})
+            +number({type:'number', text:'Step value', value: isUsingItems ? 0 : data.slider.stepValue, isDisabled : isUsingItems})
         .panel__section2
           .panel__input-value-from
             +number({type: 'text', text:'From value', value: data.slider.isTwoHandles ? (isUsingItems ? data.slider.items.values[data.slider.items.indexFrom] : data.slider.valueFrom) : '', isDisabled: !data.slider.isTwoHandles})

@@ -1,8 +1,8 @@
 import TRSElement from '../entities/element';
 import Tip from './tip';
 export default class Handle extends TRSElement {
-    value: number | string;
-    index: number;
+    //value: number | string;
+    //index: number;
     //displayValue: number | string;
     tip: Tip;
     constructor(el: JQuery<HTMLElement>, tip: Tip) {

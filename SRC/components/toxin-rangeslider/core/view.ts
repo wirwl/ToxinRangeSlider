@@ -94,8 +94,8 @@ export default class TRSView {
         const isHasValues = this.settings.items.values.length > 1;
         let result;
         if (isHasValues) {
-            const pxStep = lw / (this.settings.items.values.length - 1);
-            result = Math.round(val / pxStep);
+            // const pxStep = lw / (this.settings.items.values.length - 1);
+            // result = Math.round(val / pxStep);
         } else {
             const percent = val / lw;
             result = Math.round(
@@ -270,17 +270,19 @@ export default class TRSView {
         }
     }
     moveHandle(currentHandle: Handle, pxX: number): HandleMovingResult {
+        const isHandleFrom = currentHandle.is(this.handleFrom);
         currentHandle.pos = pxX;
-        currentHandle.value = this.convertPixelValueToRelativeValue(currentHandle.pos);
-
+        //currentHandle.value = this.convertPixelValueToRelativeValue(currentHandle.pos);
+        let relValue;
         let restoreIndex = -1;
         if (this.settings.isHaveItems) {
             const lw = this.line.size - this.offsetFrom - this.offsetTo;
             const pxStep = lw / (this.settings.items.values.length - 1);
             restoreIndex = Math.round(pxX / pxStep);
-            currentHandle.index = restoreIndex;
+            //currentHandle.index = restoreIndex;
             if (currentHandle.is(this.handleFrom)) this.settings.items.indexFrom = restoreIndex;
             else this.settings.items.indexTo = restoreIndex;
+            //relValue = this.settings.items.values[restoreIndex];
         } else {
             if (currentHandle.is(this.handleFrom)) this.settings.valueFrom = this.convertPixelValueToRelativeValue(pxX);
             else this.settings.valueTo = this.convertPixelValueToRelativeValue(pxX);
@@ -298,7 +300,7 @@ export default class TRSView {
 
         return {
             isFromHandle: currentHandle.is(this.handleFrom),
-            value: currentHandle.value,
+            value: isHandleFrom ? this.settings.valueFrom : this.settings.valueTo,
             isUsingItems: this.settings.isHaveItems,
             index: restoreIndex,
         };
@@ -365,12 +367,18 @@ export default class TRSView {
             );
             this.moveHandle(this.handleTo, posXWithStep == null ? posXWithOutStep : posXWithStep);
         }
+        if (this.settings.isHaveItems) {
+            const pxLength = this.line.size - this.offsetFrom - this.offsetTo;
+            const pxStep = pxLength / (this.settings.items.values.length - 1);
+            if (isFirstDraw || ns.items.indexFrom != os.items.indexFrom) {
+                const newPos = ns.items.indexFrom * pxStep;
+                this.moveHandle(this.handleFrom, newPos);
+            }
 
-        if (isFirstDraw || ns.items.indexFrom != os.items.indexFrom) {
-            //this.moveHandle(this.handleFrom, posXWithStep == null ? posXWithOutStep : posXWithStep);
-        }
-
-        if (isFirstDraw || ns.items.indexTo != os.items.indexTo) {
+            if (isFirstDraw || ns.items.indexTo != os.items.indexTo) {
+                const newPos = ns.items.indexTo * pxStep;
+                this.moveHandle(this.handleTo, newPos);
+            }
         }
     }
 }

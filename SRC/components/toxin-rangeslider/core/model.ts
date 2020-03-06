@@ -53,8 +53,8 @@ export default class TRSModel {
     constructor(options: RangeSliderOptions) {
         //this.settings = $.extend({}, TRSModel.defaults, options);
         this.settings = new CRangeSliderOptions();
-        this.settings = $.extend(this.settings, TRSModel.defaults);
-        this.settings = $.extend(this.settings, options);
+        this.settings = $.extend(true, this.settings, TRSModel.defaults);
+        this.settings = $.extend(true, this.settings, options);
     }
     validate() {}
 }

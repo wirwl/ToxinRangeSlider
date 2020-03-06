@@ -16,7 +16,7 @@ export default class TRSPresenter {
         this.init();
     }
     init() {
-        $.extend(this.model.settings, this.view.data);
+        $.extend(true, this.model.settings, this.view.data);
         this.model.validate();
         this.view.drawSlider(null, this.model.settings, true);
     }
@@ -29,13 +29,14 @@ export default class TRSPresenter {
             if (result.isUsingItems) this.model.settings.items.indexTo = result.index;
             this.model.settings.valueTo = result.value;
         }
-        this.model.settings.onHandlePositionChange.call(result, result.value, result.isFromHandle, this.model.settings);
+        this.model.settings.onHandlePositionChange.call(result);
+        //, result.value, result.isFromHandle, this.model.settings);
     }
-    update(opt: RangeSliderOptions, isForceRedraw = false) {
-        const oldSettings = $.extend({}, this.model.settings);
-        $.extend(this.model.settings, opt);
+    update(opt: RangeSliderOptions) {
+        const oldSettings = $.extend(true, {}, this.model.settings);
+        $.extend(true, this.model.settings, opt);
         this.model.validate();
-        this.view.drawSlider(oldSettings, this.model.settings, isForceRedraw);
+        this.view.drawSlider(oldSettings, this.model.settings);
     }
     reset() {}
 }
