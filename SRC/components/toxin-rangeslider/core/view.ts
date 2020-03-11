@@ -10,8 +10,8 @@ export default class TRSView {
     private template =
         "<div class='rangeslider'>" +
         "<div class='rangeslider__tip-min'>00</div>" +
-        "<div class='rangeslider__tip-from'>23</div>" +
-        "<div class='rangeslider__tip-to'>456</div>" +
+        "<div class='rangeslider__tip rangeslider__tip-from'>23</div>" +
+        "<div class='rangeslider__tip rangeslider__tip-to'>456</div>" +
         "<div class='rangeslider__tip-max'>99</div>" +
         "<div class='rangeslider__line'></div>" +
         "<div class='rangeslider__line-selected'></div>" +
@@ -121,6 +121,7 @@ export default class TRSView {
         }
     }
     onMouseUp(e: JQuery.MouseUpEvent, currentHandle: Handle) {
+        currentHandle.isMoving = false;
         this.rangeslider.el.off('mousemove');
         currentHandle.el.off('mouseup');
         $(document).off('mousemove');
@@ -130,6 +131,7 @@ export default class TRSView {
         e.preventDefault();
         const clientPos = this.settings.isVertical ? e.clientY : e.clientX;
         const currentHandle: Handle = $(e.target).is(this.handleFrom.el) ? this.handleFrom : this.handleTo;
+        currentHandle.isMoving = true;
         const shiftPos = clientPos - currentHandle.offset;
 
         this.rangeslider.el.mousemove(e => this.onHandleMove(e, currentHandle, shiftPos));

@@ -51,4 +51,18 @@ display: flex;
    > *:not(:last-child) { margin-bottom: 22px;}
  }
  
+ .changeColorMain(@index; @color) {   
+  .rangeslider:nth-of-type(@{index}) .rangeslider__tip {background: @color;}
+  .rangeslider:nth-of-type(@{index}) .rangeslider__line-selected {background: @color;}
+  .rangeslider:nth-of-type(@{index}) .rangeslider__handle {background: @color;}
+  .rangeslider:nth-of-type(@{index}) .rangeslider__handle:hover:not(.rangeslider__handle_isMoving) {background: @color;}
+  .rangeslider:nth-of-type(@{index}) .rangeslider__handle_isMoving {background: @color;}  
+ }
+
+ 
+ .rangeslider {
+  .changeColorMain(1; teal);
+ }
+ 
+ 
  

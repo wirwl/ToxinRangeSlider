@@ -102,21 +102,23 @@ $(document).ready(() => {
 
         $valueFrom.focusout(function(this: HTMLInputElement) {
             rangeslider.update({ valueFrom: this.value });
+            if (rangeslider.data.isHaveItems) $indexFrom.val(rangeslider.data.items.indexFrom);
         });
 
         $valueTo.focusout(function(this: HTMLInputElement) {
             rangeslider.update({ valueTo: this.value });
+            if (rangeslider.data.isHaveItems) $indexTo.val(rangeslider.data.items.indexTo);
         });
 
         $indexFrom.focusout(function(this: HTMLInputElement) {
             console.log(rangeslider.data.items.indexFrom);
             console.log(rangeslider.data.valueFrom);
-            console.log(rangeslider.model.settings.valueFrom);
+            //console.log(rangeslider.model.settings.valueFrom);
             rangeslider.update({ items: { indexFrom: parseInt(this.value) } });
             console.log(rangeslider.data.items.indexFrom);
             console.log(rangeslider.data.valueFrom);
             $valueFrom.val(rangeslider.data.valueFrom);
-            console.log(rangeslider.model.settings.valueFrom);
+            //console.log(rangeslider.model.settings.valueFrom);
         });
         $indexTo.focusout(function(this: HTMLInputElement) {
             rangeslider.update({ items: { indexTo: parseInt(this.value) } });

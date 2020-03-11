@@ -31,14 +31,14 @@ mixin panel(data)
             +number({type:'number', text:'Step value', value: isUsingItems ? 0 : data.slider.stepValue, isDisabled : isUsingItems})
         .panel__section2
           .panel__input-value-from
-            +number({type: 'text', text:'From value', value: data.slider.isTwoHandles ? (isUsingItems ? data.slider.items.values[data.slider.items.indexFrom] : data.slider.valueFrom) : '', isDisabled: !data.slider.isTwoHandles})
+            +number({type: 'text', text:'From value', value: isUsingItems ? data.slider.items.values[data.slider.items.indexFrom] : data.slider.valueFrom, isDisabled: !data.slider.isTwoHandles})
           .panel__input-value-to
             +number({type: 'text', text:'To value', value: isUsingItems ? data.slider.items.values[data.slider.items.indexTo] : data.slider.valueTo})
           .panel__input-values      
             +select-items({title:'Items', isRemoveDisabled: zeroValues , items: isHasItems ?  data.slider.items.values : [], isDisabled: !isUsingItems})
         .panel__section3
           .panel__input-index-from
-            +number({type: 'text', text:'Index from', value: isHasItems ? data.slider.items.indexFrom : '', isDisabled: !isUsingItems  })            
+            +number({type: 'text', text:'Index from', value: isHasItems ? data.slider.items.indexFrom : '', isDisabled: !isUsingItems || !data.slider.isTwoHandles  })            
           .panel__input-index-to
             +number({type: 'text', text:'Index to', value: isHasItems ? data.slider.items.indexTo : '', isDisabled: !isUsingItems })
     .panel__toxin-rangeslider.toxin-rangeslider-here(data-options=data.slider)

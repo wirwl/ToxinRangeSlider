@@ -4,21 +4,21 @@ export default class CRangeSliderOptions implements RangeSliderOptions {
     isTip?: boolean; // = true;
 
     //minValue?: number;
-    private _minValue?: number | string;
+    private _minValue?: number;
     get minValue(): number | string {
         return this.isHaveItems ? this.items.values[0] : this._minValue;
     }
     set minValue(value: number | string) {
-        if (!this.isHaveItems) this._minValue = value;
+        if (!this.isHaveItems) this._minValue = parseFloat(value.toString());
     }
 
     //maxValue?: number;
-    private _maxValue?: number | string;
+    private _maxValue?: number;
     get maxValue(): number | string {
         return this.isHaveItems ? this.items.values[this.items.values.length - 1] : this._maxValue;
     }
     set maxValue(value: number | string) {
-        if (!this.isHaveItems) this._maxValue = value;
+        if (!this.isHaveItems) this._maxValue = parseFloat(value.toString());
     }
 
     stepValue?: number;
@@ -27,7 +27,7 @@ export default class CRangeSliderOptions implements RangeSliderOptions {
     }
     set isHaveItems(value: boolean) {}
 
-    private _valueFrom?: number | string;
+    private _valueFrom?: number;
     get valueFrom(): number | string {
         if (this.items?.values?.length > 1) {
             return this.items.values[this.items.indexFrom];
@@ -37,10 +37,10 @@ export default class CRangeSliderOptions implements RangeSliderOptions {
         if (this.items?.values?.length > 1) {
             const newIndex = this.findIndexByItem(value);
             if (newIndex > -1) this.items.indexFrom = newIndex;
-        } else this._valueFrom = value;
+        } else this._valueFrom = parseFloat(value.toString());
     }
 
-    private _valueTo?: number | string;
+    private _valueTo?: number;
     get valueTo(): number | string {
         if (this.items?.values?.length > 1) {
             return this.items.values[this.items.indexTo];
@@ -50,7 +50,7 @@ export default class CRangeSliderOptions implements RangeSliderOptions {
         if (this.isHaveItems) {
             const newIndex = this.findIndexByItem(value);
             if (newIndex > -1) this.items.indexTo = newIndex;
-        } else this._valueTo = value;
+        } else this._valueTo = parseFloat(value.toString());
     }
 
     items: RangeSliderItems; // = { indexFrom: 0, indexTo: 2, values: [2, 4, 8, 16] };
@@ -73,15 +73,24 @@ export default class CRangeSliderOptions implements RangeSliderOptions {
         return result;
     }
     extend(o: RangeSliderOptions | CRangeSliderOptions) {
-        const isUsingItemsValues = o.items && o.items.values && o.items.values.length > 1;
+        const isUsingItemsValuesThis = this.items && this.items.values && this.items.values.length > 1;
+        const isUsingItemsValuesO = o.items && o.items.values && o.items.values.length > 1;
+        const isUsingItemsValues = isUsingItemsValuesThis || isUsingItemsValuesO;
+
         if (typeof o.isVertical !== 'undefined') this.isVertical = o.isVertical;
         if (typeof o.isTwoHandles !== 'undefined') this.isTwoHandles = o.isTwoHandles;
         if (typeof o.isTip !== 'undefined') this.isTip = o.isTip;
-        if (typeof o.minValue !== 'undefined') if (!isUsingItemsValues) this._minValue = o.minValue;
-        if (typeof o.maxValue !== 'undefined') if (!isUsingItemsValues) this._maxValue = o.maxValue;
+        if (typeof o.minValue !== 'undefined')
+            if (!isUsingItemsValues) this._minValue = parseFloat(o.minValue.toString());
+        if (typeof o.maxValue !== 'undefined')
+            if (!isUsingItemsValues) this._maxValue = parseFloat(o.maxValue.toString());
         if (typeof o.stepValue !== 'undefined') this.stepValue = o.stepValue;
-        if (typeof o.valueFrom !== 'undefined') if (!isUsingItemsValues) this._valueFrom = o.valueFrom;
-        if (typeof o.valueTo !== 'undefined') if (!isUsingItemsValues) this._valueTo = o.valueTo;
+        if (typeof o.valueFrom !== 'undefined')
+            if (!isUsingItemsValues) this._valueFrom = parseFloat(o.valueFrom.toString());
+            else this.valueFrom = o.valueFrom;
+        if (typeof o.valueTo !== 'undefined')
+            if (!isUsingItemsValues) this._valueTo = parseFloat(o.valueTo.toString());
+            else this.valueTo = o.valueTo;
         if (typeof o.items !== 'undefined') {
             if (typeof o.items.indexFrom !== 'undefined') this.items.indexFrom = o.items.indexFrom;
             if (typeof o.items.indexTo !== 'undefined') this.items.indexTo = o.items.indexTo;

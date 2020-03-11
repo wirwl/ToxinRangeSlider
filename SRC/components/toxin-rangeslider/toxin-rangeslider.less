@@ -1,3 +1,4 @@
+@color-main: green;
 @xpos-tips : 0px;
 @xpos-handles : @xpos-tips + 19px;
 @xpos-line : @xpos-tips + 24px;
@@ -29,12 +30,13 @@
   padding: 0px 3px;
   border-radius: 3px;
 }
-
+.rangeslider__tip {
+  background: @color-main;
+}
 .rangeslider__tip-from {
   display: flex;
   justify-content: center;
-  align-items: center;
-  background: green;
+  align-items: center;  
   position: absolute;
   top: @xpos-tips;
   left: 123px;
@@ -47,8 +49,7 @@
 .rangeslider__tip-to {
   display: flex;
   justify-content: center;
-  align-items: center;
-  background: green;
+  align-items: center;  
   position: absolute;
   top: @xpos-tips;
   left: 224px;
@@ -84,13 +85,17 @@
   z-index: 10;
 }
 
+.rangeslider__line:hover {
+  border-color: black;
+}
+
 .rangeslider__line-selected {
-  background: green;
+  background: @color-main;
   position: absolute;
   left: 140px;
   top: @xpos-lineselected;
   width: 84px;
-  height: @size-lineselected;
+  height: @size-lineselected;  
 }
 
 
@@ -100,7 +105,7 @@
   cursor: pointer;
   border-radius: 50%;
   background: transparent;
-  border: 1px solid black;
+  border: 2px solid white;
   position: absolute;
   width: 16px;
   height: 16px;
@@ -113,13 +118,29 @@
   cursor: pointer;
   border-radius: 50%;
   background: transparent;
-  border: 1px solid teal;
+  border: 2px solid white;
   position: absolute;
   width: 16px;
   height: 16px;
   left: 224px;
   top: @xpos-handles;
   z-index: 11;
+}
+
+.rangeslider__handle {
+  background: @color-main;
+}
+
+.rangeslider__handle:hover:not(.rangeslider__handle_isMoving) {    
+  background: white;
+  border-color: @color-main;
+}
+
+.rangeslider__handle_isMoving {
+  background: @color-main;  
+  border-color: white;
+  
+  border-width: 1px;
 }
 
 .rangeslider__thinline {
