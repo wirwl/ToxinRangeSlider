@@ -1,3 +1,5 @@
+import TRSPresenter from '../toxin-rangeslider/core/presenter';
+
 $(document).ready(() => {
     // $('#p1')
     //     .find('.panel__toxin-rangeslider')
@@ -28,11 +30,11 @@ $(document).ready(() => {
         const $buttonAdd = $panel.find('.select-items').find('.select-items__button-add');
         const $buttonRemove = $panel.find('.select-items').find('.select-items__button-remove');
         const $select = $panel.find('.select-items').find('.select-items__options');
-        const $selectOptions = $select.find('option');
+
         const select = $select[0] as HTMLSelectElement;
         const $rangeliderRootElement = $panel.find('.toxin-rangeslider-here');
         const $rangeslider = $rangeliderRootElement.find('.rangeslider');
-        const rangeslider = $rangeliderRootElement.data('toxinRangeSlider');
+        const rangeslider: TRSPresenter = $rangeliderRootElement.data('toxinRangeSlider');
         const $isVertical = $panel.find('.panel__checkbox-is-vertical').find('.checkbox__input');
         const $isTwoHandles = $panel.find('.panel__checkbox-is-two-handles').find('.checkbox__input');
         const $isShowTips = $panel.find('.panel__checkbox-is-tip').find('.checkbox__input');
@@ -40,21 +42,12 @@ $(document).ready(() => {
 
         rangeslider.update({
             onHandlePositionChange(this: HandleMovingResult) {
-                //value: number | string, isFromHandle: boolean, settings: RangeSliderOptions) {
-                //isFromHandle ? $valueFrom.val(value) : $valueTo.val(value);
-                //const isUsingItems = settings.items.values.length > 1;
-                // if (isFromHandle) {
-                //     settings.valueFrom;
-                // } else {
-                //     settings.valueTo;
-                // }
-
                 if (this.isFromHandle) {
                     $valueFrom.val(this.value);
-                    $indexFrom.val(this.index);
+                    if (this.isUsingItems) $indexFrom.val(this.index);
                 } else {
                     $valueTo.val(this.value);
-                    $indexTo.val(this.index);
+                    if (this.isUsingItems) $indexTo.val(this.index);
                 }
             },
         });
@@ -66,12 +59,45 @@ $(document).ready(() => {
 
         $isTwoHandles.change(function(this: HTMLInputElement) {
             rangeslider.update({ isTwoHandles: this.checked });
-            if (!this.checked) $valueFrom.prop('disabled', 1);
-            else $valueFrom.prop('disabled', 0);
+            if (!this.checked) {
+                $valueFrom.prop('disabled', true);
+                $indexFrom.prop('disabled', true);
+            } else {
+                $valueFrom.prop('disabled', false);
+                $indexFrom.prop('disabled', false);
+            }
         });
 
         $isShowTips.change(function(this: HTMLInputElement) {
             rangeslider.update({ isTip: this.checked });
+        });
+        function updatePanelValues() {
+            $minValue.val(rangeslider.data.minValue);
+            $maxValue.val(rangeslider.data.maxValue);
+            $valueFrom.val(rangeslider.data.valueFrom);
+            $valueTo.val(rangeslider.data.valueTo);
+            if (select.length > 1) {
+                $indexFrom.prop('disabled', false);
+                $indexTo.prop('disabled', false);
+                $indexFrom.val(rangeslider.data.items.indexFrom);
+                $indexTo.val(rangeslider.data.items.indexTo);
+            } else {
+                $indexFrom.prop('disabled', true);
+                $indexTo.prop('disabled', true);
+            }
+        }
+        $minValue.focusout(function(this: HTMLInputElement) {
+            rangeslider.update({ minValue: parseFloat(this.value) });
+            updatePanelValues();
+        });
+
+        $maxValue.focusout(function(this: HTMLInputElement) {
+            rangeslider.update({ maxValue: parseFloat(this.value) });
+            updatePanelValues();
+        });
+
+        $stepValue.focusout(function(this: HTMLInputElement) {
+            rangeslider.update({ stepValue: parseInt(this.value) });
         });
 
         $valueFrom.focusout(function(this: HTMLInputElement) {
@@ -83,14 +109,22 @@ $(document).ready(() => {
         });
 
         $indexFrom.focusout(function(this: HTMLInputElement) {
-            rangeslider.update({ items: { indexFrom: this.value } });
-            ($valueFrom as JQuery<HTMLInputElement>)[0].value = rangeslider.model.settings.valueFrom;
+            console.log(rangeslider.data.items.indexFrom);
+            console.log(rangeslider.data.valueFrom);
+            console.log(rangeslider.model.settings.valueFrom);
+            rangeslider.update({ items: { indexFrom: parseInt(this.value) } });
+            console.log(rangeslider.data.items.indexFrom);
+            console.log(rangeslider.data.valueFrom);
+            $valueFrom.val(rangeslider.data.valueFrom);
+            console.log(rangeslider.model.settings.valueFrom);
         });
         $indexTo.focusout(function(this: HTMLInputElement) {
-            rangeslider.update({ items: { indexTo: this.value } });
-            ($valueTo as JQuery<HTMLInputElement>)[0].value = rangeslider.model.settings.valueTo;
+            rangeslider.update({ items: { indexTo: parseInt(this.value) } });
+            $valueTo.val(rangeslider.data.valueTo);
         });
+
         $buttonAdd.click(function(this: HTMLButtonElement) {
+            const $selectOptions = $select.find('option');
             const isUsingItems = select.length > 1;
             $minValue.prop('disabled', isUsingItems);
             $maxValue.prop('disabled', isUsingItems);
@@ -99,14 +133,21 @@ $(document).ready(() => {
             const options = $.map($selectOptions, function(option: HTMLOptionElement) {
                 return option.value;
             });
-            console.log(options);
             rangeslider.update({ items: { values: options } });
+            updatePanelValues();
         });
         $buttonRemove.click(function(this: HTMLButtonElement) {
+            const $selectOptions = $select.find('option');
             const isUsingItems = select.length > 1;
             $minValue.prop('disabled', isUsingItems);
             $maxValue.prop('disabled', isUsingItems);
             $stepValue.prop('disabled', isUsingItems);
+
+            const options = $.map($selectOptions, function(option: HTMLOptionElement) {
+                return option.value;
+            });
+            rangeslider.update({ items: { values: options } });
+            updatePanelValues();
         });
     });
 });

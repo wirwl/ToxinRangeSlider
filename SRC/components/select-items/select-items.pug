@@ -4,7 +4,7 @@ mixin select-items(data)
       .select-items__title #{data.title}
       .select-items__buttons
         button.select-items__button.select-items__button-add +
-        button.select-items__button.select-items__button-remove ‒
+        button.select-items__button.select-items__button-remove(class=data.isRemoveDisabled ? 'select-items__button-remove_disabled' : '') ‒
     select.select-items__options
       for item in data.items
         option #{item}

@@ -25,47 +25,41 @@ html(lang="en")
           valueFrom: 0, valueTo: 1220 }
           })
         +panel({id:'p21', 
-          slider: { isVertical: false, isTwoHandles: false, isTip: true,
-          minValue: 0, maxValue: 1200, stepValue: 0,
-          valueFrom: 2, valueTo: 8, values: ['январь','февраль','март','апрель','май','июнь','июль','август','сентябрь','октябрь','ноябрь','декабрь']}
+          slider: { isVertical: false, isTwoHandles: true, isTip: true,
+          minValue: 0, maxValue: 1200, stepValue: 0, valueFrom: 2, valueTo: 8,  
+          items: {indexFrom: 1, indexTo: 9, values: ['январь','февраль','март','апрель','май','июнь','июль','август','сентябрь','октябрь','ноябрь','декабрь']} }
           })
         +panel({id:'p21', 
           slider: { isVertical: false, isTwoHandles: false, isTip: true,
-          minValue: 0, maxValue: 1200, stepValue: 0,
-          valueFrom: 2, valueTo: 8, values: ['январь','февраль','март','апрель','май','июнь','июль','август','сентябрь','октябрь','ноябрь','декабрь']}
+          minValue: 0, maxValue: 1200, stepValue: 0, valueFrom: 2, valueTo: 8, 
+          items: {indexFrom: 1, indexTo: 9, values: ['январь','февраль','март','апрель','май','июнь','июль','август','сентябрь','октябрь','ноябрь','декабрь']} }
           })
       .column2
         .panelv__wrapper
           +panel({id:'p3', isVertical: true,
           slider: { isVertical: true, isTwoHandles: true, isTip: true,
-          minValue: 0, maxValue: 1220, stepValue: 0,
-          valueFrom: 100, valueTo: 600, values: []} 
+          minValue: 0, maxValue: 1220, stepValue: 0, valueFrom: 100, valueTo: 600} 
           })
           +panel({id:'p4', isVertical: true,
           slider: { isVertical: true, isTwoHandles: true, isTip: true,
-          minValue: 1000, maxValue: 2220, stepValue: 100,
-          valueFrom: 1100, valueTo: 1600, values: []} 
+          minValue: 1000, maxValue: 2220, stepValue: 100, valueFrom: 1100, valueTo: 1600} 
           })
           +panel({id:'p41', isVertical: true,
           slider: { isVertical: true, isTwoHandles: true, isTip: true,
-          minValue: 1000, maxValue: 2220, stepValue: 100,
-          valueFrom: 1100, valueTo: 1600, values: []} 
+          minValue: 1000, maxValue: 2220, stepValue: 100, valueFrom: 1100, valueTo: 1600} 
           })
         .panelv__wrapper
           +panel({id:'p3', isVertical: true,
           slider: { isVertical: true, isTwoHandles: true, isTip: true,
-          minValue: 0, maxValue: 1220, stepValue: 0,
-          valueFrom: 100, valueTo: 600, values: []} 
+          minValue: 0, maxValue: 1220, stepValue: 0, valueFrom: 100, valueTo: 600} 
           })
           +panel({id:'p4', isVertical: true,
           slider: { isVertical: true, isTwoHandles: true, isTip: true,
-          minValue: 1000, maxValue: 2220, stepValue: 100,
-          valueFrom: 1100, valueTo: 1600, values: []} 
+          minValue: 1000, maxValue: 2220, stepValue: 100, valueFrom: 1100, valueTo: 1600} 
           })
           +panel({id:'p41', isVertical: true,
           slider: { isVertical: true, isTwoHandles: true, isTip: true,
-          minValue: 1000, maxValue: 2220, stepValue: 100,
-          valueFrom: 1100, valueTo: 1600, values: []} 
+          minValue: 1000, maxValue: 2220, stepValue: 100, valueFrom: 1100, valueTo: 1600} 
           })
 
 

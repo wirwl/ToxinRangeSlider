@@ -11,15 +11,14 @@ interface RangeSliderOptions {
     stepValue?: number;
     valueFrom?: number | string;
     valueTo?: number | string;
-    //values?: any[];
     items?: RangeSliderItems;
     onHandlePositionChange?: Function;
 }
 
 interface RangeSliderItems {
-    values: (number | string)[];
-    indexFrom: number;
-    indexTo: number;
+    values?: (number | string)[];
+    indexFrom?: number;
+    indexTo?: number;
 }
 
 interface HandleMovingResult {

@@ -4,7 +4,7 @@ export default class CRangeSliderOptions implements RangeSliderOptions {
     isTip?: boolean; // = true;
 
     //minValue?: number;
-    private _minValue: number | string;
+    private _minValue?: number | string;
     get minValue(): number | string {
         return this.isHaveItems ? this.items.values[0] : this._minValue;
     }
@@ -13,7 +13,7 @@ export default class CRangeSliderOptions implements RangeSliderOptions {
     }
 
     //maxValue?: number;
-    private _maxValue: number | string;
+    private _maxValue?: number | string;
     get maxValue(): number | string {
         return this.isHaveItems ? this.items.values[this.items.values.length - 1] : this._maxValue;
     }
@@ -57,8 +57,10 @@ export default class CRangeSliderOptions implements RangeSliderOptions {
     //{ indexFrom: 0; indexTo: 1; values: [20000, 40000, 80000, 16, 32, 64000, 12800] };
 
     onHandlePositionChange: Function;
-    constructor() {
+    constructor(anotherObject: CRangeSliderOptions = null) {
+        this.items = {};
         this.onHandlePositionChange = function() {};
+        if (anotherObject) this.extend(anotherObject);
     }
     findIndexByItem(item: number | string): number {
         let result = -1;
@@ -69,5 +71,22 @@ export default class CRangeSliderOptions implements RangeSliderOptions {
             }
         }
         return result;
+    }
+    extend(o: RangeSliderOptions | CRangeSliderOptions) {
+        const isUsingItemsValues = o.items && o.items.values && o.items.values.length > 1;
+        if (typeof o.isVertical !== 'undefined') this.isVertical = o.isVertical;
+        if (typeof o.isTwoHandles !== 'undefined') this.isTwoHandles = o.isTwoHandles;
+        if (typeof o.isTip !== 'undefined') this.isTip = o.isTip;
+        if (typeof o.minValue !== 'undefined') if (!isUsingItemsValues) this._minValue = o.minValue;
+        if (typeof o.maxValue !== 'undefined') if (!isUsingItemsValues) this._maxValue = o.maxValue;
+        if (typeof o.stepValue !== 'undefined') this.stepValue = o.stepValue;
+        if (typeof o.valueFrom !== 'undefined') if (!isUsingItemsValues) this._valueFrom = o.valueFrom;
+        if (typeof o.valueTo !== 'undefined') if (!isUsingItemsValues) this._valueTo = o.valueTo;
+        if (typeof o.items !== 'undefined') {
+            if (typeof o.items.indexFrom !== 'undefined') this.items.indexFrom = o.items.indexFrom;
+            if (typeof o.items.indexTo !== 'undefined') this.items.indexTo = o.items.indexTo;
+            if (typeof o.items.values !== 'undefined') this.items.values = [...o.items.values];
+        }
+        if (typeof o.onHandlePositionChange !== 'undefined') this.onHandlePositionChange = o.onHandlePositionChange;
     }
 }

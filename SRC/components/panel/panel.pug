@@ -6,7 +6,8 @@ mixin panel(data)
   - const isHasSlider = data.slider;
   - const isHasItems = isHasSlider && data.slider.items;
   - const isHasValues = isHasItems &&  data.slider.items.values;
-  - const lengthValues = isHasValues && data.slider.items.values.length;
+  - const lengthValues = isHasValues && data.slider.items.values.length || 0;
+  - const zeroValues = lengthValues < 1;
   - const isUsingItems = isHasValues && lengthValues > 1;
   - const isHasMinValue = isHasSlider && data.slider.minValue;
   - const isHasMaxValue = isHasSlider && data.slider.maxValue;
@@ -34,7 +35,7 @@ mixin panel(data)
           .panel__input-value-to
             +number({type: 'text', text:'To value', value: isUsingItems ? data.slider.items.values[data.slider.items.indexTo] : data.slider.valueTo})
           .panel__input-values      
-            +select-items({title:'Items', items: isHasItems ?  data.slider.items.values : [], isDisabled: !isUsingItems})
+            +select-items({title:'Items', isRemoveDisabled: zeroValues , items: isHasItems ?  data.slider.items.values : [], isDisabled: !isUsingItems})
         .panel__section3
           .panel__input-index-from
             +number({type: 'text', text:'Index from', value: isHasItems ? data.slider.items.indexFrom : '', isDisabled: !isUsingItems  })            

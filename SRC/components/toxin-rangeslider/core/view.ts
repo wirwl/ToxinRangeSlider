@@ -71,8 +71,6 @@ export default class TRSView {
         ]);
         this.settings = new CRangeSliderOptions();
     }
-
-    //convertRelativeValueToPixelValue(val: number): number {
     convertRelativeValueToPixelValue(val: number, isFrom: boolean): number {
         const lw = this.line.size - this.offsetFrom - this.offsetTo;
         const isHasValues = this.settings.items.values.length > 1;
@@ -91,18 +89,11 @@ export default class TRSView {
     }
     convertPixelValueToRelativeValue(val: number): number {
         const lw = this.line.size - this.offsetFrom - this.offsetTo;
-        const isHasValues = this.settings.items.values.length > 1;
-        let result;
-        if (isHasValues) {
-            // const pxStep = lw / (this.settings.items.values.length - 1);
-            // result = Math.round(val / pxStep);
-        } else {
-            const percent = val / lw;
-            result = Math.round(
-                (this.settings.minValue as number) +
-                    percent * ((this.settings.maxValue as number) - (this.settings.minValue as number)),
-            );
-        }
+        const percent = val / lw;
+        const result = Math.round(
+            (this.settings.minValue as number) +
+                percent * ((this.settings.maxValue as number) - (this.settings.minValue as number)),
+        );
         return result;
     }
     validate(pos: number, currentHandle: Handle): number {
@@ -210,10 +201,6 @@ export default class TRSView {
         newPos = this.validate(newPos, currentHandle);
         this.onHandlePositionUpdate(currentHandle, newPos);
     }
-    // getValue(val: number): number | string {
-    //     const isValues = this.settings.items.values.length > 1;
-    //     return isValues ? this.settings.items.values[val] : Math.round(val);
-    // }
     drawLineSelected(currentHandle: Handle) {
         if (this.settings.isTwoHandles) {
             if (currentHandle.is(this.handleFrom)) this.lineSelected.pos = this.handleFrom.pos + this.offsetFrom;
@@ -224,14 +211,8 @@ export default class TRSView {
         }
     }
     drawTips(currentHandle: Handle) {
-        //currentHandle.value = this.convertPixelValueToRelativeValue(currentHandle.pos);
-        //currentHandle.displayValue = this.getValue(currentHandle.value);
-        //debugger;
         this.tipFrom.text = this.settings.valueFrom;
-
-        //this.handleFrom.displayValue;
         this.tipTo.text = this.settings.valueTo;
-        //this.handleTo.displayValue;
 
         this.tipFrom.pos = this.handleFrom.pos + (this.handleFrom.size - this.tipFrom.size) / 2;
         this.tipTo.pos = this.handleTo.pos + (this.handleTo.size - this.tipTo.size) / 2;
@@ -272,17 +253,14 @@ export default class TRSView {
     moveHandle(currentHandle: Handle, pxX: number): HandleMovingResult {
         const isHandleFrom = currentHandle.is(this.handleFrom);
         currentHandle.pos = pxX;
-        //currentHandle.value = this.convertPixelValueToRelativeValue(currentHandle.pos);
         let relValue;
         let restoreIndex = -1;
         if (this.settings.isHaveItems) {
             const lw = this.line.size - this.offsetFrom - this.offsetTo;
             const pxStep = lw / (this.settings.items.values.length - 1);
             restoreIndex = Math.round(pxX / pxStep);
-            //currentHandle.index = restoreIndex;
             if (currentHandle.is(this.handleFrom)) this.settings.items.indexFrom = restoreIndex;
             else this.settings.items.indexTo = restoreIndex;
-            //relValue = this.settings.items.values[restoreIndex];
         } else {
             if (currentHandle.is(this.handleFrom)) this.settings.valueFrom = this.convertPixelValueToRelativeValue(pxX);
             else this.settings.valueTo = this.convertPixelValueToRelativeValue(pxX);
@@ -305,9 +283,13 @@ export default class TRSView {
             index: restoreIndex,
         };
     }
-
-    drawSlider(os: RangeSliderOptions, ns: RangeSliderOptions, isFirstDraw = false) {
-        this.settings = $.extend(true, this.settings, ns);
+    drawSlider(os: CRangeSliderOptions, ns: CRangeSliderOptions, isFirstDraw = false) {
+        this.settings.extend(ns);
+        // this.settings = $.extend(true, this.settings, ns);
+        // this.settings.items.values = [...ns.items.values];
+        // this.settings.items.indexFrom = ns.items.indexFrom;
+        // this.settings.items.indexTo = ns.items.indexTo;
+        const isItemValuesChanged = !this.isEqualArrays(os?.items?.values, ns.items.values);
 
         if (ns.isVertical != os?.isVertical) {
             this.rangeslider.isVertical = ns.isVertical;
@@ -318,18 +300,18 @@ export default class TRSView {
             this.rangeslider.isInterval = ns.isTwoHandles;
             isFirstDraw = true;
         }
-
-        if (ns.isTip) {
-            if (ns.isTwoHandles) this.tipFrom.show();
-            this.tipTo.show();
-            this.tipMin.show();
-            this.tipMax.show();
-        } else {
-            if (ns.isTwoHandles) this.tipFrom.hide();
-            this.tipTo.hide();
-            this.tipMin.hide();
-            this.tipMax.hide();
-        }
+        if (isFirstDraw || ns.isTip != os.isTip)
+            if (ns.isTip) {
+                if (ns.isTwoHandles) this.tipFrom.show();
+                this.tipTo.show();
+                this.tipMin.show();
+                this.tipMax.show();
+            } else {
+                if (ns.isTwoHandles) this.tipFrom.hide();
+                this.tipTo.hide();
+                this.tipMin.hide();
+                this.tipMax.hide();
+            }
 
         if (isFirstDraw || ns.minValue != os.minValue) {
             this.tipMin.text = ns.minValue;
@@ -338,7 +320,7 @@ export default class TRSView {
             this.tipMax.text = ns.maxValue;
         }
 
-        if (isFirstDraw || ns.items.values != os.items.values) {
+        if (isFirstDraw || isItemValuesChanged) {
             if (ns.items.values) {
                 const count = ns.items.values.length;
                 if (count > 1) {
@@ -353,14 +335,21 @@ export default class TRSView {
                 isFirstDraw ||
                 ns.valueFrom != os.valueFrom ||
                 ns.minValue != os.minValue ||
-                ns.maxValue != os.maxValue
+                ns.maxValue != os.maxValue ||
+                isItemValuesChanged
             ) {
                 const posXWithOutStep = this.convertRelativeValueToPixelValue(ns.valueFrom as number, true);
                 const posXWithStep = this.getSteppedPos(posXWithOutStep + this.line.offset + this.offsetFrom);
                 this.moveHandle(this.handleFrom, posXWithStep == null ? posXWithOutStep : posXWithStep);
             }
 
-        if (isFirstDraw || ns.valueTo != os.valueTo || ns.minValue != os.minValue || ns.maxValue != os.maxValue) {
+        if (
+            isFirstDraw ||
+            ns.valueTo != os.valueTo ||
+            ns.minValue != os.minValue ||
+            ns.maxValue != os.maxValue ||
+            isItemValuesChanged
+        ) {
             const posXWithOutStep = this.convertRelativeValueToPixelValue(ns.valueTo as number, false);
             const posXWithStep = this.getSteppedPos(
                 posXWithOutStep + this.line.offset + this.handleTo.size - this.offsetTo,
@@ -380,5 +369,11 @@ export default class TRSView {
                 this.moveHandle(this.handleTo, newPos);
             }
         }
+    }
+    isEqualArrays(ar1: (string | number)[], ar2: (string | number)[]): boolean {
+        if (!ar1 || !ar2) return false;
+        if (ar1.length != ar2.length) return false;
+        for (let i = 0; i < ar1.length; i++) if (ar1[i] !== ar2[i]) return false;
+        return true;
     }
 }

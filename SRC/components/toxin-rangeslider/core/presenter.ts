@@ -1,6 +1,7 @@
 import TRSView from './view';
 import TRSModel from './model';
 import Handle from './entities/handle';
+import CRangeSliderOptions from './entities/rangeslideroptions';
 const $ = require('../../../jquery/dist/jquery');
 /**
  * Presenter listenes to view events, retrieve data, manipulates it and
@@ -9,9 +10,11 @@ const $ = require('../../../jquery/dist/jquery');
 export default class TRSPresenter {
     view: TRSView;
     model: TRSModel;
+    data: CRangeSliderOptions;
     constructor(model: TRSModel, view: TRSView) {
         this.view = view;
         this.model = model;
+        //this.data = this.model.settings;
         this.view.onHandlePositionUpdate = this.onHandlePositionUpdate.bind(this);
         this.init();
     }
@@ -30,13 +33,25 @@ export default class TRSPresenter {
             this.model.settings.valueTo = result.value;
         }
         this.model.settings.onHandlePositionChange.call(result);
-        //, result.value, result.isFromHandle, this.model.settings);
     }
+    // update(opt: RangeSliderOptions) {
+    //     const oldSettings = { ...this.model.settings };
+    //     const newSettings = $.extend(true, {}, this.model.settings, opt);
+
+    //     if (opt && opt.items && opt.items.values) newSettings.items.values = [...opt.items.values];
+    //     this.model.settings = { ...newSettings };
+    //     this.model.validate();
+    //     this.data = this.model.settings;
+    //     this.view.drawSlider(oldSettings, newSettings);
+    // }
     update(opt: RangeSliderOptions) {
-        const oldSettings = $.extend(true, {}, this.model.settings);
-        $.extend(true, this.model.settings, opt);
+        const oldSettings = new CRangeSliderOptions(this.model.settings);
+
+        this.model.settings.extend(opt);
         this.model.validate();
+
+        this.data = this.model.settings;
+
         this.view.drawSlider(oldSettings, this.model.settings);
     }
-    reset() {}
 }
