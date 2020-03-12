@@ -51,18 +51,29 @@ display: flex;
    > *:not(:last-child) { margin-bottom: 22px;}
  }
  
- .changeColorMain(@index; @color) {   
-  .rangeslider:nth-of-type(@{index}) .rangeslider__tip {background: @color;}
-  .rangeslider:nth-of-type(@{index}) .rangeslider__line-selected {background: @color;}
-  .rangeslider:nth-of-type(@{index}) .rangeslider__handle {background: @color;}
-  .rangeslider:nth-of-type(@{index}) .rangeslider__handle:hover:not(.rangeslider__handle_isMoving) {background: @color;}
-  .rangeslider:nth-of-type(@{index}) .rangeslider__handle_isMoving {background: @color;}  
- }
+ 
+@color: red;
+@index: 0;
 
+//  .panel {
+// .rangeslider:nth-of-type(@{index}) .rangeslider__tip {background: @color;}
+//  .rangeslider:nth-child(4) .rangeslider__line-selected {background: blue;}
+//  .rangeslider:nth-of-type(@{index}) .rangeslider__handle {background: @color;}
+//  .rangeslider:nth-of-type(@{index}) .rangeslider__handle:hover:not(.rangeslider__handle_isMoving) {background: @color;}
+//  .rangeslider:nth-of-type(@{index}) .rangeslider__handle_isMoving {background: @color;}  
+//  }
  
- .rangeslider {
-  .changeColorMain(1; teal);
- }
- 
- 
- 
+.panel#p2 .rangeslider .rangeslider__line-selected {background: blue;}
+
+@colors: #EE4266, #0070B7, teal, brown, orange, purple, violet, #4DBAE6, #3B444B;
+
+each(@colors, {
+  .panel#p@{index} {
+    .rangeslider .rangeslider__tip {background: @value;}
+    .rangeslider .rangeslider__line-selected {background: @value;}
+    .rangeslider .rangeslider__handle {background: @value;}
+    .rangeslider .rangeslider__handle:hover:not(.rangeslider__handle_isMoving) {background: white; border-color: @value;}
+    .rangeslider .rangeslider__handle_isMoving {background: @value;}
+  }
+});
+
