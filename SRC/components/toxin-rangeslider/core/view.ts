@@ -52,11 +52,11 @@ export default class TRSView {
         this.tipMax = new Tip(el.find('.rangeslider__tip-max'));
 
         this.handleFrom = new Handle(this.rangeslider.el.find('.rangeslider__handle-from'), this.tipFrom);
-        this.handleFrom.el.mousedown(e => this.onMouseDown(e));
+        this.handleFrom.el.mousedown(e => this.onMouseDownByHandle(e));
         this.offsetFrom = this.handleFrom.width / 2;
 
         this.handleTo = new Handle(this.rangeslider.el.find('.rangeslider__handle-to'), this.tipTo);
-        this.handleTo.el.mousedown(e => this.onMouseDown(e));
+        this.handleTo.el.mousedown(e => this.onMouseDownByHandle(e));
         this.offsetTo = this.handleTo.width / 2;
 
         this.rangeslider.addControls([
@@ -127,30 +127,34 @@ export default class TRSView {
         $(document).off('mousemove');
         $(document).off('mouseup');
     }
-    onMouseDown(e: JQuery.MouseDownEvent) {
-        e.preventDefault();
+    onMouseDownByHandle(e: JQuery.MouseDownEvent) {
+        //e.preventDefault();
         const clientPos = this.settings.isVertical ? e.clientY : e.clientX;
         const currentHandle: Handle = $(e.target).is(this.handleFrom.el) ? this.handleFrom : this.handleTo;
         currentHandle.isMoving = true;
         const shiftPos = clientPos - currentHandle.offset;
+        //console.log(clientPos);
 
-        this.rangeslider.el.mousemove(e => this.onHandleMove(e, currentHandle, shiftPos));
-        $(document).mousemove(e => this.onHandleMove(e, currentHandle, shiftPos));
+        this.rangeslider.el.mousemove(e => this.onMouseMove(e, currentHandle, shiftPos));
+        $(document).mousemove(e => this.onMouseMove(e, currentHandle, shiftPos));
         currentHandle.el.mouseup(e => this.onMouseUp(e, currentHandle));
         $(document).mouseup(e => this.onMouseUp(e, currentHandle));
+        //console.log('onMouseDownByHandle');
     }
     onMouseDownByLine(e: JQuery.MouseDownEvent) {
         e.preventDefault();
-        const clientPos = this.settings.isVertical ? e.clientY : e.clientX;
-
-        let pos = clientPos - this.line.offset;
+        //const clientPos = this.settings.isVertical ? e.clientY : e.clientX;
+        const clientPos = this.settings.isVertical ? e.offsetY : e.offsetX;
+        //console.log(clientPos);
+        let pos = clientPos;
+        // - this.line.offset;
         if (pos < this.offsetFrom) pos = this.offsetFrom;
         if (pos > this.line.size - this.offsetTo) pos = this.line.size - this.offsetTo;
 
         const nearHandle = this.getNearestHandle(pos);
         const posWithoutStep =
             pos - (nearHandle.is(this.handleFrom) ? this.offsetFrom : this.handleTo.size - this.offsetTo);
-        const posWithStep = this.getSteppedPos(clientPos);
+        const posWithStep = this.getSteppedPos(clientPos + this.line.offset);
         this.onHandlePositionUpdate(nearHandle, posWithStep == null ? posWithoutStep : posWithStep);
 
         const newEvent = e;
@@ -195,13 +199,20 @@ export default class TRSView {
         }
         return null;
     }
-    onHandleMove(e: JQuery.MouseMoveEvent, currentHandle: Handle, shiftPos: number) {
+    onMouseMove(e: JQuery.MouseMoveEvent, currentHandle: Handle, shiftPos: number) {
         const clientPos = this.settings.isVertical ? e.clientY : e.clientX;
+        const offsetPos = this.settings.isVertical ? e.offsetY : e.offsetX;
+        const targetOffset = this.settings.isVertical ? $(e.target).offset().top : $(e.target).offset().left;
+
         const newPosWithoutStep = clientPos - this.line.offset - shiftPos;
-        const newLeftWithStep = this.getSteppedPos(clientPos);
+        //console.log(offsetPos + targetOffset - this.rangeslider.offset);
+        //console.log(e.target);
+        const newLeftWithStep = this.getSteppedPos(offsetPos + targetOffset);
+
         let newPos = newLeftWithStep == null ? newPosWithoutStep : newLeftWithStep;
         newPos = this.validate(newPos, currentHandle);
         this.onHandlePositionUpdate(currentHandle, newPos);
+        return false;
     }
     drawLineSelected(currentHandle: Handle) {
         if (this.settings.isTwoHandles) {
@@ -287,10 +298,6 @@ export default class TRSView {
     }
     drawSlider(os: CRangeSliderOptions, ns: CRangeSliderOptions, isFirstDraw = false) {
         this.settings.extend(ns);
-        // this.settings = $.extend(true, this.settings, ns);
-        // this.settings.items.values = [...ns.items.values];
-        // this.settings.items.indexFrom = ns.items.indexFrom;
-        // this.settings.items.indexTo = ns.items.indexTo;
         const isItemValuesChanged = !this.isEqualArrays(os?.items?.values, ns.items.values);
 
         if (ns.isVertical != os?.isVertical) {
@@ -361,7 +368,7 @@ export default class TRSView {
         if (this.settings.isHaveItems) {
             const pxLength = this.line.size - this.offsetFrom - this.offsetTo;
             const pxStep = pxLength / (this.settings.items.values.length - 1);
-            if (isFirstDraw || ns.items.indexFrom != os.items.indexFrom) {
+            if (this.settings.isTwoHandles && (isFirstDraw || ns.items.indexFrom != os.items.indexFrom)) {
                 const newPos = ns.items.indexFrom * pxStep;
                 this.moveHandle(this.handleFrom, newPos);
             }

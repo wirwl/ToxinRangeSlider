@@ -111,14 +111,8 @@ $(document).ready(() => {
         });
 
         $indexFrom.focusout(function(this: HTMLInputElement) {
-            console.log(rangeslider.data.items.indexFrom);
-            console.log(rangeslider.data.valueFrom);
-            //console.log(rangeslider.model.settings.valueFrom);
             rangeslider.update({ items: { indexFrom: parseInt(this.value) } });
-            console.log(rangeslider.data.items.indexFrom);
-            console.log(rangeslider.data.valueFrom);
             $valueFrom.val(rangeslider.data.valueFrom);
-            //console.log(rangeslider.model.settings.valueFrom);
         });
         $indexTo.focusout(function(this: HTMLInputElement) {
             rangeslider.update({ items: { indexTo: parseInt(this.value) } });

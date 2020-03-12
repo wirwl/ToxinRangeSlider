@@ -1,9 +1,8 @@
 export default class CRangeSliderOptions implements RangeSliderOptions {
-    isVertical?: boolean; // = false;
-    isTwoHandles?: boolean; // = true;
-    isTip?: boolean; // = true;
+    isVertical?: boolean;
+    isTwoHandles?: boolean;
+    isTip?: boolean;
 
-    //minValue?: number;
     private _minValue?: number;
     get minValue(): number | string {
         return this.isHaveItems ? this.items.values[0] : this._minValue;
@@ -12,7 +11,6 @@ export default class CRangeSliderOptions implements RangeSliderOptions {
         if (!this.isHaveItems) this._minValue = parseFloat(value.toString());
     }
 
-    //maxValue?: number;
     private _maxValue?: number;
     get maxValue(): number | string {
         return this.isHaveItems ? this.items.values[this.items.values.length - 1] : this._maxValue;
