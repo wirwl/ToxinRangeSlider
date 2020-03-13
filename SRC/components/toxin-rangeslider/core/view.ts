@@ -128,32 +128,26 @@ export default class TRSView {
         $(document).off('mouseup');
     }
     onMouseDownByHandle(e: JQuery.MouseDownEvent) {
-        //e.preventDefault();
         const clientPos = this.settings.isVertical ? e.clientY : e.clientX;
         const currentHandle: Handle = $(e.target).is(this.handleFrom.el) ? this.handleFrom : this.handleTo;
         currentHandle.isMoving = true;
         const shiftPos = clientPos - currentHandle.offset;
-        //console.log(clientPos);
 
         this.rangeslider.el.mousemove(e => this.onMouseMove(e, currentHandle, shiftPos));
         $(document).mousemove(e => this.onMouseMove(e, currentHandle, shiftPos));
         currentHandle.el.mouseup(e => this.onMouseUp(e, currentHandle));
         $(document).mouseup(e => this.onMouseUp(e, currentHandle));
-        //console.log('onMouseDownByHandle');
     }
     onMouseDownByLine(e: JQuery.MouseDownEvent) {
         e.preventDefault();
-        //const clientPos = this.settings.isVertical ? e.clientY : e.clientX;
-        const clientPos = this.settings.isVertical ? e.offsetY : e.offsetX;
-        //console.log(clientPos);
-        let pos = clientPos;
-        // - this.line.offset;
-        if (pos < this.offsetFrom) pos = this.offsetFrom;
-        if (pos > this.line.size - this.offsetTo) pos = this.line.size - this.offsetTo;
+        let clientPos = this.settings.isVertical ? e.offsetY : e.offsetX;
 
-        const nearHandle = this.getNearestHandle(pos);
+        if (clientPos < this.offsetFrom) clientPos = this.offsetFrom;
+        if (clientPos > this.line.size - this.offsetTo) clientPos = this.line.size - this.offsetTo;
+
+        const nearHandle = this.getNearestHandle(clientPos);
         const posWithoutStep =
-            pos - (nearHandle.is(this.handleFrom) ? this.offsetFrom : this.handleTo.size - this.offsetTo);
+            clientPos - (nearHandle.is(this.handleFrom) ? this.offsetFrom : this.handleTo.size - this.offsetTo);
         const posWithStep = this.getSteppedPos(clientPos + this.line.offset);
         this.onHandlePositionUpdate(nearHandle, posWithStep == null ? posWithoutStep : posWithStep);
 
@@ -202,11 +196,10 @@ export default class TRSView {
     onMouseMove(e: JQuery.MouseMoveEvent, currentHandle: Handle, shiftPos: number) {
         const clientPos = this.settings.isVertical ? e.clientY : e.clientX;
         const offsetPos = this.settings.isVertical ? e.offsetY : e.offsetX;
-        const targetOffset = this.settings.isVertical ? $(e.target).offset().top : $(e.target).offset().left;
+        const $target = $(e.target);
+        const targetOffset = this.settings.isVertical ? $target.offset().top : $target.offset().left;
 
         const newPosWithoutStep = clientPos - this.line.offset - shiftPos;
-        //console.log(offsetPos + targetOffset - this.rangeslider.offset);
-        //console.log(e.target);
         const newLeftWithStep = this.getSteppedPos(offsetPos + targetOffset);
 
         let newPos = newLeftWithStep == null ? newPosWithoutStep : newLeftWithStep;
@@ -241,7 +234,10 @@ export default class TRSView {
             } else {
                 if (this.settings.isTip) this.tipTo.show();
             }
-            if (this.settings.valueFrom == this.settings.valueTo) {
+            if (
+                (!this.settings.isHaveItems && this.settings.valueFrom == this.settings.valueTo) ||
+                (this.settings.isHaveItems && this.settings.items.indexFrom == this.settings.items.indexTo)
+            ) {
                 this.tipFrom.text = this.settings.valueFrom;
                 this.tipFrom.pos = this.handleFrom.pos + (this.handleFrom.size - this.tipFrom.size) / 2;
             }
