@@ -1,7 +1,7 @@
 import TRSView from './view';
 import TRSModel from './model';
 import Handle from './entities/handle';
-import CRangeSliderOptions from './entities/rangeslideroptions';
+import CRangeSliderOptions from './entities/crangeslideroptions';
 const $ = require('../../../jquery/dist/jquery');
 /**
  * Presenter listenes to view events, retrieve data, manipulates it and

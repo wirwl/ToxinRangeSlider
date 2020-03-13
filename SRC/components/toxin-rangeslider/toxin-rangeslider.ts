@@ -10,7 +10,6 @@ import TRSModel from './core/model';
                 $.data(this, 'toxinRangeSlider', new TRSPresenter(new TRSModel(options), new TRSView($(this))));
             }
         });
-
         return this;
     };
 

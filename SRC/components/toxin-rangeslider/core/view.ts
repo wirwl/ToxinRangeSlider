@@ -2,7 +2,7 @@ import Handle from '../core/entities/handle';
 import Tip from './entities/tip';
 import Line from './entities/line';
 import Rangeslider from './entities/rangeslider';
-import CRangeSliderOptions from './entities/rangeslideroptions';
+import CRangeSliderOptions from './entities/crangeslideroptions';
 export default class TRSView {
     private settings: CRangeSliderOptions;
     private offsetFrom: number;

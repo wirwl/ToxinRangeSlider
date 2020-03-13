@@ -1,4 +1,4 @@
-import CRangeSliderOptions from './entities/rangeslideroptions';
+import CRangeSliderOptions from './entities/crangeslideroptions';
 
 export default class TRSModel {
     settings: CRangeSliderOptions;
@@ -11,42 +11,7 @@ export default class TRSModel {
         stepValue: 0,
         valueFrom: 0,
         valueTo: 122,
-        //values: [],
-        items: { indexFrom: 0, indexTo: 2, values: [] },
-        //items: { indexFrom: 0, indexTo: 2, values: [2, 4, 8, 16, 32, 64, 128] },
-        // items: {
-        //     indexFrom: 0,
-        //     indexTo: 7,
-        //     values: [
-        //         'январь',
-        //         'февраль',
-        //         'март',
-        //         'апрель',
-        //         'май',
-        //         'июнь',
-        //         'июль',
-        //         'август',
-        //         'сентябрь',
-        //         'октябрь',
-        //         'ноябрь',
-        //         'декабрь',
-        //     ],
-        //},
-        //values: [2, 4, 8, 16, 32, 64, 128],
-        // values: [
-        //     'январь',
-        //     'февраль',
-        //     'март',
-        //     'апрель',
-        //     'май',
-        //     'июнь',
-        //     'июль',
-        //     'август',
-        //     'сентябрь',
-        //     'октябрь',
-        //     'ноябрь',
-        //     'декабрь',
-        // ],
+        items: { indexFrom: 0, indexTo: 1, values: [] },
         onHandlePositionChange: function() {},
     };
     constructor(options: RangeSliderOptions) {
