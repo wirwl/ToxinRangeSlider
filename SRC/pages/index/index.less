@@ -18,7 +18,7 @@ body {
   min-height: 360px;
   align-items: center;
   justify-content: center;
-  padding-top: 50px;
+  padding: 50px;
   margin-top: 20px;
 }
 
@@ -77,3 +77,58 @@ each(@colors, {
   }
 });
 
+.panels {
+display: grid;
+grid-template-columns: repeat(4, 1fr);
+grid-template-rows: 1fr 1fr 1fr 1fr;
+grid-template-areas:
+  "column1-1 column2-1 column3-1 column4-1"
+  "column1-2 column2-1 column3-1 column4-1"
+  "column1-3 column2-2 column3-2 column4-2"
+  "column1-4 column2-2 column3-2 column4-2";
+align-items: center;
+justify-items: center;
+gap: 15px 15px;
+}
+.panels__ {
+&column2-1 {
+  grid-area: column2-1;
+  
+}
+
+&column2-2 {
+  grid-area: column2-2;
+}
+
+&column3-1 {
+  grid-area: column3-1;
+}
+
+&column3-2 {
+  grid-area: column3-2;
+}
+
+&column4-1 {
+  grid-area: column4-1;
+}
+
+&column4-2 {
+  grid-area: column4-2;
+}
+
+&column1-1 {
+  grid-area: column1-1;
+}
+
+&column1-2 {
+  grid-area: column1-2;
+}
+
+&column1-3 {
+  grid-area: column1-3;
+}
+
+&column1-4 {
+  grid-area: column1-4;
+}
+}
