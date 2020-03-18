@@ -15,28 +15,28 @@ export default class TRSModel {
         onHandlePositionChange: function() {},
     };
     constructor(options: RangeSliderOptions) {
-        //this.settings = $.extend({}, TRSModel.defaults, options);
         this.settings = new CRangeSliderOptions();
-        this.settings = $.extend(true, this.settings, TRSModel.defaults);
-        this.settings = $.extend(true, this.settings, options);
+        $.extend(true, this.settings, TRSModel.defaults);
+        $.extend(true, this.settings, options);
     }
     validate() {
         if (this.settings.isHaveItems) {
-            if (this.settings.items.indexFrom > this.settings.items.indexTo)
-                this.settings.items.indexFrom = this.settings.items.indexTo;
-            if (this.settings.items.indexFrom < 0) this.settings.items.indexFrom = 0;
-            if (this.settings.items.indexTo < this.settings.items.indexFrom)
-                this.settings.items.indexTo = this.settings.items.indexFrom;
             if (this.settings.items.indexTo > this.settings.items.values.length - 1)
                 this.settings.items.indexTo = this.settings.items.values.length - 1;
+            if (this.settings.isTwoHandles) {
+                if (this.settings.items.indexFrom > this.settings.items.indexTo)
+                    this.settings.items.indexFrom = this.settings.items.indexTo;
+                if (this.settings.items.indexFrom < 0) this.settings.items.indexFrom = 0;
+            }
         } else {
             const size = (this.settings.maxValue as number) - (this.settings.minValue as number);
             if (this.settings.stepValue < 0) this.settings.stepValue = 0;
             if (this.settings.stepValue > size) this.settings.stepValue = size;
             if (this.settings.valueTo > this.settings.maxValue) this.settings.valueTo = this.settings.maxValue;
-            if (this.settings.valueTo < this.settings.valueFrom) this.settings.valueTo = this.settings.valueFrom;
-            if (this.settings.valueFrom < this.settings.minValue) this.settings.valueFrom = this.settings.minValue;
-            if (this.settings.valueFrom > this.settings.valueTo) this.settings.valueFrom = this.settings.valueTo;
+            if (this.settings.isTwoHandles) {
+                if (this.settings.valueFrom > this.settings.valueTo) this.settings.valueFrom = this.settings.valueTo;
+                if (this.settings.valueFrom < this.settings.minValue) this.settings.valueFrom = this.settings.minValue;
+            }
         }
     }
 }

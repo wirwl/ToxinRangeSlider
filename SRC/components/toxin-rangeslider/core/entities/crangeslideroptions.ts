@@ -51,14 +51,12 @@ export default class CRangeSliderOptions implements RangeSliderOptions {
         } else this._valueTo = parseFloat(value.toString());
     }
 
-    items: RangeSliderItems; // = { indexFrom: 0, indexTo: 2, values: [2, 4, 8, 16] };
-    //{ indexFrom: 0; indexTo: 1; values: [20000, 40000, 80000, 16, 32, 64000, 12800] };
-
+    items: RangeSliderItems;
     onHandlePositionChange: Function;
-    constructor(anotherObject: CRangeSliderOptions = null) {
+    constructor(anotherOptions: CRangeSliderOptions = null) {
         this.items = {};
         this.onHandlePositionChange = function() {};
-        if (anotherObject) this.extend(anotherObject);
+        if (anotherOptions) this.extend(anotherOptions);
     }
     findIndexByItem(item: number | string): number {
         let result = -1;

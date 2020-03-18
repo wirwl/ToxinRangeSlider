@@ -100,20 +100,20 @@ describe('Check result of getNearestHandle() function. Six diffrent tests.', () 
             expect(rangeslider.view.getNearestHandle(200)).toBe(rangeslider.view.handleTo);
         });
     });
-    describe('If there are one handle.', () => {
-        beforeAll(() => {
-            rangeslider.update({
-                isTwoHandles: false,
-                valueTo: 491,
-            });
-        });
-        test('LMB clicked on the left of handle', () => {
-            expect(rangeslider.view.getNearestHandle(41)).toBe(rangeslider.view.handleFrom);
-        });
-        test('LMB clicked on the right of handle', () => {
-            expect(rangeslider.view.getNearestHandle(203)).toBe(rangeslider.view.handleTo);
-        });
-    });
+    // describe('If there are one handle.', () => {
+    //     beforeAll(() => {
+    //         rangeslider.update({
+    //             isTwoHandles: false,
+    //             valueTo: 491,
+    //         });
+    //     });
+    //     test('LMB clicked on the left of handle', () => {
+    //         expect(rangeslider.view.getNearestHandle(41)).toBe(rangeslider.view.handleFrom);
+    //     });
+    //     test('LMB clicked on the right of handle', () => {
+    //         expect(rangeslider.view.getNearestHandle(203)).toBe(rangeslider.view.handleTo);
+    //     });
+    // });
 });
 
 // test('Check result of validate() function in view layer', () => {
