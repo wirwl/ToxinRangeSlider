@@ -71,228 +71,6 @@ export default class TRSView {
         ]);
         this.settings = new CRangeSliderOptions();
     }
-    convertRelativeValueToPixelValue(val: number, isFrom: boolean): number {
-        const lw = this.line.size - this.offsetFrom - this.offsetTo;
-        const isHasValues = this.settings.items.values.length > 1;
-        let result;
-        if (isHasValues) {
-            const pxStep = lw / (this.settings.items.values.length - 1);
-            result = (isFrom ? this.settings.items.indexFrom : this.settings.items.indexTo) * pxStep;
-        } else {
-            const percent =
-                ((val - (this.settings.minValue as number)) /
-                    ((this.settings.maxValue as number) - (this.settings.minValue as number))) *
-                100;
-            result = lw * (percent / 100);
-        }
-        return result;
-    }
-    convertPixelValueToRelativeValue(val: number): number {
-        const lw = this.line.size - this.offsetFrom - this.offsetTo;
-        const percent = val / lw;
-        const result = Math.round(
-            (this.settings.minValue as number) +
-                percent * ((this.settings.maxValue as number) - (this.settings.minValue as number)),
-        );
-        return result;
-    }
-    validate(pos: number, currentHandle: Handle): number {
-        let result = pos;
-        const lw = this.line.size;
-        const ch = currentHandle;
-        if (pos < 0) result = 0;
-        if (pos > lw - ch.size) result = lw - ch.size;
-        if (this.settings.isTwoHandles) {
-            if (ch.is(this.handleFrom)) if (pos > this.handleTo.pos) result = this.handleTo.pos;
-            if (ch.is(this.handleTo)) if (pos < this.handleFrom.pos) result = this.handleFrom.pos;
-        }
-        return result;
-    }
-    getNearestHandle(pos: number): Handle {
-        if (this.settings.isTwoHandles) {
-            if (pos < this.handleFrom.pos) return this.handleFrom;
-            if (pos > this.handleTo.pos) return this.handleTo;
-            const distanceBetweenHandles = this.handleTo.pos - this.handleFrom.pos - this.handleFrom.size;
-            const half = this.handleFrom.pos + this.handleFrom.size + distanceBetweenHandles / 2;
-            if (pos < half) return this.handleFrom;
-            else return this.handleTo;
-        } else {
-            return this.handleTo;
-        }
-    }
-    onMouseUp(e: JQuery.MouseUpEvent, currentHandle: Handle) {
-        currentHandle.isMoving = false;
-        this.rangeslider.el.off('mousemove');
-        currentHandle.el.off('mouseup');
-        $(document).off('mousemove');
-        $(document).off('mouseup');
-    }
-    onMouseDownByHandle(e: JQuery.MouseDownEvent) {
-        const clientPos = this.settings.isVertical ? e.clientY : e.clientX;
-        const currentHandle: Handle = $(e.target).is(this.handleFrom.el) ? this.handleFrom : this.handleTo;
-        currentHandle.isMoving = true;
-        const shiftPos = clientPos - currentHandle.offset;
-
-        this.rangeslider.el.mousemove(e => this.onMouseMove(e, currentHandle, shiftPos));
-        $(document).mousemove(e => this.onMouseMove(e, currentHandle, shiftPos));
-        currentHandle.el.mouseup(e => this.onMouseUp(e, currentHandle));
-        $(document).mouseup(e => this.onMouseUp(e, currentHandle));
-    }
-    onMouseDownByLine(e: JQuery.MouseDownEvent) {
-        e.preventDefault();
-        let clientPos = this.settings.isVertical ? e.offsetY : e.offsetX;
-
-        if (clientPos < this.offsetFrom) clientPos = this.offsetFrom;
-        if (clientPos > this.line.size - this.offsetTo) clientPos = this.line.size - this.offsetTo;
-
-        const nearHandle = this.getNearestHandle(clientPos);
-
-        let newPos = this.getSteppedPos(clientPos + this.line.offset);
-        if (!newPos)
-            newPos =
-                clientPos - (nearHandle.is(this.handleFrom) ? this.offsetFrom : this.handleTo.size - this.offsetTo);
-        this.onHandlePositionUpdate(nearHandle, newPos);
-
-        const newEvent = e;
-        newEvent.target = nearHandle.el;
-        nearHandle.el.trigger(newEvent, 'mousedown');
-    }
-    getSteppedPos(clientPos: number): number {
-        const pxLength = this.line.size - this.offsetFrom - this.offsetTo;
-        const isDefinedStep = this.settings.stepValue > 0;
-        const isDefinedSetOfValues = this.settings.items.values.length > 1;
-        const isTooLongLine = pxLength > (this.settings.maxValue as number) - (this.settings.minValue as number);
-        const isNeedStep = isDefinedStep || isTooLongLine || isDefinedSetOfValues;
-
-        if (isNeedStep) {
-            const pos = clientPos - this.line.offset - this.offsetFrom;
-
-            let pxStep: number;
-
-            if (isDefinedStep)
-                pxStep = this.convertRelativeValueToPixelValue(
-                    (this.settings.minValue as number) + this.settings.stepValue,
-                    true,
-                );
-
-            if (isTooLongLine) {
-                pxStep = pxLength / ((this.settings.maxValue as number) - (this.settings.minValue as number));
-                if (isDefinedStep) pxStep = pxStep * this.settings.stepValue;
-            }
-
-            if (isDefinedSetOfValues) {
-                pxStep = pxLength / (this.settings.items.values.length - 1);
-            }
-
-            const nStep = Math.round(pos / pxStep);
-            let newPos = nStep * pxStep;
-
-            if (pos / pxStep > Math.trunc(pxLength / pxStep)) {
-                const remainder = pxLength - newPos;
-                if (pos > newPos + remainder / 2) newPos += remainder;
-            }
-            return newPos;
-        }
-        return null;
-    }
-    onMouseMove(e: JQuery.MouseMoveEvent, currentHandle: Handle, shiftPos: number) {
-        const clientPos = this.settings.isVertical ? e.clientY : e.clientX;
-        const offsetPos = this.settings.isVertical ? e.offsetY : e.offsetX;
-        const $target = $(e.target);
-        const targetOffset = this.settings.isVertical ? $target.offset().top : $target.offset().left;
-
-        let newPos = this.getSteppedPos(offsetPos + targetOffset);
-        if (!newPos) newPos = clientPos - this.line.offset - shiftPos;
-        newPos = this.validate(newPos, currentHandle);
-        this.onHandlePositionUpdate(currentHandle, newPos);
-
-        return false;
-    }
-    drawLineSelected(currentHandle: Handle) {
-        if (this.settings.isTwoHandles) {
-            if (currentHandle.is(this.handleFrom)) this.lineSelected.pos = this.handleFrom.pos + this.offsetFrom;
-            this.lineSelected.size =
-                this.handleTo.pos - this.handleFrom.pos + this.handleTo.size - this.offsetFrom - this.offsetTo + 1;
-        } else {
-            this.lineSelected.size = currentHandle.pos + currentHandle.size - this.offsetTo + 1;
-        }
-    }
-    drawTips(currentHandle: Handle) {
-        this.tipFrom.text = this.settings.valueFrom;
-        this.tipTo.text = this.settings.valueTo;
-
-        this.tipFrom.pos = this.handleFrom.pos + (this.handleFrom.size - this.tipFrom.size) / 2;
-        this.tipTo.pos = this.handleTo.pos + (this.handleTo.size - this.tipTo.size) / 2;
-
-        if (this.settings.isTwoHandles) {
-            const distanceBetweenHandles = this.tipTo.pos - this.tipFrom.pos - this.tipFrom.size;
-            if (distanceBetweenHandles < 1) {
-                this.tipTo.hide();
-                this.tipFrom.text = this.tipFrom.text + '-' + this.tipTo.text;
-                this.tipFrom.pos =
-                    this.handleFrom.pos +
-                    (this.handleTo.pos - this.handleFrom.pos + this.handleTo.size - this.tipFrom.size) / 2;
-            } else {
-                if (this.settings.isTip) this.tipTo.show();
-            }
-            if (
-                (!this.settings.isHaveItems && this.settings.valueFrom == this.settings.valueTo) ||
-                (this.settings.isHaveItems && this.settings.items.indexFrom == this.settings.items.indexTo)
-            ) {
-                this.tipFrom.text = this.settings.valueFrom;
-                this.tipFrom.pos = this.handleFrom.pos + (this.handleFrom.size - this.tipFrom.size) / 2;
-            }
-        }
-
-        if (this.settings.isTip) {
-            const tax = this.line.size - this.tipMax.size;
-            let distanceMin = this.tipFrom.pos - this.tipMin.size;
-            const distanceMax = tax - this.tipTo.pos - this.tipTo.size;
-            let distancBetweenTipFromAndTipMax = 1;
-            distancBetweenTipFromAndTipMax = tax - this.tipFrom.pos - this.tipFrom.size;
-            distanceMin < 1 ? this.tipMin.hide() : this.tipMin.show();
-            distanceMax < 1 ? this.tipMax.hide() : this.tipMax.show();
-            if (distancBetweenTipFromAndTipMax < 1) this.tipMax.hide();
-
-            if (!this.settings.isTwoHandles) {
-                distanceMin = this.tipTo.pos - this.tipMin.size;
-                distanceMin < 1 ? this.tipMin.hide() : this.tipMin.show();
-            }
-        }
-    }
-    moveHandle(currentHandle: Handle, pxX: number): HandleMovingResult {
-        const isHandleFrom = currentHandle.is(this.handleFrom);
-        currentHandle.pos = pxX;
-        let relValue;
-        let restoreIndex = -1;
-        if (this.settings.isHaveItems) {
-            const lw = this.line.size - this.offsetFrom - this.offsetTo;
-            const pxStep = lw / (this.settings.items.values.length - 1);
-            restoreIndex = Math.round(pxX / pxStep);
-            if (currentHandle.is(this.handleFrom)) this.settings.items.indexFrom = restoreIndex;
-            else this.settings.items.indexTo = restoreIndex;
-        } else {
-            if (currentHandle.is(this.handleFrom)) this.settings.valueFrom = this.convertPixelValueToRelativeValue(pxX);
-            else this.settings.valueTo = this.convertPixelValueToRelativeValue(pxX);
-        }
-
-        if (currentHandle.is(this.handleFrom)) {
-            this.handleFrom.incZIndex();
-            this.handleTo.decZIndex();
-        } else {
-            this.handleTo.incZIndex();
-            this.handleFrom.decZIndex();
-        }
-        this.drawLineSelected(currentHandle);
-        this.drawTips(currentHandle);
-
-        return {
-            isFromHandle: currentHandle.is(this.handleFrom),
-            value: isHandleFrom ? this.settings.valueFrom : this.settings.valueTo,
-            isUsingItems: this.settings.isHaveItems,
-            index: restoreIndex,
-        };
-    }
     drawSlider(os: CRangeSliderOptions, ns: CRangeSliderOptions, isFirstDraw = false) {
         this.settings.extend(ns);
         const isItemValuesChanged = !this.isEqualArrays(os?.items?.values, ns.items.values);
@@ -381,5 +159,227 @@ export default class TRSView {
         if (ar1.length != ar2.length) return false;
         for (let i = 0; i < ar1.length; i++) if (ar1[i] !== ar2[i]) return false;
         return true;
+    }
+    onMouseDownByHandle(e: JQuery.MouseDownEvent) {
+        const clientPos = this.settings.isVertical ? e.clientY : e.clientX;
+        const currentHandle: Handle = $(e.target).is(this.handleFrom.el) ? this.handleFrom : this.handleTo;
+        currentHandle.isMoving = true;
+        const shiftPos = clientPos - currentHandle.offset;
+
+        this.rangeslider.el.mousemove(e => this.onMouseMove(e, currentHandle, shiftPos));
+        $(document).mousemove(e => this.onMouseMove(e, currentHandle, shiftPos));
+        currentHandle.el.mouseup(e => this.onMouseUp(e, currentHandle));
+        $(document).mouseup(e => this.onMouseUp(e, currentHandle));
+    }
+    onMouseMove(e: JQuery.MouseMoveEvent, currentHandle: Handle, shiftPos: number) {
+        const clientPos = this.settings.isVertical ? e.clientY : e.clientX;
+        const offsetPos = this.settings.isVertical ? e.offsetY : e.offsetX;
+        const $target = $(e.target);
+        const targetOffset = this.settings.isVertical ? $target.offset().top : $target.offset().left;
+
+        let newPos = this.getSteppedPos(offsetPos + targetOffset);
+        if (!newPos) newPos = clientPos - this.line.offset - shiftPos;
+        newPos = this.validate(newPos, currentHandle);
+        this.onHandlePositionUpdate(currentHandle, newPos);
+
+        return false;
+    }
+    onMouseUp(e: JQuery.MouseUpEvent, currentHandle: Handle) {
+        currentHandle.isMoving = false;
+        this.rangeslider.el.off('mousemove');
+        currentHandle.el.off('mouseup');
+        $(document).off('mousemove');
+        $(document).off('mouseup');
+    }
+    onMouseDownByLine(e: JQuery.MouseDownEvent) {
+        e.preventDefault();
+        let clientPos = this.settings.isVertical ? e.offsetY : e.offsetX;
+
+        if (clientPos < this.offsetFrom) clientPos = this.offsetFrom;
+        if (clientPos > this.line.size - this.offsetTo) clientPos = this.line.size - this.offsetTo;
+
+        const nearHandle = this.getNearestHandle(clientPos);
+
+        let newPos = this.getSteppedPos(clientPos + this.line.offset);
+        if (!newPos)
+            newPos =
+                clientPos - (nearHandle.is(this.handleFrom) ? this.offsetFrom : this.handleTo.size - this.offsetTo);
+        this.onHandlePositionUpdate(nearHandle, newPos);
+
+        const newEvent = e;
+        newEvent.target = nearHandle.el;
+        nearHandle.el.trigger(newEvent, 'mousedown');
+    }
+    getNearestHandle(pos: number): Handle {
+        if (this.settings.isTwoHandles) {
+            if (pos < this.handleFrom.pos) return this.handleFrom;
+            if (pos > this.handleTo.pos) return this.handleTo;
+            const distanceBetweenHandles = this.handleTo.pos - this.handleFrom.pos - this.handleFrom.size;
+            const half = this.handleFrom.pos + this.handleFrom.size + distanceBetweenHandles / 2;
+            if (pos < half) return this.handleFrom;
+            else return this.handleTo;
+        } else {
+            return this.handleTo;
+        }
+    }
+    moveHandle(currentHandle: Handle, pxX: number): HandleMovingResult {
+        const isHandleFrom = currentHandle.is(this.handleFrom);
+        currentHandle.pos = pxX;
+        let relValue;
+        let restoreIndex = -1;
+        if (this.settings.isHaveItems) {
+            const lw = this.line.size - this.offsetFrom - this.offsetTo;
+            const pxStep = lw / (this.settings.items.values.length - 1);
+            restoreIndex = Math.round(pxX / pxStep);
+            if (currentHandle.is(this.handleFrom)) this.settings.items.indexFrom = restoreIndex;
+            else this.settings.items.indexTo = restoreIndex;
+        } else {
+            if (currentHandle.is(this.handleFrom)) this.settings.valueFrom = this.convertPixelValueToRelativeValue(pxX);
+            else this.settings.valueTo = this.convertPixelValueToRelativeValue(pxX);
+        }
+
+        if (currentHandle.is(this.handleFrom)) {
+            this.handleFrom.incZIndex();
+            this.handleTo.decZIndex();
+        } else {
+            this.handleTo.incZIndex();
+            this.handleFrom.decZIndex();
+        }
+        this.drawLineSelected(currentHandle);
+        this.drawTips(currentHandle);
+
+        return {
+            isFromHandle: currentHandle.is(this.handleFrom),
+            value: isHandleFrom ? this.settings.valueFrom : this.settings.valueTo,
+            isUsingItems: this.settings.isHaveItems,
+            index: restoreIndex,
+        };
+    }
+    drawLineSelected(currentHandle: Handle) {
+        if (this.settings.isTwoHandles) {
+            if (currentHandle.is(this.handleFrom)) this.lineSelected.pos = this.handleFrom.pos + this.offsetFrom;
+            this.lineSelected.size =
+                this.handleTo.pos - this.handleFrom.pos + this.handleTo.size - this.offsetFrom - this.offsetTo + 1;
+        } else {
+            this.lineSelected.size = currentHandle.pos + currentHandle.size - this.offsetTo + 1;
+        }
+    }
+    drawTips(currentHandle: Handle) {
+        this.tipFrom.text = this.settings.valueFrom;
+        this.tipTo.text = this.settings.valueTo;
+
+        this.tipFrom.pos = this.handleFrom.pos + (this.handleFrom.size - this.tipFrom.size) / 2;
+        this.tipTo.pos = this.handleTo.pos + (this.handleTo.size - this.tipTo.size) / 2;
+
+        if (this.settings.isTwoHandles) {
+            const distanceBetweenHandles = this.tipTo.pos - this.tipFrom.pos - this.tipFrom.size;
+            if (distanceBetweenHandles < 1) {
+                this.tipTo.hide();
+                this.tipFrom.text = this.tipFrom.text + '-' + this.tipTo.text;
+                this.tipFrom.pos =
+                    this.handleFrom.pos +
+                    (this.handleTo.pos - this.handleFrom.pos + this.handleTo.size - this.tipFrom.size) / 2;
+            } else {
+                if (this.settings.isTip) this.tipTo.show();
+            }
+            if (
+                (!this.settings.isHaveItems && this.settings.valueFrom == this.settings.valueTo) ||
+                (this.settings.isHaveItems && this.settings.items.indexFrom == this.settings.items.indexTo)
+            ) {
+                this.tipFrom.text = this.settings.valueFrom;
+                this.tipFrom.pos = this.handleFrom.pos + (this.handleFrom.size - this.tipFrom.size) / 2;
+            }
+        }
+
+        if (this.settings.isTip) {
+            const tax = this.line.size - this.tipMax.size;
+            let distanceMin = this.tipFrom.pos - this.tipMin.size;
+            const distanceMax = tax - this.tipTo.pos - this.tipTo.size;
+            let distancBetweenTipFromAndTipMax = 1;
+            distancBetweenTipFromAndTipMax = tax - this.tipFrom.pos - this.tipFrom.size;
+            distanceMin < 1 ? this.tipMin.hide() : this.tipMin.show();
+            distanceMax < 1 ? this.tipMax.hide() : this.tipMax.show();
+            if (distancBetweenTipFromAndTipMax < 1) this.tipMax.hide();
+
+            if (!this.settings.isTwoHandles) {
+                distanceMin = this.tipTo.pos - this.tipMin.size;
+                distanceMin < 1 ? this.tipMin.hide() : this.tipMin.show();
+            }
+        }
+    }
+    convertRelativeValueToPixelValue(val: number, isFrom: boolean): number {
+        const lw = this.line.size - this.offsetFrom - this.offsetTo;
+        const isHasValues = this.settings.items.values.length > 1;
+        let result;
+        if (isHasValues) {
+            const pxStep = lw / (this.settings.items.values.length - 1);
+            result = (isFrom ? this.settings.items.indexFrom : this.settings.items.indexTo) * pxStep;
+        } else {
+            const percent =
+                ((val - (this.settings.minValue as number)) /
+                    ((this.settings.maxValue as number) - (this.settings.minValue as number))) *
+                100;
+            result = lw * (percent / 100);
+        }
+        return result;
+    }
+    convertPixelValueToRelativeValue(val: number): number {
+        const lw = this.line.size - this.offsetFrom - this.offsetTo;
+        const percent = val / lw;
+        const result = Math.round(
+            (this.settings.minValue as number) +
+                percent * ((this.settings.maxValue as number) - (this.settings.minValue as number)),
+        );
+        return result;
+    }
+    validate(pos: number, currentHandle: Handle): number {
+        let result = pos;
+        const lw = this.line.size;
+        const ch = currentHandle;
+        if (pos < 0) result = 0;
+        if (pos > lw - ch.size) result = lw - ch.size;
+        if (this.settings.isTwoHandles) {
+            if (ch.is(this.handleFrom)) if (pos > this.handleTo.pos) result = this.handleTo.pos;
+            if (ch.is(this.handleTo)) if (pos < this.handleFrom.pos) result = this.handleFrom.pos;
+        }
+        return result;
+    }
+    getSteppedPos(clientPos: number): number {
+        const pxLength = this.line.size - this.offsetFrom - this.offsetTo;
+        const isDefinedStep = this.settings.stepValue > 0;
+        const isDefinedSetOfValues = this.settings.items.values.length > 1;
+        const isTooLongLine = pxLength > (this.settings.maxValue as number) - (this.settings.minValue as number);
+        const isNeedStep = isDefinedStep || isTooLongLine || isDefinedSetOfValues;
+
+        if (isNeedStep) {
+            const pos = clientPos - this.line.offset - this.offsetFrom;
+
+            let pxStep: number;
+
+            if (isDefinedStep)
+                pxStep = this.convertRelativeValueToPixelValue(
+                    (this.settings.minValue as number) + this.settings.stepValue,
+                    true,
+                );
+
+            if (isTooLongLine) {
+                pxStep = pxLength / ((this.settings.maxValue as number) - (this.settings.minValue as number));
+                if (isDefinedStep) pxStep = pxStep * this.settings.stepValue;
+            }
+
+            if (isDefinedSetOfValues) {
+                pxStep = pxLength / (this.settings.items.values.length - 1);
+            }
+
+            const nStep = Math.round(pos / pxStep);
+            let newPos = nStep * pxStep;
+
+            if (pos / pxStep > Math.trunc(pxLength / pxStep)) {
+                const remainder = pxLength - newPos;
+                if (pos > newPos + remainder / 2) newPos += remainder;
+            }
+            return newPos;
+        }
+        return null;
     }
 }
