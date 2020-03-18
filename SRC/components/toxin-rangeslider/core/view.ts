@@ -146,10 +146,12 @@ export default class TRSView {
         if (clientPos > this.line.size - this.offsetTo) clientPos = this.line.size - this.offsetTo;
 
         const nearHandle = this.getNearestHandle(clientPos);
-        const posWithoutStep =
-            clientPos - (nearHandle.is(this.handleFrom) ? this.offsetFrom : this.handleTo.size - this.offsetTo);
-        const posWithStep = this.getSteppedPos(clientPos + this.line.offset);
-        this.onHandlePositionUpdate(nearHandle, posWithStep == null ? posWithoutStep : posWithStep);
+
+        let newPos = this.getSteppedPos(clientPos + this.line.offset);
+        if (!newPos)
+            newPos =
+                clientPos - (nearHandle.is(this.handleFrom) ? this.offsetFrom : this.handleTo.size - this.offsetTo);
+        this.onHandlePositionUpdate(nearHandle, newPos);
 
         const newEvent = e;
         newEvent.target = nearHandle.el;
@@ -199,12 +201,11 @@ export default class TRSView {
         const $target = $(e.target);
         const targetOffset = this.settings.isVertical ? $target.offset().top : $target.offset().left;
 
-        const newPosWithoutStep = clientPos - this.line.offset - shiftPos;
-        const newLeftWithStep = this.getSteppedPos(offsetPos + targetOffset);
-
-        let newPos = newLeftWithStep == null ? newPosWithoutStep : newLeftWithStep;
+        let newPos = this.getSteppedPos(offsetPos + targetOffset);
+        if (!newPos) newPos = clientPos - this.line.offset - shiftPos;
         newPos = this.validate(newPos, currentHandle);
         this.onHandlePositionUpdate(currentHandle, newPos);
+
         return false;
     }
     drawLineSelected(currentHandle: Handle) {

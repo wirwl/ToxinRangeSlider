@@ -11,15 +11,20 @@
 // @import "../../fonts/MaterialIcons/material-icons.css";
 // @import "../../fonts/Montserrat/fonts.css";
 // @import "../../fonts/Open-Sans/fonts.css";
+html {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 body {
   display: flex;
-  flex-direction: column;
-  min-height: 360px;
-  align-items: center;
-  justify-content: center;
-  padding: 50px;
-  margin-top: 20px;
+  //flex-direction: column;
+  //min-height: 360px;
+  // align-items: center;
+   justify-content: center;
+  //padding: 50px;
+  margin-top: 50px;
 }
 
 .test1 {    
@@ -55,14 +60,6 @@ display: flex;
 @color: red;
 @index: 0;
 
-//  .panel {
-// .rangeslider:nth-of-type(@{index}) .rangeslider__tip {background: @color;}
-//  .rangeslider:nth-child(4) .rangeslider__line-selected {background: blue;}
-//  .rangeslider:nth-of-type(@{index}) .rangeslider__handle {background: @color;}
-//  .rangeslider:nth-of-type(@{index}) .rangeslider__handle:hover:not(.rangeslider__handle_isMoving) {background: @color;}
-//  .rangeslider:nth-of-type(@{index}) .rangeslider__handle_isMoving {background: @color;}  
-//  }
- 
 .panel#p2 .rangeslider .rangeslider__line-selected {background: blue;}
 
 @colors: #EE4266, #0070B7, teal, brown, orange, purple, violet, #4DBAE6, #3B444B;
@@ -79,21 +76,37 @@ each(@colors, {
 
 .panels {
 display: grid;
+max-width: 1200px;
 grid-template-columns: repeat(4, 1fr);
-grid-template-rows: 1fr 1fr 1fr 1fr;
+grid-template-rows: repeat(4, 1fr);
 grid-template-areas:
   "column1-1 column2-1 column3-1 column4-1"
   "column1-2 column2-1 column3-1 column4-1"
   "column1-3 column2-2 column3-2 column4-2"
   "column1-4 column2-2 column3-2 column4-2";
-align-items: center;
 justify-items: center;
-gap: 15px 15px;
+gap: 15px 0px;
+padding: 20px;
 }
+
 .panels__ {
+&column1-1 {
+  grid-area: column1-1;
+}
+
+&column1-2 {
+  grid-area: column1-2;
+}
+
+&column1-3 {
+  grid-area: column1-3;
+}
+
+&column1-4 {
+  grid-area: column1-4;
+}
 &column2-1 {
-  grid-area: column2-1;
-  
+  grid-area: column2-1;  
 }
 
 &column2-2 {
@@ -114,21 +127,5 @@ gap: 15px 15px;
 
 &column4-2 {
   grid-area: column4-2;
-}
-
-&column1-1 {
-  grid-area: column1-1;
-}
-
-&column1-2 {
-  grid-area: column1-2;
-}
-
-&column1-3 {
-  grid-area: column1-3;
-}
-
-&column1-4 {
-  grid-area: column1-4;
 }
 }
