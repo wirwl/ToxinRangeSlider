@@ -7,7 +7,8 @@ $(document).ready(() => {
         const $select = $si.find('.select-items__options');
         const select = $select[0] as HTMLSelectElement;
         $buttonAdd.click(function() {
-            const item = prompt('Введите новый обьект', '108');
+            const randomValue = Math.random();
+            const item = prompt('Введите новый обьект', (~~(randomValue * 1000)).toString());
             if (item) $select.append(new Option(item));
 
             if (select.length > 1) $si.removeClass('select-items_not-using');
