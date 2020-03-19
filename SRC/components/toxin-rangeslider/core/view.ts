@@ -4,7 +4,7 @@ import Line from './entities/line';
 import Rangeslider from './entities/rangeslider';
 import CRangeSliderOptions from './entities/crangeslideroptions';
 export default class TRSView {
-    private settings: CRangeSliderOptions;
+    settings: CRangeSliderOptions;
     private offsetFrom: number;
     private offsetTo: number;
     private template =
@@ -193,17 +193,18 @@ export default class TRSView {
     }
     onMouseDownByLine(e: JQuery.MouseDownEvent) {
         e.preventDefault();
-        let clientPos = this.settings.isVertical ? e.offsetY : e.offsetX;
+        let offsetPos = this.settings.isVertical ? e.offsetY : e.offsetX;
 
-        if (clientPos < this.offsetFrom) clientPos = this.offsetFrom;
-        if (clientPos > this.line.size - this.offsetTo) clientPos = this.line.size - this.offsetTo;
+        if (offsetPos < this.offsetFrom) offsetPos = this.offsetFrom;
+        if (offsetPos > this.line.size - this.offsetTo) offsetPos = this.line.size - this.offsetTo;
 
-        const nearHandle = this.getNearestHandle(clientPos);
+        console.log(offsetPos);
+        const nearHandle = this.getNearestHandle(offsetPos);
 
-        let newPos = this.getSteppedPos(clientPos + this.line.offset);
+        let newPos = this.getSteppedPos(offsetPos + this.line.offset);
         if (!newPos)
             newPos =
-                clientPos - (nearHandle.is(this.handleFrom) ? this.offsetFrom : this.handleTo.size - this.offsetTo);
+                offsetPos - (nearHandle.is(this.handleFrom) ? this.offsetFrom : this.handleTo.size - this.offsetTo);
         this.onHandlePositionUpdate(nearHandle, newPos);
 
         const newEvent = e;
