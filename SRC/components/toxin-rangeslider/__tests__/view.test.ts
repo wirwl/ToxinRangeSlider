@@ -13,37 +13,6 @@ let cssFromLess: string;
 // let rangeslider: TRSPresenter;
 let view: TRSView;
 
-function fixWidthForJSDOM(root: JQuery<HTMLElement>) {
-    const widthRoot = parseFloat(root.css('width'));
-    const widthRS = widthRoot - parseFloat(root.css('border-left-width')) - parseFloat(root.css('border-right-width'));
-    const rs = root.find('.rangeslider');
-    const widthLine = widthRS - parseFloat(rs.css('border-left-width')) - parseFloat(rs.css('border-right-width'));
-}
-function addHtmlCSStoJSDOM() {
-    const urlLess = new URL(
-        path.normalize(__dirname + '../../../../components/toxin-rangeslider/toxin-rangeslider.less'),
-    );
-    const urlCommonLess = new URL(path.normalize(__dirname + '../../../../common.less'));
-
-    const getHtmlFromPug = pug.compileFile('src/pages/index/index.pug');
-    const LessFromFile = fs.readFileSync(urlLess.href, 'utf8');
-    const LessFromFileCommon = fs.readFileSync(urlCommonLess.href, 'utf8');
-
-    let cssFromLessCommon: string;
-    less.render(LessFromFileCommon, function(e: Less.RenderError, output: Less.RenderOutput | undefined) {
-        cssFromLessCommon = output.css;
-    });
-    less.render(LessFromFile, function(e: Less.RenderError, output: Less.RenderOutput | undefined) {
-        cssFromLess = output.css;
-    });
-    document.documentElement.innerHTML = getHtmlFromPug();
-    const head = document.getElementsByTagName('head')[0];
-    const style = document.createElement('style');
-    style.type = 'text/css';
-    style.innerHTML = cssFromLessCommon + cssFromLess;
-    head.appendChild(style);
-}
-
 function ConfigureJSDOM() {
     const textHTML =
         '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body><div class="test-in-jest"></div></body></html>';
@@ -90,38 +59,6 @@ beforeAll(async () => {
     // rangeslider = plugin.data('toxinRangeSlider');
 });
 
-describe('Check result of getNearestHandle() function. Six different tests.', () => {
-    beforeEach(() => {});
-    describe('If there are two handles.', () => {
-        test('LMB clicked on the left of first handle', () => {
-            expect(view.getNearestHandle(32)).toBe(view.handleFrom);
-        });
-        test('LMB clicked between two handles, closer to left handle', () => {
-            expect(view.getNearestHandle(95)).toBe(view.handleFrom);
-        });
-        test('LMB clicked between two handles, closer to rigth handle', () => {
-            expect(view.getNearestHandle(208)).toBe(view.handleTo);
-        });
-        test('LMB clicked on the right of second handle', () => {
-            expect(view.getNearestHandle(300)).toBe(view.handleTo);
-        });
-    });
-    describe('If there are one handle.', () => {
-        beforeAll(() => {
-            view.settings.extend({
-                isTwoHandles: false,
-                valueTo: 491,
-            });
-        });
-        test('LMB clicked on the left of handle', () => {
-            expect(view.getNearestHandle(10)).toBe(view.handleTo);
-        });
-        test('LMB clicked on the right of handle', () => {
-            expect(view.getNearestHandle(203)).toBe(view.handleTo);
-        });
-    });
-});
-
 describe('Check result of isEqualArrays() function, return value true or false', () => {
     const ar1String = ['a', 'bb', '123'];
     const ar2String = ['a', 'bb', '123'];
@@ -162,6 +99,38 @@ describe('Check result of isEqualArrays() function, return value true or false',
     });
 });
 
+describe('Check result of getNearestHandle() function. Six different tests.', () => {
+    beforeEach(() => {});
+    describe('If there are two handles.', () => {
+        test('LMB clicked on the left of first handle', () => {
+            expect(view.getNearestHandle(32)).toBe(view.handleFrom);
+        });
+        test('LMB clicked between two handles, closer to left handle', () => {
+            expect(view.getNearestHandle(95)).toBe(view.handleFrom);
+        });
+        test('LMB clicked between two handles, closer to rigth handle', () => {
+            expect(view.getNearestHandle(208)).toBe(view.handleTo);
+        });
+        test('LMB clicked on the right of second handle', () => {
+            expect(view.getNearestHandle(300)).toBe(view.handleTo);
+        });
+    });
+    describe('If there are one handle.', () => {
+        beforeAll(() => {
+            view.settings.extend({
+                isTwoHandles: false,
+                valueTo: 491,
+            });
+        });
+        test('LMB clicked on the left of handle', () => {
+            expect(view.getNearestHandle(10)).toBe(view.handleTo);
+        });
+        test('LMB clicked on the right of handle', () => {
+            expect(view.getNearestHandle(203)).toBe(view.handleTo);
+        });
+    });
+});
+
 // test('Check result of validate() function in view layer', () => {
 //     expect(rangeslider.view.validate(9999)).toBe(244);
 // });
@@ -170,5 +139,22 @@ describe('Check result of isEqualArrays() function, return value true or false',
 //     rangeslider.update({ minValue: 10, maxValue: 1000 });
 //     expect(rangeslider.view.convertRelativeValueToPixelValue(750)).toBe(182.3838383838384);
 // });
+describe('Check result of moveHandle() function', () => {
+    test('If rangeslider has range of values from one(min.) to another(max.)  ', () => {
+        const result: HandleMovingResult = view.moveHandle(view.handleFrom, 10);
+        const relValue = view.convertPixelValueToRelativeValue(10);
+        expect(result.isFromHandle).toBe(true);
+        expect(result.value).toBe(relValue);
+        expect(result.isUsingItems).toBe(view.settings.items.values.length > 1);
+    });
+    test('If rangeslider has collection of items', () => {
+        view.settings.extend({ items: { values: [1, 2, 3, 4, 5], indexFrom: 0, indexTo: 4 } });
+        const result: HandleMovingResult = view.moveHandle(view.handleTo, 20);
+        const relValue = view.convertPixelValueToRelativeValue(20);
+        expect(result.isFromHandle).toBe(false);
+        expect(result.value).toBe(relValue);
+        expect(result.isUsingItems).toBe(view.settings.items.values.length > 1);
+    });
+});
 
 afterAll(() => {});

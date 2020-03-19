@@ -2,40 +2,7 @@ import TRSPresenter from '../core/presenter';
 import '../../toxin-rangeslider/toxin-rangeslider';
 import TRSModel from '../core/model';
 
-const fs = require('fs');
-const path = require('path');
-const less = require('less');
-let cssFromLess: string;
-let plugin: JQuery<HTMLElement>;
-let rangeslider: TRSPresenter;
 let model: TRSModel;
-
-function ConfigureJSDOM() {
-    const textHTML =
-        '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body><div class="test-in-jest"></div></body></html>';
-    const fixWidth = '.test-in-jest {width: 260px;}.rangeslider{width: 260px;}.rangeslider__line{width: 260px;}';
-    const urlLess = new URL(
-        path.normalize(__dirname + '../../../../components/toxin-rangeslider/toxin-rangeslider.less'),
-    );
-    const urlCommonLess = new URL(path.normalize(__dirname + '../../../../common.less'));
-
-    const LessFromFile = fs.readFileSync(urlLess.href, 'utf8');
-    const LessFromFileCommon = fs.readFileSync(urlCommonLess.href, 'utf8');
-
-    let cssFromLessCommon: string;
-    less.render(LessFromFileCommon, function(e: Less.RenderError, output: Less.RenderOutput | undefined) {
-        cssFromLessCommon = output.css;
-    });
-    less.render(LessFromFile, function(e: Less.RenderError, output: Less.RenderOutput | undefined) {
-        cssFromLess = output.css;
-    });
-    document.documentElement.innerHTML = textHTML;
-    const head = document.getElementsByTagName('head')[0];
-    const style = document.createElement('style');
-    style.type = 'text/css';
-    style.innerHTML = cssFromLessCommon + cssFromLess + fixWidth;
-    head.appendChild(style);
-}
 
 beforeAll(async () => {
     model = new TRSModel({});

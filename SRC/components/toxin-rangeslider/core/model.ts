@@ -16,8 +16,10 @@ export default class TRSModel {
     };
     constructor(options: RangeSliderOptions) {
         this.settings = new CRangeSliderOptions();
-        $.extend(true, this.settings, TRSModel.defaults);
-        $.extend(true, this.settings, options);
+        //$.extend(true, this.settings, TRSModel.defaults);
+        //$.extend(true, this.settings, options);
+        this.settings.extend(TRSModel.defaults);
+        this.settings.extend(options);
     }
     validate() {
         if (this.settings.isHaveItems) {

@@ -69,6 +69,7 @@ export default class CRangeSliderOptions implements RangeSliderOptions {
         return result;
     }
     extend(o: RangeSliderOptions | CRangeSliderOptions) {
+        if (!o) return;
         const isUsingItemsValuesThis = this.items && this.items.values && this.items.values.length > 1;
         const isUsingItemsValuesO = o.items && o.items.values && o.items.values.length > 1;
         const isUsingItemsValues = isUsingItemsValuesThis || isUsingItemsValuesO;

@@ -226,7 +226,6 @@ export default class TRSView {
     moveHandle(currentHandle: Handle, pxX: number): HandleMovingResult {
         const isHandleFrom = currentHandle.is(this.handleFrom);
         currentHandle.pos = pxX;
-        let relValue;
         let restoreIndex = -1;
         if (this.settings.isHaveItems) {
             const lw = this.line.size - this.offsetFrom - this.offsetTo;
