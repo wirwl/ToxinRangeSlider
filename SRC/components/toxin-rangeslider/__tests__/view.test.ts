@@ -3,6 +3,7 @@ import '../../toxin-rangeslider/toxin-rangeslider';
 import TRSPresenter from '../core/presenter';
 import TRSView from '../core/view';
 import TRSModel from '../core/model';
+import CRangeSliderOptions from '../core/entities/crangeslideroptions';
 
 const pug = require('pug');
 const fs = require('fs');
@@ -156,7 +157,6 @@ describe('Check result of convertRelativeValueToPixelValue() function', () => {
     });
     test('If passed value is relative value', () => {
         view.settings.extend({ minValue: 100, maxValue: 1100, items: { values: [] } });
-        console.log(view.settings);
         expect(view.convertRelativeValueToPixelValue(600)).toBe(187);
     });
 });
@@ -164,6 +164,44 @@ describe('Check result of convertRelativeValueToPixelValue() function', () => {
 describe('Check result of convertPixelValueToRelativeValue() function ', () => {
     test('If passed value is relative value', () => {
         expect(view.convertPixelValueToRelativeValue(187)).toBe(600);
+    });
+});
+
+describe('Check result of validate() function', () => {
+    describe('If there are two handles', () => {
+        beforeEach(() => {
+            // view.settings.extend({
+            //     isTwoHandles: true,
+            //     minValue: 0,
+            //     maxValue: 1060,
+            //     valueFrom: 322,
+            //     valueTo: 491,
+            //     items: { values: [] },
+            // });
+            view.drawSlider(null, {
+                isTwoHandles: true,
+                minValue: 0,
+                maxValue: 1060,
+                valueFrom: 322,
+                valueTo: 491,
+                items: { values: [] },
+            });
+        });
+        test('If from handle position is less than zero', () => {
+            expect(view.validate(-5, view.handleFrom)).toBe(0);
+        });
+        test('If from handle position is bigger than to handle position', () => {
+            expect(view.validate(444, view.handleFrom)).toBe(view.handleTo.pos);
+        });
+        test('if to handle position is bigger than rangeslider length', () => {
+            expect(view.validate(444, view.handleTo)).toBe(view.line.size - view.handleTo.size);
+        });
+        test('if to handle position is less than from handle position', () => {
+            console.log(view.handleFrom.pos);
+            expect(view.validate(100, view.handleTo)).toBe(
+                view.convertRelativeValueToPixelValue(view.settings.valueFrom as number),
+            );
+        });
     });
 });
 

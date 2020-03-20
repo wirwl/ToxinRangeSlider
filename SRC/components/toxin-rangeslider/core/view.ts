@@ -71,7 +71,7 @@ export default class TRSView {
         ]);
         this.settings = new CRangeSliderOptions();
     }
-    drawSlider(os: CRangeSliderOptions, ns: CRangeSliderOptions, isFirstDraw = false) {
+    drawSlider(os: CRangeSliderOptions, ns: CRangeSliderOptions | RangeSliderOptions, isFirstDraw = false) {
         this.settings.extend(ns);
         const isItemValuesChanged = !this.isEqualArrays(os?.items?.values, ns.items.values);
 
@@ -80,11 +80,11 @@ export default class TRSView {
             isFirstDraw = true;
         }
 
-        if (isFirstDraw || ns.isTwoHandles != os.isTwoHandles) {
+        if (isFirstDraw || ns.isTwoHandles != os?.isTwoHandles) {
             this.rangeslider.isInterval = ns.isTwoHandles;
             isFirstDraw = true;
         }
-        if (isFirstDraw || ns.isTip != os.isTip)
+        if (isFirstDraw || ns.isTip != os?.isTip)
             if (ns.isTip) {
                 if (ns.isTwoHandles) this.tipFrom.show();
                 this.tipTo.show();
@@ -184,9 +184,27 @@ export default class TRSView {
         let newPos = this.getSteppedPos(offsetPos + targetOffset);
         if (newPos == null) newPos = clientPos - this.line.offset - shiftPos;
         newPos = this.validate(newPos, currentHandle);
+
         this.onHandlePositionUpdate(currentHandle, newPos);
 
         return false;
+    }
+    validate(pos: number, currentHandle: Handle): number {
+        let result = pos;
+        const lw = this.line.size;
+        const ch = currentHandle;
+
+        if (this.settings.isTwoHandles) {
+            if (ch.is(this.handleFrom) && pos < 0) result = 0;
+            if (ch.is(this.handleFrom) && pos > this.handleTo.pos) result = this.handleTo.pos;
+            if (ch.is(this.handleTo) && pos > lw - ch.size) result = lw - ch.size;
+            if (ch.is(this.handleTo) && pos < this.handleFrom.pos) result = this.handleFrom.pos;
+        } else {
+            if (pos < 0) result = 0;
+            if (pos > lw - ch.size) result = lw - ch.size;
+        }
+
+        return result;
     }
     onMouseUp(e: JQuery.MouseUpEvent, currentHandle: Handle) {
         currentHandle.isMoving = false;
@@ -332,18 +350,6 @@ export default class TRSView {
             (this.settings.minValue as number) +
                 percent * ((this.settings.maxValue as number) - (this.settings.minValue as number)),
         );
-        return result;
-    }
-    validate(pos: number, currentHandle: Handle): number {
-        let result = pos;
-        const lw = this.line.size;
-        const ch = currentHandle;
-        if (pos < 0) result = 0;
-        if (pos > lw - ch.size) result = lw - ch.size;
-        if (this.settings.isTwoHandles) {
-            if (ch.is(this.handleFrom)) if (pos > this.handleTo.pos) result = this.handleTo.pos;
-            if (ch.is(this.handleTo)) if (pos < this.handleFrom.pos) result = this.handleFrom.pos;
-        }
         return result;
     }
     getSteppedPos(clientPos: number): number {
