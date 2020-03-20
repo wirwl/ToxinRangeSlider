@@ -198,9 +198,7 @@ describe('Check result of validate() function', () => {
         });
         test('if to handle position is less than from handle position', () => {
             console.log(view.handleFrom.pos);
-            expect(view.validate(100, view.handleTo)).toBe(
-                view.convertRelativeValueToPixelValue(view.settings.valueFrom as number),
-            );
+            expect(view.validate(100, view.handleTo)).toBe(view.handleFrom.pos);
         });
     });
 });
