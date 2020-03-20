@@ -70,9 +70,13 @@ export default class CRangeSliderOptions implements RangeSliderOptions {
     }
     extend(o: RangeSliderOptions | CRangeSliderOptions) {
         if (!o) return;
-        const isUsingItemsValuesThis = this.items && this.items.values && this.items.values.length > 1;
-        const isUsingItemsValuesO = o.items && o.items.values && o.items.values.length > 1;
-        const isUsingItemsValues = isUsingItemsValuesThis || isUsingItemsValuesO;
+        if (typeof o.items !== 'undefined') {
+            if (typeof o.items.indexFrom !== 'undefined') this.items.indexFrom = o.items.indexFrom;
+            if (typeof o.items.indexTo !== 'undefined') this.items.indexTo = o.items.indexTo;
+            if (typeof o.items.values !== 'undefined') this.items.values = [...o.items.values];
+        }
+
+        const isUsingItemsValues = this.items && this.items.values && this.items.values.length > 1;
 
         if (typeof o.isVertical !== 'undefined') this.isVertical = o.isVertical;
         if (typeof o.isTwoHandles !== 'undefined') this.isTwoHandles = o.isTwoHandles;
@@ -88,11 +92,6 @@ export default class CRangeSliderOptions implements RangeSliderOptions {
         if (typeof o.valueTo !== 'undefined')
             if (!isUsingItemsValues) this._valueTo = parseFloat(o.valueTo.toString());
             else this.valueTo = o.valueTo;
-        if (typeof o.items !== 'undefined') {
-            if (typeof o.items.indexFrom !== 'undefined') this.items.indexFrom = o.items.indexFrom;
-            if (typeof o.items.indexTo !== 'undefined') this.items.indexTo = o.items.indexTo;
-            if (typeof o.items.values !== 'undefined') this.items.values = [...o.items.values];
-        }
         if (typeof o.onHandlePositionChange !== 'undefined') this.onHandlePositionChange = o.onHandlePositionChange;
     }
 }

@@ -131,14 +131,6 @@ describe('Check result of getNearestHandle() function. Six different tests.', ()
     });
 });
 
-// test('Check result of validate() function in view layer', () => {
-//     expect(rangeslider.view.validate(9999)).toBe(244);
-// });
-
-// test('Check result of convertRelativeValueToPixelValue function', () => {
-//     rangeslider.update({ minValue: 10, maxValue: 1000 });
-//     expect(rangeslider.view.convertRelativeValueToPixelValue(750)).toBe(182.3838383838384);
-// });
 describe('Check result of moveHandle() function', () => {
     test('If rangeslider has range of values from one(min.) to another(max.)  ', () => {
         const result: HandleMovingResult = view.moveHandle(view.handleFrom, 10);
@@ -154,6 +146,24 @@ describe('Check result of moveHandle() function', () => {
         expect(result.isFromHandle).toBe(false);
         expect(result.value).toBe(relValue);
         expect(result.isUsingItems).toBe(view.settings.items.values.length > 1);
+    });
+});
+
+describe('Check result of convertRelativeValueToPixelValue() function', () => {
+    test('If passed value is index for values array', () => {
+        view.settings.extend({ items: { values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] } });
+        expect(view.convertRelativeValueToPixelValue(3)).toBe(93.5);
+    });
+    test('If passed value is relative value', () => {
+        view.settings.extend({ minValue: 100, maxValue: 1100, items: { values: [] } });
+        console.log(view.settings);
+        expect(view.convertRelativeValueToPixelValue(600)).toBe(187);
+    });
+});
+
+describe('Check result of convertPixelValueToRelativeValue() function ', () => {
+    test('If passed value is relative value', () => {
+        expect(view.convertPixelValueToRelativeValue(187)).toBe(600);
     });
 });
 

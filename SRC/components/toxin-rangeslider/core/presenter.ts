@@ -17,6 +17,7 @@ export default class TRSPresenter {
         //this.data = this.model.settings;
         this.view.onHandlePositionUpdate = this.onHandlePositionUpdate.bind(this);
         this.init();
+        this.view.settings.extend({ minValue: 100, maxValue: 1100, items: { values: [] } });
     }
     init() {
         $.extend(true, this.model.settings, this.view.data);
