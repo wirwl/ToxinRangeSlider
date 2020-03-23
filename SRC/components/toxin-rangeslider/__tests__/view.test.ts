@@ -101,7 +101,6 @@ describe('Check result of isEqualArrays() function, return value true or false',
 });
 
 describe('Check result of getNearestHandle() function. Six different tests.', () => {
-    beforeEach(() => {});
     describe('If there are two handles.', () => {
         test('LMB clicked on the left of first handle', () => {
             expect(view.getNearestHandle(32)).toBe(view.handleFrom);
@@ -170,14 +169,6 @@ describe('Check result of convertPixelValueToRelativeValue() function ', () => {
 describe('Check result of validate() function', () => {
     describe('If there are two handles', () => {
         beforeEach(() => {
-            // view.settings.extend({
-            //     isTwoHandles: true,
-            //     minValue: 0,
-            //     maxValue: 1060,
-            //     valueFrom: 322,
-            //     valueTo: 491,
-            //     items: { values: [] },
-            // });
             view.drawSlider(null, {
                 isTwoHandles: true,
                 minValue: 0,
@@ -200,6 +191,48 @@ describe('Check result of validate() function', () => {
             console.log(view.handleFrom.pos);
             expect(view.validate(100, view.handleTo)).toBe(view.handleFrom.pos);
         });
+    });
+    describe('If only one handle', () => {
+        beforeEach(() => {
+            view.drawSlider(null, {
+                isTwoHandles: false,
+                minValue: 0,
+                maxValue: 1060,
+                valueFrom: 322,
+                valueTo: 491,
+                items: { values: [] },
+            });
+        });
+        test('If to handle position is less than zero', () => {
+            expect(view.validate(-15, view.handleTo)).toBe(0);
+        });
+        test('if to handle position is bigger than rangeslider length', () => {
+            expect(view.validate(500, view.handleTo)).toBe(view.line.size - view.handleTo.size);
+        });
+    });
+});
+
+describe('Check result of getSteppedPos() function', () => {
+    beforeEach(() => {
+        view.drawSlider(null, {
+            isTwoHandles: true,
+            minValue: 0,
+            maxValue: 748,
+            valueFrom: 322,
+            valueTo: 491,
+            items: { values: [] },
+        });
+    });
+    test('If there is no step', () => {
+        expect(view.getSteppedPos(15)).toBe(null);
+    });
+    test('If is there step. Step is defined, rounding down ', () => {
+        view.drawSlider(null, { stepValue: 100 });
+        expect(view.getSteppedPos(40)).toBe(0);
+    });
+    test('If is there step. Step not defined but pixel length of rangeslider is bigger than relative length', () => {
+        view.drawSlider(null, { stepValue: 0 });
+        //expect(view.getSteppedPos()).toBe('');
     });
 });
 

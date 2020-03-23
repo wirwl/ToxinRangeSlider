@@ -70,6 +70,7 @@ export default class CRangeSliderOptions implements RangeSliderOptions {
     }
     extend(o: RangeSliderOptions | CRangeSliderOptions) {
         if (!o) return;
+
         if (typeof o.items !== 'undefined') {
             if (typeof o.items.indexFrom !== 'undefined') this.items.indexFrom = o.items.indexFrom;
             if (typeof o.items.indexTo !== 'undefined') this.items.indexTo = o.items.indexTo;
