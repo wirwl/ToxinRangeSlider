@@ -73,7 +73,7 @@ export default class TRSView {
     }
     drawSlider(os: CRangeSliderOptions, ns: CRangeSliderOptions | RangeSliderOptions, isFirstDraw = false) {
         this.settings.extend(ns);
-        const isItemValuesChanged = !this.isEqualArrays(os?.items?.values, ns.items.values);
+        const isItemValuesChanged = !this.isEqualArrays(os?.items?.values, ns.items?.values);
 
         if (ns.isVertical != os?.isVertical) {
             this.rangeslider.isVertical = ns.isVertical;
@@ -97,19 +97,19 @@ export default class TRSView {
                 this.tipMax.hide();
             }
 
-        if (isFirstDraw || ns.minValue != os.minValue) {
-            this.tipMin.text = ns.minValue;
+        if (isFirstDraw || this.settings.minValue != os?.minValue) {
+            this.tipMin.text = this.settings.minValue;
         }
-        if (isFirstDraw || ns.maxValue != os.maxValue) {
-            this.tipMax.text = ns.maxValue;
+        if (isFirstDraw || this.settings.maxValue != os?.maxValue) {
+            this.tipMax.text = this.settings.maxValue;
         }
 
         if (isFirstDraw || isItemValuesChanged) {
-            if (ns.items.values) {
-                const count = ns.items.values.length;
+            if (this.settings.items?.values) {
+                const count = this.settings.items.values.length;
                 if (count > 1) {
-                    this.tipMin.text = ns.items.values[0];
-                    this.tipMax.text = ns.items.values[count - 1];
+                    this.tipMin.text = this.settings.items.values[0];
+                    this.tipMax.text = this.settings.items.values[count - 1];
                 }
             }
         }
@@ -126,22 +126,20 @@ export default class TRSView {
                     ? this.settings.items.indexFrom
                     : (this.settings.valueFrom as number);
                 const posXWithOutStep = this.convertRelativeValueToPixelValue(val);
-                const posXWithStep = this.getSteppedPos(posXWithOutStep + this.line.offset + this.offsetFrom);
+                const posXWithStep = this.getSteppedPos(posXWithOutStep);
                 this.moveHandle(this.handleFrom, posXWithStep == null ? posXWithOutStep : posXWithStep);
             }
 
         if (
             isFirstDraw ||
-            ns.valueTo != os.valueTo ||
-            ns.minValue != os.minValue ||
-            ns.maxValue != os.maxValue ||
+            ns.valueTo != os?.valueTo ||
+            ns.minValue != os?.minValue ||
+            ns.maxValue != os?.maxValue ||
             isItemValuesChanged
         ) {
             const val = this.settings.isHaveItems ? this.settings.items.indexTo : (this.settings.valueTo as number);
             const posXWithOutStep = this.convertRelativeValueToPixelValue(val);
-            const posXWithStep = this.getSteppedPos(
-                posXWithOutStep + this.line.offset + this.handleTo.size - this.offsetTo,
-            );
+            const posXWithStep = this.getSteppedPos(posXWithOutStep);
             this.moveHandle(this.handleTo, posXWithStep == null ? posXWithOutStep : posXWithStep);
         }
         if (this.settings.isHaveItems) {
@@ -181,7 +179,8 @@ export default class TRSView {
         const $target = $(e.target);
         const targetOffset = this.settings.isVertical ? $target.offset().top : $target.offset().left;
 
-        let newPos = this.getSteppedPos(offsetPos + targetOffset);
+        let newPos = this.getSteppedPos(offsetPos + targetOffset - this.line.offset - this.offsetFrom);
+
         if (newPos == null) newPos = clientPos - this.line.offset - shiftPos;
         newPos = this.validate(newPos, currentHandle);
 
@@ -223,7 +222,7 @@ export default class TRSView {
         console.log(offsetPos);
         const nearHandle = this.getNearestHandle(offsetPos);
 
-        let newPos = this.getSteppedPos(offsetPos + this.line.offset);
+        let newPos = this.getSteppedPos(offsetPos - this.offsetFrom);
         if (!newPos)
             newPos =
                 offsetPos - (nearHandle.is(this.handleFrom) ? this.offsetFrom : this.handleTo.size - this.offsetTo);
@@ -352,7 +351,7 @@ export default class TRSView {
         );
         return result;
     }
-    getSteppedPos(clientPos: number): number {
+    getSteppedPos(pxValue: number): number {
         const pxLength = this.line.size - this.offsetFrom - this.offsetTo;
         const isDefinedStep = this.settings.stepValue > 0;
         const isDefinedSetOfValues = this.settings.items.values.length > 1;
@@ -360,8 +359,6 @@ export default class TRSView {
         const isNeedStep = isDefinedStep || isTooLongLine || isDefinedSetOfValues;
 
         if (isNeedStep) {
-            const pos = clientPos - this.line.offset - this.offsetFrom;
-
             let pxStep: number;
 
             if (isDefinedStep)
@@ -378,12 +375,13 @@ export default class TRSView {
                 pxStep = pxLength / this.settings.items.values.length;
             }
 
-            const nStep = Math.round(pos / pxStep);
+            const nStep = Math.round(pxValue / pxStep);
             let newPos = nStep * pxStep;
 
-            if (pos / pxStep > Math.trunc(pxLength / pxStep)) {
+            if (pxValue / pxStep > Math.trunc(pxLength / pxStep)) {
+                if (pxValue == 1) console.log('tut');
                 const remainder = pxLength - newPos;
-                if (pos > newPos + remainder / 2) newPos += remainder;
+                if (pxValue > newPos + remainder / 2) newPos += remainder;
             }
             return newPos;
         }

@@ -188,7 +188,6 @@ describe('Check result of validate() function', () => {
             expect(view.validate(444, view.handleTo)).toBe(view.line.size - view.handleTo.size);
         });
         test('if to handle position is less than from handle position', () => {
-            console.log(view.handleFrom.pos);
             expect(view.validate(100, view.handleTo)).toBe(view.handleFrom.pos);
         });
     });
@@ -217,22 +216,39 @@ describe('Check result of getSteppedPos() function', () => {
         view.drawSlider(null, {
             isTwoHandles: true,
             minValue: 0,
-            maxValue: 748,
+            maxValue: 2000,
             valueFrom: 322,
             valueTo: 491,
+            stepValue: 0,
             items: { values: [] },
         });
     });
     test('If there is no step', () => {
         expect(view.getSteppedPos(15)).toBe(null);
     });
-    test('If is there step. Step is defined, rounding down ', () => {
-        view.drawSlider(null, { stepValue: 100 });
+    test('If there is step. Step is defined, rounding down ', () => {
+        view.drawSlider(null, {
+            minValue: 0,
+            maxValue: 374,
+            stepValue: 100,
+        });
         expect(view.getSteppedPos(40)).toBe(0);
     });
-    test('If is there step. Step not defined but pixel length of rangeslider is bigger than relative length', () => {
-        view.drawSlider(null, { stepValue: 0 });
-        //expect(view.getSteppedPos()).toBe('');
+    test('If there is step. Step is defined, rounding up ', () => {
+        view.drawSlider(null, {
+            minValue: 0,
+            maxValue: 374,
+            stepValue: 100,
+        });
+        expect(view.getSteppedPos(60)).toBe(100);
+    });
+    test('If is there step. Step not defined but pixel length of rangeslider is bigger than relative length, rounding down', () => {
+        view.drawSlider(null, { minValue: 0, maxValue: 93.5, stepValue: 0 });
+        expect(view.getSteppedPos(1)).toBe(0);
+    });
+    test('If is there step. Step not defined but pixel length of rangeslider is bigger than relative length, rounding up', () => {
+        view.drawSlider(null, { minValue: 0, maxValue: 93.5, stepValue: 0 });
+        expect(view.getSteppedPos(2)).toBe(4);
     });
 });
 
