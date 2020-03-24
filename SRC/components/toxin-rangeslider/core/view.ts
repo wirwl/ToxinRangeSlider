@@ -145,12 +145,15 @@ export default class TRSView {
         if (this.settings.isHaveItems) {
             const pxLength = this.line.size - this.offsetFrom - this.offsetTo;
             const pxStep = pxLength / this.settings.items.values.length;
-            if (this.settings.isTwoHandles && (isFirstDraw || ns.items.indexFrom != os.items.indexFrom)) {
+            if (
+                this.settings.isTwoHandles &&
+                (isFirstDraw || (os && os.items && ns.items.indexFrom != os.items.indexFrom))
+            ) {
                 const newPos = ns.items.indexFrom * pxStep;
                 this.moveHandle(this.handleFrom, newPos);
             }
 
-            if (isFirstDraw || ns.items.indexTo != os.items.indexTo) {
+            if (isFirstDraw || (os && os.items && ns.items.indexTo != os.items.indexTo)) {
                 const newPos = ns.items.indexTo * pxStep;
                 this.moveHandle(this.handleTo, newPos);
             }
@@ -219,11 +222,10 @@ export default class TRSView {
         if (offsetPos < this.offsetFrom) offsetPos = this.offsetFrom;
         if (offsetPos > this.line.size - this.offsetTo) offsetPos = this.line.size - this.offsetTo;
 
-        console.log(offsetPos);
         const nearHandle = this.getNearestHandle(offsetPos);
 
         let newPos = this.getSteppedPos(offsetPos - this.offsetFrom);
-        if (!newPos)
+        if (newPos == null)
             newPos =
                 offsetPos - (nearHandle.is(this.handleFrom) ? this.offsetFrom : this.handleTo.size - this.offsetTo);
         this.onHandlePositionUpdate(nearHandle, newPos);
@@ -352,6 +354,7 @@ export default class TRSView {
         return result;
     }
     getSteppedPos(pxValue: number): number {
+        console.log(pxValue);
         const pxLength = this.line.size - this.offsetFrom - this.offsetTo;
         const isDefinedStep = this.settings.stepValue > 0;
         const isDefinedSetOfValues = this.settings.items.values.length > 1;
@@ -379,7 +382,6 @@ export default class TRSView {
             let newPos = nStep * pxStep;
 
             if (pxValue / pxStep > Math.trunc(pxLength / pxStep)) {
-                if (pxValue == 1) console.log('tut');
                 const remainder = pxLength - newPos;
                 if (pxValue > newPos + remainder / 2) newPos += remainder;
             }

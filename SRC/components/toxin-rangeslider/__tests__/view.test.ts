@@ -242,13 +242,25 @@ describe('Check result of getSteppedPos() function', () => {
         });
         expect(view.getSteppedPos(60)).toBe(100);
     });
-    test('If is there step. Step not defined but pixel length of rangeslider is bigger than relative length, rounding down', () => {
+    test('If there is step. Step not defined but pixel length of rangeslider is bigger than relative length, rounding down', () => {
         view.drawSlider(null, { minValue: 0, maxValue: 93.5, stepValue: 0 });
         expect(view.getSteppedPos(1)).toBe(0);
     });
-    test('If is there step. Step not defined but pixel length of rangeslider is bigger than relative length, rounding up', () => {
+    test('If there is step. Step not defined but pixel length of rangeslider is bigger than relative length, rounding up', () => {
         view.drawSlider(null, { minValue: 0, maxValue: 93.5, stepValue: 0 });
         expect(view.getSteppedPos(2)).toBe(4);
+    });
+    test('If there is step. Defined set of values, rounding down', () => {
+        view.drawSlider(null, {
+            items: { values: [2, 4, 8, 16, 32, 64, 128, 256, 512, 1024], indexFrom: 0, indexTo: 9 },
+        });
+        expect(view.getSteppedPos(10)).toBe(0);
+    });
+    test('If there is step. Defined set of values, rounding up', () => {
+        view.drawSlider(null, {
+            items: { values: [2, 4, 8, 16, 32, 64, 128, 256, 512, 1024], indexFrom: 0, indexTo: 9 },
+        });
+        expect(view.getSteppedPos(20)).toBe(37.4);
     });
 });
 
