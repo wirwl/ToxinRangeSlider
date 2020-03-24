@@ -354,7 +354,6 @@ export default class TRSView {
         return result;
     }
     getSteppedPos(pxValue: number): number {
-        console.log(pxValue);
         const pxLength = this.line.size - this.offsetFrom - this.offsetTo;
         const isDefinedStep = this.settings.stepValue > 0;
         const isDefinedSetOfValues = this.settings.items.values.length > 1;

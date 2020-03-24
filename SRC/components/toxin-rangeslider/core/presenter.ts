@@ -14,7 +14,6 @@ export default class TRSPresenter {
     constructor(model: TRSModel, view: TRSView) {
         this.view = view;
         this.model = model;
-        //this.data = this.model.settings;
         this.view.onHandlePositionUpdate = this.onHandlePositionUpdate.bind(this);
         this.init();
         this.view.settings.extend({ minValue: 100, maxValue: 1100, items: { values: [] } });
@@ -35,16 +34,7 @@ export default class TRSPresenter {
         }
         this.model.settings.onHandlePositionChange.call(result);
     }
-    // update(opt: RangeSliderOptions) {
-    //     const oldSettings = { ...this.model.settings };
-    //     const newSettings = $.extend(true, {}, this.model.settings, opt);
 
-    //     if (opt && opt.items && opt.items.values) newSettings.items.values = [...opt.items.values];
-    //     this.model.settings = { ...newSettings };
-    //     this.model.validate();
-    //     this.data = this.model.settings;
-    //     this.view.drawSlider(oldSettings, newSettings);
-    // }
     update(opt: RangeSliderOptions) {
         const oldSettings = new CRangeSliderOptions(this.model.settings);
 

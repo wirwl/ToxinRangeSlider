@@ -1,17 +1,12 @@
 import '../core/view';
 import '../../toxin-rangeslider/toxin-rangeslider';
-import TRSPresenter from '../core/presenter';
 import TRSView from '../core/view';
 import TRSModel from '../core/model';
-import CRangeSliderOptions from '../core/entities/crangeslideroptions';
 
-const pug = require('pug');
 const fs = require('fs');
 const path = require('path');
 const less = require('less');
 let cssFromLess: string;
-// let plugin: JQuery<HTMLElement>;
-// let rangeslider: TRSPresenter;
 let view: TRSView;
 
 function ConfigureJSDOM() {
@@ -56,8 +51,6 @@ beforeAll(async () => {
         valueFrom: 322,
         valueTo: 720,
     });
-    // plugin.toxinRangeSlider();
-    // rangeslider = plugin.data('toxinRangeSlider');
 });
 
 describe('Check result of isEqualArrays() function, return value true or false', () => {
@@ -263,5 +256,3 @@ describe('Check result of getSteppedPos() function', () => {
         expect(view.getSteppedPos(20)).toBe(37.4);
     });
 });
-
-afterAll(() => {});
