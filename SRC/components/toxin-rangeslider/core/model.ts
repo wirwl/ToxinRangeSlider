@@ -7,10 +7,10 @@ export default class TRSModel {
         isTwoHandles: true,
         isTip: true,
         minValue: 0,
-        maxValue: 122,
+        maxValue: 1000,
         stepValue: 0,
         valueFrom: 0,
-        valueTo: 122,
+        valueTo: 1000,
         items: { indexFrom: 0, indexTo: 1, values: [] },
         onHandlePositionChange: function() {},
     };
