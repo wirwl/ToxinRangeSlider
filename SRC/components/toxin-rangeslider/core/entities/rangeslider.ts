@@ -28,9 +28,6 @@ export default class Rangeslider extends TRSElement {
         });
     }
 
-    constructor(el: JQuery<HTMLElement>) {
-        super(el);
-    }
     addControls(controls: (Tip | Handle | Line)[]) {
         this.controls = controls;
     }
