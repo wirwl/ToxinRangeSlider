@@ -5,10 +5,8 @@ export default class Handle extends TRSElement {
         if (value) this.el.addClass('rangeslider__handle_isMoving');
         else this.el.removeClass('rangeslider__handle_isMoving');
     }
-    tip: Tip;
     constructor(el: JQuery<HTMLElement>, tip: Tip) {
         super(el);
-        this.tip = tip;
     }
     is(h: Handle): boolean {
         return this.el.is(h.el);
