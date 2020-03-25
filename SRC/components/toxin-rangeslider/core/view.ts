@@ -51,11 +51,11 @@ export default class TRSView {
         this.tipMin = new Tip(el.find('.rangeslider__tip-min'));
         this.tipMax = new Tip(el.find('.rangeslider__tip-max'));
 
-        this.handleFrom = new Handle(this.rangeslider.el.find('.rangeslider__handle-from'), this.tipFrom);
+        this.handleFrom = new Handle(this.rangeslider.el.find('.rangeslider__handle-from'));
         this.handleFrom.el.mousedown(e => this.onMouseDownByHandle(e));
         this.offsetFrom = this.handleFrom.width / 2;
 
-        this.handleTo = new Handle(this.rangeslider.el.find('.rangeslider__handle-to'), this.tipTo);
+        this.handleTo = new Handle(this.rangeslider.el.find('.rangeslider__handle-to'));
         this.handleTo.el.mousedown(e => this.onMouseDownByHandle(e));
         this.offsetTo = this.handleTo.width / 2;
 
