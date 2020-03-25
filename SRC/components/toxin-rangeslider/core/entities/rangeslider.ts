@@ -28,22 +28,6 @@ export default class Rangeslider extends TRSElement {
         });
     }
 
-    get thickness(): number {
-        return this.isVertical ? this.width : this.height;
-    }
-    set thickness(value: number) {
-        if (this.isVertical) {
-            this._width = value;
-            this.el.css('width', value);
-        } else {
-            this._height = value;
-            this.el.css('height', value);
-        }
-    }
-    get length(): number {
-        return this.isVertical ? this.height : this.width;
-    }
-
     constructor(el: JQuery<HTMLElement>) {
         super(el);
     }
