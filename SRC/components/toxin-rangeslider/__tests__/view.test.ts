@@ -142,7 +142,7 @@ describe('Check result of moveHandle() function', () => {
 describe('Check result of convertRelativeValueToPixelValue() function', () => {
     test('If passed value is index for values array', () => {
         view.settings.extend({ items: { values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] } });
-        expect(view.convertRelativeValueToPixelValue(3)).toBe(93.5);
+        expect(view.convertRelativeValueToPixelValue(3)).toBe(102);
     });
     test('If passed value is relative value', () => {
         view.settings.extend({ minValue: 100, maxValue: 1100, items: { values: [] } });
@@ -242,13 +242,13 @@ describe('Check result of getSteppedPos() function', () => {
     });
     test('If there is step. Defined set of values, rounding down', () => {
         view.drawSlider(null, {
-            items: { values: [2, 4, 8, 16, 32, 64, 128, 256, 512, 1024], indexFrom: 0, indexTo: 9 },
+            items: { values: [0, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024], indexFrom: 0, indexTo: 9 },
         });
         expect(view.getSteppedPos(10)).toBe(0);
     });
     test('If there is step. Defined set of values, rounding up', () => {
         view.drawSlider(null, {
-            items: { values: [2, 4, 8, 16, 32, 64, 128, 256, 512, 1024], indexFrom: 0, indexTo: 9 },
+            items: { values: [0, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024], indexFrom: 0, indexTo: 9 },
         });
         expect(view.getSteppedPos(20)).toBe(37.4);
     });
