@@ -12,7 +12,7 @@ export default class TRSModel {
         valueFrom: 0,
         valueTo: 1000,
         items: { indexFrom: 0, indexTo: 1, values: [] },
-        onHandlePositionChange: function() {},
+        onHandlePositionChange(this: HandleMovingResult): void {},
     };
     constructor(options: RangeSliderOptions) {
         this.settings = new CRangeSliderOptions();

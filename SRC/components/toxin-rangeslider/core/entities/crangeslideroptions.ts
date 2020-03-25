@@ -52,7 +52,7 @@ export default class CRangeSliderOptions implements RangeSliderOptions {
     }
 
     items: RangeSliderItems;
-    onHandlePositionChange: Function;
+    onHandlePositionChange?(this: HandleMovingResult): void;
     constructor(anotherOptions: CRangeSliderOptions | RangeSliderOptions = null) {
         this.items = {};
         this.onHandlePositionChange = function() {};

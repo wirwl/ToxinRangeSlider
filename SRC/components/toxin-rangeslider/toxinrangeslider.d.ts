@@ -12,7 +12,7 @@ interface RangeSliderOptions {
     valueFrom?: number | string;
     valueTo?: number | string;
     items?: RangeSliderItems;
-    onHandlePositionChange?: Function;
+    onHandlePositionChange?(this: HandleMovingResult): void;
 }
 
 interface RangeSliderItems {
