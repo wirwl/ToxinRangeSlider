@@ -1,13 +1,4 @@
-import '../core/view';
-import '../../toxin-rangeslider/toxin-rangeslider';
-import TRSView from '../core/view';
 import CRangeSliderOptions from '../core/entities/crangeslideroptions';
-
-const fs = require('fs');
-const path = require('path');
-const less = require('less');
-let cssFromLess: string;
-let view: TRSView;
 
 let options: CRangeSliderOptions;
 

@@ -144,7 +144,7 @@ export default class TRSView {
         }
         if (this.settings.isHaveItems) {
             const pxLength = this.line.size - this.offsetFrom - this.offsetTo;
-            const pxStep = pxLength / this.settings.items.values.length;
+            const pxStep = pxLength / (this.settings.items.values.length - 1);
             if (
                 this.settings.isTwoHandles &&
                 (isFirstDraw || (os && os.items && ns.items.indexFrom != os.items.indexFrom))
@@ -252,7 +252,7 @@ export default class TRSView {
         let restoreIndex = -1;
         if (this.settings.isHaveItems) {
             const lw = this.line.size - this.offsetFrom - this.offsetTo;
-            const pxStep = lw / this.settings.items.values.length;
+            const pxStep = lw / (this.settings.items.values.length - 1);
             restoreIndex = Math.round(pxX / pxStep);
             if (currentHandle.is(this.handleFrom)) this.settings.items.indexFrom = restoreIndex;
             else this.settings.items.indexTo = restoreIndex;
@@ -335,7 +335,7 @@ export default class TRSView {
         const isHasValues = this.settings.items.values.length > 1;
         let result;
         if (isHasValues) {
-            const pxStep = lw / this.settings.items.values.length;
+            const pxStep = lw / (this.settings.items.values.length - 1);
             result = val * pxStep;
         } else {
             const relLength = (this.settings.maxValue as number) - (this.settings.minValue as number);
@@ -374,7 +374,7 @@ export default class TRSView {
             }
 
             if (isDefinedSetOfValues) {
-                pxStep = pxLength / this.settings.items.values.length;
+                pxStep = pxLength / (this.settings.items.values.length - 1);
             }
 
             const nStep = Math.round(pxValue / pxStep);

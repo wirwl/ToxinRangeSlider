@@ -1,5 +1,3 @@
-import '../core/view';
-import '../../toxin-rangeslider/toxin-rangeslider';
 import TRSView from '../core/view';
 import TRSModel from '../core/model';
 
@@ -38,7 +36,6 @@ function ConfigureJSDOM() {
 
 beforeAll(async () => {
     ConfigureJSDOM();
-    //plugin = $('.test-in-jest');
     view = new TRSView($('.test-in-jest'));
     view.settings.extend(TRSModel.defaults);
     view.settings.extend({
