@@ -7,7 +7,7 @@ export default class TRSView {
     settings: CRangeSliderOptions;
     private offsetFrom: number;
     private offsetTo: number;
-    private template =
+    private htmlTemplate =
         "<div class='rangeslider'>" +
         "<div class='rangeslider__tip-min'>00</div>" +
         "<div class='rangeslider__tip rangeslider__tip-from'>23</div>" +
@@ -36,7 +36,7 @@ export default class TRSView {
 
     constructor(el: JQuery<HTMLElement>) {
         this.el = el;
-        this.el.html(this.template);
+        this.el.html(this.htmlTemplate);
 
         this.rangeslider = new Rangeslider(el.find('.rangeslider'));
 
