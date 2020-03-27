@@ -6,7 +6,7 @@
 
 > Read more about  of frontend education program tasks follow this link: [rizzoma.com](https://rizzoma.com/topic/d5c429337bcaa70548fb5aeedee6d92b)
 
-## Technical details 
+## Technical details
  1. Project bundler: [Webpack](https://webpack.js.org)
  2. Package manager: [Yarn](https://yarnpkg.com)
  3. HTML template engine: [PUG](https://pugjs.org)
@@ -45,8 +45,6 @@
   >**npm run le** - run index.html with [webpack-dev-server](https://www.npmjs.com/package/webpack-dev-server) for editing with live reloading
 
   >**npm-check --skip-unused** - check what packages is out of date with [npm-check](https://www.npmjs.com/package/npm-check)
-
-Recalculates onresize so suitable for use within responsive designs
 
   
 
