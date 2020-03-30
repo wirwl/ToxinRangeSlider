@@ -20,6 +20,51 @@
 ## Watch result on github.io
    + [Demo with 10 rangesliders](https://wirwl.github.io/PetProjects/FSD/ToxinRangeSlider/index.html)
 
+## How to use plugin
+Add style and script files to html code:
+```html
+<html>
+  <head>        
+    <link href="jquery-plugins/toxin-rangeslider/toxin-rangeslider.css" rel="stylesheet">
+      <body>
+        <script type="text/javascript" src="jquery-plugins/toxin-rangeslider/toxin-rangeslider.js"></script>
+      </body>
+  </head>
+</html>
+```
+Rangeslider will automatically initialize on elements with class **.toxin-rangeslider-here**. You can use any html tags that can have content, for example *div*. Setting options possible with data attribute *data-options*
+```html
+<div class="toxin-rangeslider-here" data-options="{"isVertical":true,"isTwoHandles":true,"isTip":true,"minValue":1000,"maxValue":2220,"stepValue":100,"valueFrom":1100,"valueTo":1600}"></div>
+```
+Manual initialization in javascript code
+```javascript
+$('#my-element').toxinRangeSlider({options})
+// Access instance of plugin
+$('#my-element').data('toxinRangeSlider')
+```
+
+## Options
+| Option        | Type          | Defaults      | Description
+| ------------- | ------------- | ------------- | -----------
+| isVertical    | boolean       | false         | Set slider position - vertical or horizontal.
+| isTwoHandles  | boolean       | true          | Set slider handles count - one or two.
+| isTip         | boolean       | true          | Enable tips.
+| minValue      | number        | 0             | Set slider minimum value
+| maxValue      | number        | 1000          | Set slider maximum value
+| stepValue     | number        | 0             | Set slider step. Actual if value is bigger than 0            |
+| valueFrom     | number        | 0             | Set start position for left handle. Not used if *isTwoHandles* set to *false*
+| valueTo       | number        | 1000          | Set start position for right handle. Also used if only one handle (*isTwoHandles* set to *true*)
+| items         | object*       | null          | Complex object for define items in slider.
+
+
+
+*Complex object with next fieds: 
+{indexFrom: number, indexFrom: number, indexTo: number, values: (number | string)[] }
+| Option       | Description
+| ------------ | -----------
+| indexFrom    | Set slider position - vertical or horizontal.
+| indexTo      | Set slider handles count - one or two.
+| values       | Enable tips.
 
 ## Description of plugin architecture in [UML](https://www.omg.org/spec/UML) notation
 ![Sequnce diagram](UML/sd.png)
@@ -30,43 +75,23 @@
 ## Some usefull commands
   >**git clone https://github.com/wirwl/toxinhotel.git** - copy project from remote repository to local computer
 
-  >**npm install** - install all dependencies
+  >**yarn install** - install all dependencies
 
-  >**npm run clr** - clear output folder (remove all files and directories)
+  >**yarn clr** - clear output folder (remove all files and directories)
 
-  >**npm run clr:dev** - clear output folder (remove all files and directories in dev folder)
+  >**yarn clr:dev** - clear output folder (remove all files and directories in dev folder)
 
-  >**npm run clr:prod** - clear output folder (remove all files and directories in prod folder)
+  >**yarn clr:prod** - clear output folder (remove all files and directories in prod folder)
 
-  >**npm run dev** - build project with development mode
+  >**yarn dev** - build project with development mode
 
-  >**npm run prod** - build project with production mode
+  >**yarn prod** - build project with production mode
 
-  >**npm run le** - run index.html with [webpack-dev-server](https://www.npmjs.com/package/webpack-dev-server) for editing with live reloading
+  >**yarn test** - run all tests
 
-  >**npm-check --skip-unused** - check what packages is out of date with [npm-check](https://www.npmjs.com/package/npm-check)
-
-## Options
-| Option        | Type          | Defaults      | Description
-| ------------- | ------------- | ------------- | -----------
-| isVertical    | boolean       | false         | Set slider position - vertical or horizontal.
-| isTwoHandles  | boolean       | true          | Set slider handles count - one or two.
-| isTip         | boolean       | true          | Enable tips.
-| minValue      | number        | 0             | Set slider minimum value
-| maxValue      | number        | 1000          | Set slider maximum value
-| stepValue     | number        | 0             | Set sliders step. Actual if value is bigger than 0            |
-| valueFrom     | number        | 0             | Set start position for left handle. Not used if *isTwoHandles* set to *false*
-| valueTo       | number        | 1000          | Set start position for right handle. Also used if only one handle (*isTwoHandles* set to *true*)
-| items         | object*       | null          |
+  >**yarn le** - run index.html with [webpack-dev-server](https://www.npmjs.com/package/webpack-dev-server) for editing with live reloading
 
 
-*Complex object with next fieds: 
-{indexFrom: number, indexFrom: number, indexTo: number, values: (number | string)[] }
-| Option       | Description
-| ------------ | -----------
-| indexFrom    | Set slider position - vertical or horizontal.
-| indexTo      | Set slider handles count - one or two.
-| values       | Enable tips.
 
 
 

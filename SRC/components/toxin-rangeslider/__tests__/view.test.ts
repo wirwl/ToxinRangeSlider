@@ -127,7 +127,7 @@ describe('Check result of moveHandle() function', () => {
         const relValue = view.convertPixelValueToRelativeValue(10);
         expect(result.isFromHandle).toBe(true);
         expect(result.value).toBe(relValue);
-        expect(result.isUsingItems).toBe(view.settings.items.values.length > 1);
+        expect(result.isUsingItems).toBe(view.settings.items?.values?.length > 1);
     });
     test('If rangeslider has collection of items', () => {
         view.settings.extend({ items: { values: [1, 2, 3, 4, 5], indexFrom: 0, indexTo: 4 } });
@@ -135,7 +135,7 @@ describe('Check result of moveHandle() function', () => {
         const relValue = view.convertPixelValueToRelativeValue(20);
         expect(result.isFromHandle).toBe(false);
         expect(result.value).toBe(relValue);
-        expect(result.isUsingItems).toBe(view.settings.items.values.length > 1);
+        expect(result.isUsingItems).toBe(view.settings.items?.values?.length > 1);
     });
 });
 

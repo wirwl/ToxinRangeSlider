@@ -33,7 +33,6 @@ $(document).ready(() => {
 
         const select = $select[0] as HTMLSelectElement;
         const $rangeliderRootElement = $panel.find('.toxin-rangeslider-here');
-        const $rangeslider = $rangeliderRootElement.find('.rangeslider');
         const rangeslider: TRSPresenter = $rangeliderRootElement.data('toxinRangeSlider');
         const $isVertical = $panel.find('.panel__checkbox-is-vertical').find('.checkbox__input');
         const $isTwoHandles = $panel.find('.panel__checkbox-is-two-handles').find('.checkbox__input');
