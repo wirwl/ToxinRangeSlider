@@ -46,10 +46,27 @@
 
   >**npm-check --skip-unused** - check what packages is out of date with [npm-check](https://www.npmjs.com/package/npm-check)
 
-  
+## Options
+| Option        | Type          | Defaults      | Description
+| ------------- | ------------- | ------------- | -----------
+| isVertical    | boolean       | false         | Set slider position - vertical or horizontal.
+| isTwoHandles  | boolean       | true          | Set slider handles count - one or two.
+| isTip         | boolean       | true          | Enable tips.
+| minValue      | number        | 0             | Set slider minimum value
+| maxValue      | number        | 1000          | Set slider maximum value
+| stepValue     | number        | 0             | Set sliders step. Actual if value is bigger than 0            |
+| valueFrom     | number        | 0             | Set start position for left handle. Not used if *isTwoHandles* set to *false*
+| valueTo       | number        | 1000          | Set start position for right handle. Also used if only one handle (*isTwoHandles* set to *true*)
+| items         | object*       | null          |
 
 
-
+*Complex object with next fieds: 
+{indexFrom: number, indexFrom: number, indexTo: number, values: (number | string)[] }
+| Option       | Description
+| ------------ | -----------
+| indexFrom    | Set slider position - vertical or horizontal.
+| indexTo      | Set slider handles count - one or two.
+| values       | Enable tips.
 
 
 

@@ -332,7 +332,7 @@ export default class TRSView {
     }
     convertRelativeValueToPixelValue(val: number): number {
         const lw = this.line.size - this.offsetFrom - this.offsetTo;
-        const isHasValues = this.settings.items.values.length > 1;
+        const isHasValues = this.settings.items && this.settings.items.values && this.settings.items.values.length > 1;
         let result;
         if (isHasValues) {
             const pxStep = lw / (this.settings.items.values.length - 1);
@@ -356,7 +356,8 @@ export default class TRSView {
     getSteppedPos(pxValue: number): number {
         const pxLength = this.line.size - this.offsetFrom - this.offsetTo;
         const isDefinedStep = this.settings.stepValue > 0;
-        const isDefinedSetOfValues = this.settings.items.values.length > 1;
+        const isDefinedSetOfValues =
+            this.settings.items && this.settings.items.values && this.settings.items.values.length > 1;
         const isTooLongLine = pxLength > (this.settings.maxValue as number) - (this.settings.minValue as number);
         const isNeedStep = isDefinedStep || isTooLongLine || isDefinedSetOfValues;
 

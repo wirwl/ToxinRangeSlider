@@ -11,7 +11,8 @@ export default class TRSModel {
         stepValue: 0,
         valueFrom: 0,
         valueTo: 1000,
-        items: { indexFrom: 0, indexTo: 1, values: [] },
+        items: null,
+        //{ indexFrom: 0, indexTo: 1, values: [] },
         onHandlePositionChange(this: HandleMovingResult): void {},
     };
     constructor(options: RangeSliderOptions) {

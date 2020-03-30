@@ -72,9 +72,9 @@ export default class CRangeSliderOptions implements RangeSliderOptions {
         if (!o) return;
 
         if (typeof o.items !== 'undefined') {
-            if (typeof o.items.indexFrom !== 'undefined') this.items.indexFrom = o.items.indexFrom;
-            if (typeof o.items.indexTo !== 'undefined') this.items.indexTo = o.items.indexTo;
-            if (typeof o.items.values !== 'undefined') this.items.values = [...o.items.values];
+            if (typeof o.items?.indexFrom !== 'undefined') this.items.indexFrom = o.items.indexFrom;
+            if (typeof o.items?.indexTo !== 'undefined') this.items.indexTo = o.items.indexTo;
+            if (typeof o.items?.values !== 'undefined') this.items.values = [...o.items.values];
         }
 
         const isUsingItemsValues = this.items && this.items.values && this.items.values.length > 1;
