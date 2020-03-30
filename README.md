@@ -20,6 +20,9 @@
 ## Watch result on github.io
    + [Demo with 10 rangesliders](https://wirwl.github.io/PetProjects/FSD/ToxinRangeSlider/index.html)
 
+| ![rangesliders](rangesliders.png) |
+| :--: | 
+
 ## How to use plugin
 Add style and script files to html code:
 ```html
