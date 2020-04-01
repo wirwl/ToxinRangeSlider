@@ -1,6 +1,6 @@
 include ../select-items/select-items
 include ../checkbox/checkbox
-include ../number/number
+include ../input/input
 
 mixin panel(data)    
   - const isHasSlider = data.slider;
@@ -21,24 +21,24 @@ mixin panel(data)
           +checkbox({text:'Two handles', isChecked: data.slider.isTwoHandles})
         .panel__checkbox-is-tip
           +checkbox({text:'Show tips', isChecked: data.slider.isTip})    
-      .panel__number-values
+      .panel__input-values
         .panel__section1
           .panel__input-min-value
-            +number({type: 'text', text:'Min. value', value:isUsingItems ? data.slider.items.values[0] : data.slider.minValue, isDisabled : isUsingItems})      
+            +input({type: 'text', text:'Min. value', value:isUsingItems ? data.slider.items.values[0] : data.slider.minValue, isDisabled : isUsingItems})      
           .panel__input-max-value
-            +number({type: 'text', text:'Max. value', value:isUsingItems ? data.slider.items.values[lengthValues-1] : data.slider.maxValue, isDisabled : isUsingItems})
+            +input({type: 'text', text:'Max. value', value:isUsingItems ? data.slider.items.values[lengthValues-1] : data.slider.maxValue, isDisabled : isUsingItems})
           .panel__input-step-value
-            +number({type:'number', text:'Step value', value: isUsingItems ? 0 : data.slider.stepValue, isDisabled : isUsingItems})
+            +input({type:'number', text:'Step value', value: isUsingItems ? 0 : data.slider.stepValue, isDisabled : isUsingItems})
         .panel__section2
           .panel__input-value-from
-            +number({type: 'text', text:'From value', value: isUsingItems ? data.slider.items.values[data.slider.items.indexFrom] : data.slider.valueFrom, isDisabled: !data.slider.isTwoHandles})
+            +input({type: 'text', text:'From value', value: isUsingItems ? data.slider.items.values[data.slider.items.indexFrom] : data.slider.valueFrom, isDisabled: !data.slider.isTwoHandles})
           .panel__input-value-to
-            +number({type: 'text', text:'To value', value: isUsingItems ? data.slider.items.values[data.slider.items.indexTo] : data.slider.valueTo})
-          .panel__input-values      
+            +input({type: 'text', text:'To value', value: isUsingItems ? data.slider.items.values[data.slider.items.indexTo] : data.slider.valueTo})
+          .panel__si-values      
             +select-items({title:'Items', isRemoveDisabled: zeroValues , items: isHasItems ?  data.slider.items.values : [], isDisabled: !isUsingItems})
         .panel__section3
           .panel__input-index-from
-            +number({type: 'text', text:'Index from', value: isHasItems ? data.slider.items.indexFrom : '', isDisabled: !isUsingItems || !data.slider.isTwoHandles  })            
+            +input({type: 'text', text:'Index from', value: isHasItems ? data.slider.items.indexFrom : '', isDisabled: !isUsingItems || !data.slider.isTwoHandles  })            
           .panel__input-index-to
-            +number({type: 'text', text:'Index to', value: isHasItems ? data.slider.items.indexTo : '', isDisabled: !isUsingItems })
+            +input({type: 'text', text:'Index to', value: isHasItems ? data.slider.items.indexTo : '', isDisabled: !isUsingItems })
     .panel__toxin-rangeslider.toxin-rangeslider-here(data-options=data.slider)

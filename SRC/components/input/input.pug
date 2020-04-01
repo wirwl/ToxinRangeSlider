@@ -1,0 +1,4 @@
+mixin input(data)
+  label.input
+    span.input__text #{data.text}
+    input(type=data.type value=data.value disabled = data.isDisabled)
