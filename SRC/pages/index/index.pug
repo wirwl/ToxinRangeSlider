@@ -6,11 +6,12 @@ html(lang="en")
   head
     meta(charset="UTF-8")
     title Toxin range slider
+    meta(name="description" content="Example of using toxin rangeslider that decorated as jquery plugin")
+    meta(name="keywords" content="rangeslider, jquery plugin")
+    meta(name="viewport" content="initial-scale=1.0, width=device-width")
     +favicon       
     link(href="jquery-plugins/toxin-rangeslider/toxin-rangeslider.css" rel="stylesheet")         
-    link(href="index.css" rel="stylesheet")         
-    //-script(type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js")
-
+    link(href="index.css" rel="stylesheet")             
   body
     ul.panels
       li.panels__column1-1
@@ -67,12 +68,7 @@ html(lang="en")
         +panel({id:'p6', isVertical: true,
       slider: { isVertical: true, isTwoHandles: true, isTip: true,
       minValue: 1000, maxValue: 2220, stepValue: 100, valueFrom: 1000, valueTo: 1600} 
-      })
-
-
-
-    //- .test1
-    //- .test2
+      })    
     script(type="text/javascript" src="jquery/jquery.js")
     script(type="text/javascript" src="jquery-plugins/toxin-rangeslider/toxin-rangeslider.js")
     script(type="text/javascript" src="index.js")
