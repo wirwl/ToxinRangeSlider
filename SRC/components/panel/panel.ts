@@ -1,43 +1,27 @@
 import TRSPresenter from '../toxin-rangeslider/core/presenter';
 
 $(document).ready(() => {
-    // $('#p1')
-    //     .find('.panel__toxin-rangeslider')
-    //     .toxinRangeSlider();
-    // $('#p2')
-    //     .find('.panel__toxin-rangeslider')
-    //     .toxinRangeSlider({ isInterval: false });
-    // $('#p3')
-    //     .find('.panel__toxin-rangeslider')
-    //     .toxinRangeSlider({ isVertical: true });
-    // $('#p4')
-    //     .find('.panel__toxin-rangeslider')
-    //     .toxinRangeSlider({ isVertical: true });
-
-    function setDataInPanel($panel: JQuery<HTMLElement>) {}
-
     const $panels = $('.panel');
 
     $panels.each(function(index) {
         const $panel = $(this);
-        const $minValue = $panel.find('.panel__input-min-value').find('.number__input');
-        const $maxValue = $panel.find('.panel__input-max-value').find('.number__input');
-        const $stepValue = $panel.find('.panel__input-step-value').find('.number__input');
-        const $valueFrom = $panel.find('.panel__input-value-from').find('.number__input');
-        const $valueTo = $panel.find('.panel__input-value-to').find('.number__input');
-        const $indexFrom = $panel.find('.panel__input-index-from').find('.number__input');
-        const $indexTo = $panel.find('.panel__input-index-to').find('.number__input');
-        const $buttonAdd = $panel.find('.select-items').find('.select-items__button-add');
-        const $buttonRemove = $panel.find('.select-items').find('.select-items__button-remove');
-        const $select = $panel.find('.select-items').find('.select-items__options');
+        const $minValue = $panel.find('.js-panel__input-min-value').find('.js-input__field');
+        const $maxValue = $panel.find('.js-panel__input-max-value').find('.js-input__field');
+        const $stepValue = $panel.find('.js-panel__input-step-value').find('.js-input__field');
+        const $valueFrom = $panel.find('.js-panel__input-value-from').find('.js-input__field');
+        const $valueTo = $panel.find('.js-panel__input-value-to').find('.js-input__field');
+        const $indexFrom = $panel.find('.js-panel__input-index-from').find('.js-input__field');
+        const $indexTo = $panel.find('.js-panel__input-index-to').find('.js-input__field');
+        const $buttonAdd = $panel.find('.js-select-items').find('.js-select-items__button-add');
+        const $buttonRemove = $panel.find('.js-select-items').find('.js-select-items__button-remove');
+        const $select = $panel.find('.js-select-items').find('.js-select-items__options');
 
         const select = $select[0] as HTMLSelectElement;
-        const $rangeliderRootElement = $panel.find('.toxin-rangeslider-here');
-        const rangeslider: TRSPresenter = $rangeliderRootElement.data('toxinRangeSlider');
-        const $isVertical = $panel.find('.panel__checkbox-is-vertical').find('.checkbox__input');
-        const $isTwoHandles = $panel.find('.panel__checkbox-is-two-handles').find('.checkbox__input');
-        const $isShowTips = $panel.find('.panel__checkbox-is-tip').find('.checkbox__input');
-        setDataInPanel($panel);
+        const $rangesliderRootElement = $panel.find('.toxin-rangeslider-here');
+        const rangeslider: TRSPresenter = $rangesliderRootElement.data('toxinRangeSlider');
+        const $isVertical = $panel.find('.js-panel__checkbox-is-vertical').find('.checkbox__input');
+        const $isTwoHandles = $panel.find('.js-panel__checkbox-is-two-handles').find('.checkbox__input');
+        const $isShowTips = $panel.find('.js-panel__checkbox-is-tip').find('.checkbox__input');
 
         rangeslider.update({
             onHandlePositionChange(this: HandleMovingResult) {

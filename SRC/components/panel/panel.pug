@@ -12,33 +12,33 @@ mixin panel(data)
   - const isHasMinValue = isHasSlider && data.slider.minValue;
   - const isHasMaxValue = isHasSlider && data.slider.maxValue;
 
-  .panel(class = (data.isVertical ? 'panel_is-vertical' : '') id=data.id)
+  .panel.js-panel(class = (data.isVertical ? 'panel_is-vertical' : '') id=data.id)
     .panel__values
       .panel__boolean-values
-        .panel__checkbox-is-vertical
+        .panel__checkbox-is-vertical.js-panel__checkbox-is-vertical
           +checkbox({text:'Vertical orientation', isChecked: data.slider.isVertical})
-        .panel__checkbox-is-two-handles
+        .panel__checkbox-is-two-handles.js-panel__checkbox-is-two-handles
           +checkbox({text:'Two handles', isChecked: data.slider.isTwoHandles})
-        .panel__checkbox-is-tip
+        .panel__checkbox-is-tip.js-panel__checkbox-is-tip
           +checkbox({text:'Show tips', isChecked: data.slider.isTip})    
       .panel__input-values
         .panel__section1
-          .panel__input-min-value
+          .panel__input-min-value.js-panel__input-min-value
             +input({type: 'text', text:'Min. value', value:isUsingItems ? data.slider.items.values[0] : data.slider.minValue, isDisabled : isUsingItems})      
-          .panel__input-max-value
+          .panel__input-max-value.js-panel__input-max-value
             +input({type: 'text', text:'Max. value', value:isUsingItems ? data.slider.items.values[lengthValues-1] : data.slider.maxValue, isDisabled : isUsingItems})
-          .panel__input-step-value
+          .panel__input-step-value.js-panel__input-step-value
             +input({type:'number', text:'Step value', value: isUsingItems ? 0 : data.slider.stepValue, isDisabled : isUsingItems})
         .panel__section2
-          .panel__input-value-from
+          .panel__input-value-from.js-panel__input-value-from
             +input({type: 'text', text:'From value', value: isUsingItems ? data.slider.items.values[data.slider.items.indexFrom] : data.slider.valueFrom, isDisabled: !data.slider.isTwoHandles})
-          .panel__input-value-to
+          .panel__input-value-to.js-panel__input-value-to
             +input({type: 'text', text:'To value', value: isUsingItems ? data.slider.items.values[data.slider.items.indexTo] : data.slider.valueTo})
           .panel__si-values      
             +select-items({title:'Items', isRemoveDisabled: zeroValues , items: isHasItems ?  data.slider.items.values : [], isDisabled: !isUsingItems})
         .panel__section3
-          .panel__input-index-from
+          .panel__input-index-from.js-panel__input-index-from
             +input({type: 'text', text:'Index from', value: isHasItems ? data.slider.items.indexFrom : '', isDisabled: !isUsingItems || !data.slider.isTwoHandles  })            
-          .panel__input-index-to
+          .panel__input-index-to.js-panel__input-index-to
             +input({type: 'text', text:'Index to', value: isHasItems ? data.slider.items.indexTo : '', isDisabled: !isUsingItems })
     .panel__toxin-rangeslider.toxin-rangeslider-here(data-options=data.slider)

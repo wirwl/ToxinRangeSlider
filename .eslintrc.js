@@ -1,13 +1,4 @@
-module.exports = {
-    // env: {
-    //     jest: true,
-    //   },
-    //   globals: {
-    //     page: true,
-    //     browser: true,
-    //     context: true,
-    //     jestPuppeteer: true,
-    //   },
+module.exports = {    
     parser: '@typescript-eslint/parser',  // Specifies the ESLint parser
     extends: [
         'plugin:@typescript-eslint/recommended',  // Uses the recommended rules from the @typescript-eslint/eslint-plugin
@@ -18,13 +9,13 @@ module.exports = {
         ecmaVersion: 6,  // Allows for the parsing of modern ECMAScript features
         sourceType: 'module',  // Allows for the use of imports
     },
-    "ignorePatterns": ["webpack.config.js", "jest.config.js", "node_modules/", ".prettierrc.js"],
+    'ignorePatterns': ['webpack.config.js', 'jest.config.js', 'node_modules/', '.prettierrc.js'],
     rules: {
         // Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs
-        // e.g. "@typescript-eslint/explicit-function-return-type": "off",
-        "@typescript-eslint/no-namespace": "off",
-        "@typescript-eslint/interface-name-prefix": "off",
-        "@typescript-eslint/no-empty-function": "off",
-        "@typescript-eslint/no-var-requires": "off"
+        // e.g. '@typescript-eslint/explicit-function-return-type': 'off',
+        '@typescript-eslint/no-namespace': 'off',
+        '@typescript-eslint/interface-name-prefix': 'off',
+        '@typescript-eslint/no-empty-function': 'off',
+        '@typescript-eslint/no-var-requires': 'off'
     },
 }

@@ -1,7 +1,7 @@
 const webpack = require('webpack');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const autoprefixer = require('autoprefixer');
 const pxtorem = require('postcss-pxtorem');
 const discardduplicates = require('postcss-discard-duplicates');
@@ -16,7 +16,7 @@ process.traceDeprecation = true;
 
 module.exports = ((env, argv) => {
 
-    var isDev = argv.mode === "development";
+    var isDev = argv.mode === 'development';
     var pathOutput = isDev ? 'Result/dev' : 'Result/prod';
     var dtValue = isDev ? 'source-map' : 'none';
 
@@ -40,10 +40,10 @@ module.exports = ((env, argv) => {
         let common_path = data.input_path.substring(data.input_path.indexOf('/') + 1);
         data.output_path = data.output_path ? data.output_path : common_path;
         let result = merge({}, common, {
-            entry: "./" + data.input_path + "/" + data.common_filename + ".ts",
+            entry: './' + data.input_path + '/' + data.common_filename + '.ts',
             output: {
                 path: path.resolve(__dirname, pathOutput),
-                filename: data.output_path + '/' + data.common_filename + ".js",
+                filename: data.output_path + '/' + data.common_filename + '.js',
                 publicPath: data.publicPath || ''
             },
             plugins: [
@@ -64,9 +64,8 @@ module.exports = ((env, argv) => {
         },
         performance: { hints: false },
         devtool: dtValue,
-        resolve: {
-            // Add '.ts' and '.tsx' as resolvable extensions.
-            extensions: [".ts", ".tsx", ".js"]
+        resolve: {            
+            extensions: ['.ts', '.tsx', '.js']
         },
         module: {
             rules: [
@@ -91,7 +90,7 @@ module.exports = ((env, argv) => {
                         },
 
                         {
-                            loader: "css-loader",
+                            loader: 'css-loader',
                             options: {
                                 import:
                                     (parsedImport, resourcePath) => {
@@ -109,7 +108,7 @@ module.exports = ((env, argv) => {
                         {
                             loader: 'postcss-loader',
                             options: {
-                                "map": true,
+                                'map': true,
                                 plugins: [
                                     autoprefixer(),
                                     flexbugsfixes(),
@@ -128,7 +127,7 @@ module.exports = ((env, argv) => {
                             }
                         },
                         {
-                            loader: "less-loader",
+                            loader: 'less-loader',
                             options: { sourceMap: true }
                         },
                     ],
@@ -138,15 +137,14 @@ module.exports = ((env, argv) => {
                     exclude: /node_modules/,
                     use: [
                         {
-                            loader: "ts-loader"
+                            loader: 'ts-loader'
                         }
                     ]
-                },
-                // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
+                },                
                 {
                     test: /\.js$/,
-                    enforce: "pre",
-                    loader: "source-map-loader"
+                    enforce: 'pre',
+                    loader: 'source-map-loader'
                 },
                 {
                     test: /\.m?js$/,
@@ -203,13 +201,7 @@ module.exports = ((env, argv) => {
                 },
             ]//rules
         },
-        plugins: [
-            // new webpack.ProvidePlugin({
-            //     $: path.resolve(__dirname, 'SRC/jquery/dist/jquery.js'),
-            //     jQuery: path.resolve(__dirname, 'SRC/jquery/dist/jquery.js'),
-            //     'window.jQuery': path.resolve(__dirname, 'SRC/jquery/dist/jquery.js'),
-            //     'window.$': path.resolve(__dirname, 'SRC/jquery/dist/jquery.js'),
-            // }),
+        plugins: [            
             new FriendlyErrorsWebpackPlugin()
         ]
     };

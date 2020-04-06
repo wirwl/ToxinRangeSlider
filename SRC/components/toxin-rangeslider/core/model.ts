@@ -1,6 +1,6 @@
 import CRangeSliderOptions from './entities/crangeslideroptions';
 
-export default class TRSModel {
+class TRSModel {
     settings: CRangeSliderOptions;
     static defaults: RangeSliderOptions = {
         isVertical: false,
@@ -12,7 +12,6 @@ export default class TRSModel {
         valueFrom: 0,
         valueTo: 1000,
         items: null,
-        //{ indexFrom: 0, indexTo: 1, values: [] },
         onHandlePositionChange(this: HandleMovingResult): void {},
     };
     constructor(options: RangeSliderOptions) {
@@ -41,3 +40,5 @@ export default class TRSModel {
         }
     }
 }
+
+export default TRSModel;

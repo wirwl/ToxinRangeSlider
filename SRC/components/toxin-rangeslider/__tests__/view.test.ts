@@ -14,15 +14,9 @@ function ConfigureJSDOM() {
     const urlLess = new URL(
         path.normalize(__dirname + '../../../../components/toxin-rangeslider/toxin-rangeslider.less'),
     );
-    const urlCommonLess = new URL(path.normalize(__dirname + '../../../../common.less'));
 
     const LessFromFile = fs.readFileSync(urlLess.href, 'utf8');
-    const LessFromFileCommon = fs.readFileSync(urlCommonLess.href, 'utf8');
 
-    let cssFromLessCommon: string;
-    less.render(LessFromFileCommon, function(e: Less.RenderError, output: Less.RenderOutput | undefined) {
-        cssFromLessCommon = output.css;
-    });
     less.render(LessFromFile, function(e: Less.RenderError, output: Less.RenderOutput | undefined) {
         cssFromLess = output.css;
     });
@@ -30,7 +24,7 @@ function ConfigureJSDOM() {
     const head = document.getElementsByTagName('head')[0];
     const style = document.createElement('style');
     style.type = 'text/css';
-    style.innerHTML = cssFromLessCommon + cssFromLess + fixWidth;
+    style.innerHTML = cssFromLess + fixWidth;
     head.appendChild(style);
 }
 

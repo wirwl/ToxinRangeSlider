@@ -1,5 +1,5 @@
 import TRSElement from '../entities/element';
-export default class Tip extends TRSElement {
+class Tip extends TRSElement {
     set text(value: string | number) {
         this.el.text(value);
         this._width = parseFloat(this.el.css('width'));
@@ -9,3 +9,5 @@ export default class Tip extends TRSElement {
         return this.el.text();
     }
 }
+
+export default Tip;

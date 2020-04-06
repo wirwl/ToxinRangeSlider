@@ -1,4 +1,4 @@
-export default class CRangeSliderOptions implements RangeSliderOptions {
+class CRangeSliderOptions implements RangeSliderOptions {
     isVertical?: boolean;
     isTwoHandles?: boolean;
     isTip?: boolean;
@@ -59,14 +59,7 @@ export default class CRangeSliderOptions implements RangeSliderOptions {
         if (anotherOptions) this.extend(anotherOptions);
     }
     findIndexByItem(item: number | string): number {
-        let result = -1;
-        for (let i = 0; i < this.items.values.length; i++) {
-            if (this.items.values[i] == item) {
-                result = i;
-                break;
-            }
-        }
-        return result;
+        return this.items.values.findIndex(value => value == item);
     }
     extend(o: RangeSliderOptions | CRangeSliderOptions) {
         if (!o) return;
@@ -96,3 +89,5 @@ export default class CRangeSliderOptions implements RangeSliderOptions {
         if (typeof o.onHandlePositionChange !== 'undefined') this.onHandlePositionChange = o.onHandlePositionChange;
     }
 }
+
+export default CRangeSliderOptions;

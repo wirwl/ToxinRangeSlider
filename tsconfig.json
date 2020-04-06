@@ -12,7 +12,5 @@
     "target": "ES5",
     "allowSyntheticDefaultImports": true,
     "removeComments": true,
-    // "strict": true,
-    // "alwaysStrict": true
   },
 }

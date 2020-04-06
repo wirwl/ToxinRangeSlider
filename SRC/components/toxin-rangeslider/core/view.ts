@@ -3,7 +3,7 @@ import Tip from './entities/tip';
 import Line from './entities/line';
 import Rangeslider from './entities/rangeslider';
 import CRangeSliderOptions from './entities/crangeslideroptions';
-export default class TRSView {
+class TRSView {
     settings: CRangeSliderOptions;
     private offsetFrom: number;
     private offsetTo: number;
@@ -73,7 +73,6 @@ export default class TRSView {
     }
     drawSlider(os: CRangeSliderOptions, ns: CRangeSliderOptions | RangeSliderOptions, isFirstDraw = false) {
         this.settings.extend(ns);
-        const isItemValuesChanged = !this.isEqualArrays(os?.items?.values, ns.items?.values);
 
         if (ns.isVertical != os?.isVertical) {
             this.rangeslider.isVertical = ns.isVertical;
@@ -104,6 +103,7 @@ export default class TRSView {
             this.tipMax.text = this.settings.maxValue;
         }
 
+        const isItemValuesChanged = !this.isEqualArrays(os?.items?.values, ns.items?.values);
         if (isFirstDraw || isItemValuesChanged) {
             if (this.settings.items?.values) {
                 const count = this.settings.items.values.length;
@@ -162,13 +162,12 @@ export default class TRSView {
     isEqualArrays(ar1: (string | number)[], ar2: (string | number)[]): boolean {
         if (!ar1 || !ar2) return false;
         if (ar1.length != ar2.length) return false;
-        for (let i = 0; i < ar1.length; i++) if (ar1[i] !== ar2[i]) return false;
-        return true;
+        return ar1.every((value, index) => value === ar2[index]);
     }
     onMouseDownByHandle(e: JQuery.MouseDownEvent) {
-        const clientPos = this.settings.isVertical ? e.clientY : e.clientX;
         const currentHandle: Handle = $(e.target).is(this.handleFrom.el) ? this.handleFrom : this.handleTo;
         currentHandle.isMoving = true;
+        const clientPos = this.settings.isVertical ? e.clientY : e.clientX;
         const shiftPos = clientPos - currentHandle.offset;
 
         this.rangeslider.el.mousemove(e => this.onMouseMove(e, currentHandle, shiftPos));
@@ -177,13 +176,13 @@ export default class TRSView {
         $(document).mouseup(e => this.onMouseUp(e, currentHandle));
     }
     onMouseMove(e: JQuery.MouseMoveEvent, currentHandle: Handle, shiftPos: number) {
-        const clientPos = this.settings.isVertical ? e.clientY : e.clientX;
-        const offsetPos = this.settings.isVertical ? e.offsetY : e.offsetX;
         const $target = $(e.target);
-        const targetOffset = this.settings.isVertical ? $target.offset().top : $target.offset().left;
 
+        const offsetPos = this.settings.isVertical ? e.offsetY : e.offsetX;
+        const targetOffset = this.settings.isVertical ? $target.offset().top : $target.offset().left;
         let newPos = this.getSteppedPos(offsetPos + targetOffset - this.line.offset - this.offsetFrom);
 
+        const clientPos = this.settings.isVertical ? e.clientY : e.clientX;
         if (newPos == null) newPos = clientPos - this.line.offset - shiftPos;
         newPos = this.validate(newPos, currentHandle);
 
@@ -247,7 +246,6 @@ export default class TRSView {
         }
     }
     moveHandle(currentHandle: Handle, pxX: number): HandleMovingResult {
-        const isHandleFrom = currentHandle.is(this.handleFrom);
         currentHandle.pos = pxX;
         let restoreIndex = -1;
         if (this.settings.isHaveItems) {
@@ -271,8 +269,9 @@ export default class TRSView {
         this.drawLineSelected(currentHandle);
         this.drawTips(currentHandle);
 
+        const isHandleFrom = currentHandle.is(this.handleFrom);
         return {
-            isFromHandle: currentHandle.is(this.handleFrom),
+            isFromHandle: isHandleFrom,
             value: isHandleFrom ? this.settings.valueFrom : this.settings.valueTo,
             isUsingItems: this.settings.isHaveItems,
             index: restoreIndex,
@@ -359,9 +358,9 @@ export default class TRSView {
         const isDefinedSetOfValues =
             this.settings.items && this.settings.items.values && this.settings.items.values.length > 1;
         const isTooLongLine = pxLength > (this.settings.maxValue as number) - (this.settings.minValue as number);
-        const isNeedStep = isDefinedStep || isTooLongLine || isDefinedSetOfValues;
+        const isHaveStep = isDefinedStep || isTooLongLine || isDefinedSetOfValues;
 
-        if (isNeedStep) {
+        if (isHaveStep) {
             let pxStep: number;
 
             if (isDefinedStep)
@@ -390,3 +389,5 @@ export default class TRSView {
         return null;
     }
 }
+
+export default TRSView;

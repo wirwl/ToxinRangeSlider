@@ -1,11 +1,19 @@
-@import "../../common.less";
-@import "../../components/select-items/select-items";
-@import "../../components/panel/panel.less";
-@import "../../components/checkbox/checkbox.less";
-@import "../../components/input/input";
+@import '../../components/select-items/select-items';
+@import '../../components/panel/panel.less';
+@import '../../components/checkbox/checkbox.less';
+@import '../../components/input/input';
+
+* {
+  box-sizing: border-box;
+  margin: 0px;
+  padding: 0px; 
+}
 
 html {
   display: flex;
+  background: #e2e2e2;
+  font-family: Arial;
+  font-size: 14px;
   align-items: center;
   justify-content: center;
 }
@@ -14,11 +22,26 @@ body {
   display: flex;  
   justify-content: center;  
   margin-top: 50px;
+  min-width: 320px;
+  max-width: 1440px;
+  background: #fff;  
 }
+
+ul {
+  list-style: none;
+}
+
+input,
+button {
+  font: inherit;  
+}
+
 
 .panelv__wrapper {
    display: flex;
-   > *:not(:last-child) { margin-right: 30px;}
+   > *:not(:last-child) { 
+     margin-right: 30px;
+    }
    margin-bottom: 15px;
  }
 
@@ -27,79 +50,93 @@ display: flex;
  }
  .column1 {
    margin-right: 25px;
-   > *:not(:last-child) { margin-bottom: 22px;}
+   > *:not(:last-child) { 
+     margin-bottom: 22px;
+    }
  }
  
  
 @color: red;
 @index: 0;
 
-.panel#p2 .rangeslider .rangeslider__line-selected {background: blue;}
+.panel#p2 .rangeslider .rangeslider__line-selected {
+  background: blue;
+}
 
 @colors: #EE4266, #0070B7, teal, brown, orange, purple, violet, #4DBAE6, #3B444B;
 
 each(@colors, {
   .panel#p@{index} {
-    .rangeslider .rangeslider__tip {background: @value;}
-    .rangeslider .rangeslider__line-selected {background: @value;}
-    .rangeslider .rangeslider__handle {background: @value;}
-    .rangeslider .rangeslider__handle:hover:not(.rangeslider__handle_isMoving) {background: white; border-color: @value;}
-    .rangeslider .rangeslider__handle_isMoving {background: @value;}
+    .rangeslider .rangeslider__tip {
+      background: @value;
+    }
+    .rangeslider .rangeslider__line-selected {
+      background: @value;
+    }
+    .rangeslider .rangeslider__handle {
+      background: @value;
+    }
+    .rangeslider .rangeslider__handle:hover:not(.rangeslider__handle_isMoving) {
+      background: white; border-color: @value;
+    }
+    .rangeslider .rangeslider__handle_isMoving {
+      background: @value;
+    }
   }
 });
 
 .panels {
-display: grid;
-max-width: 1200px;
-grid-template-columns: repeat(4, 1fr);
-grid-template-rows: repeat(4, 1fr);
-grid-template-areas:
-  "column1-1 column2-1 column3-1 column4-1"
-  "column1-2 column2-1 column3-1 column4-1"
-  "column1-3 column2-2 column3-2 column4-2"
-  "column1-4 column2-2 column3-2 column4-2";
-justify-items: center;
-gap: 15px 0px;
-padding: 20px;
-}
+  display: grid;
+  max-width: 1200px;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  grid-template-areas:
+    'column1-1 column2-1 column3-1 column4-1'
+    'column1-2 column2-1 column3-1 column4-1'
+    'column1-3 column2-2 column3-2 column4-2'
+    'column1-4 column2-2 column3-2 column4-2';
+  justify-items: center;
+  gap: 15px 0px;
+  padding: 20px;
+  }
 
-.panels__ {
-&column1-1 {
-  grid-area: column1-1;
-}
+  .panels__ {
+  &column1-1 {
+    grid-area: column1-1;
+  }
 
-&column1-2 {
-  grid-area: column1-2;
-}
+  &column1-2 {
+    grid-area: column1-2;
+  }
 
-&column1-3 {
-  grid-area: column1-3;
-}
+  &column1-3 {
+    grid-area: column1-3;
+  }
 
-&column1-4 {
-  grid-area: column1-4;
-}
-&column2-1 {
-  grid-area: column2-1;  
-}
+  &column1-4 {
+    grid-area: column1-4;
+  }
+  &column2-1 {
+    grid-area: column2-1;  
+  }
 
-&column2-2 {
-  grid-area: column2-2;
-}
+  &column2-2 {
+    grid-area: column2-2;
+  }
 
-&column3-1 {
-  grid-area: column3-1;
-}
+  &column3-1 {
+    grid-area: column3-1;
+  }
 
-&column3-2 {
-  grid-area: column3-2;
-}
+  &column3-2 {
+    grid-area: column3-2;
+  }
 
-&column4-1 {
-  grid-area: column4-1;
-}
+  &column4-1 {
+    grid-area: column4-1;
+  }
 
-&column4-2 {
-  grid-area: column4-2;
-}
+  &column4-2 {
+    grid-area: column4-2;
+  }
 }

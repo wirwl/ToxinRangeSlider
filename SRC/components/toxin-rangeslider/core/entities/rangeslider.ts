@@ -2,7 +2,7 @@ import TRSElement from '../entities/element';
 import Tip from './tip';
 import Handle from './handle';
 import Line from './line';
-export default class Rangeslider extends TRSElement {
+class Rangeslider extends TRSElement {
     public controls: (Tip | Handle | Line)[];
 
     private _isInterval = false;
@@ -32,3 +32,5 @@ export default class Rangeslider extends TRSElement {
         this.controls = controls;
     }
 }
+
+export default Rangeslider;

@@ -1,6 +1,6 @@
 import TRSElement from '../entities/element';
-import Tip from './tip';
-export default class Handle extends TRSElement {
+
+class Handle extends TRSElement {
     set isMoving(value: boolean) {
         if (value) this.el.addClass('rangeslider__handle_isMoving');
         else this.el.removeClass('rangeslider__handle_isMoving');
@@ -15,3 +15,5 @@ export default class Handle extends TRSElement {
         this.el.css('z-index', value);
     }
 }
+
+export default Handle;

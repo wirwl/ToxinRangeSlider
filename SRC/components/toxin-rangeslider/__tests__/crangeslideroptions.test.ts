@@ -17,10 +17,13 @@ beforeAll(() => {
 });
 
 describe('Check result of findIndexByItem() method. ', () => {
-    test('If values in items have number type', () => {
+    test('If the item is in the items array, number type', () => {
         expect(options.findIndexByItem(8)).toBe(2);
     });
-    test('If values in items have string type', () => {
+    test('If the item is not in the items array, number type', () => {
+        expect(options.findIndexByItem(64)).toBe(-1);
+    });
+    test('If the item is in the items array, string type', () => {
         options.extend({
             items: {
                 values: [
@@ -40,5 +43,8 @@ describe('Check result of findIndexByItem() method. ', () => {
             },
         });
         expect(options.findIndexByItem('май')).toBe(4);
+    });
+    test('If the item is not in the items array, string type', () => {
+        expect(options.findIndexByItem('понедельник')).toBe(-1);
     });
 });

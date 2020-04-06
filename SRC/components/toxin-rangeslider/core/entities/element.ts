@@ -1,4 +1,4 @@
-export default class TRSElement {
+class TRSElement {
     el: JQuery<HTMLElement>;
 
     protected _isVertical = false;
@@ -109,3 +109,5 @@ export default class TRSElement {
         this.el.hide();
     }
 }
+
+export default TRSElement;

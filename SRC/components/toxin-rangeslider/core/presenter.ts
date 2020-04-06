@@ -7,7 +7,7 @@ const $ = require('../../../jquery/dist/jquery');
  * Presenter listenes to view events, retrieve data, manipulates it and
  * updates the view
  */
-export default class TRSPresenter {
+class TRSPresenter {
     view: TRSView;
     model: TRSModel;
     data: CRangeSliderOptions;
@@ -45,3 +45,5 @@ export default class TRSPresenter {
         this.view.drawSlider(oldSettings, this.model.settings);
     }
 }
+
+export default TRSPresenter;
