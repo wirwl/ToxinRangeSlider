@@ -13,9 +13,5 @@ module.exports = {
     rules: {
         // Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs
         // e.g. '@typescript-eslint/explicit-function-return-type': 'off',
-        '@typescript-eslint/no-namespace': 'off',
-        '@typescript-eslint/interface-name-prefix': 'off',
-        '@typescript-eslint/no-empty-function': 'off',
-        '@typescript-eslint/no-var-requires': 'off'
     },
 }
