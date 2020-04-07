@@ -41,7 +41,7 @@ class TRSView {
         this.rangeslider = new Rangeslider(el.find('.rangeslider'));
 
         this.line = new Line(el.find('.rangeslider__line'));
-        this.line.el.mousedown(e => this.onMouseDownByLine(e));
+        this.line.el.on('mousedown.line', e => this.onMouseDownByLine(e));
 
         this.lineSelected = new Line(this.rangeslider.el.find('.rangeslider__line-selected'));
 
@@ -52,11 +52,11 @@ class TRSView {
         this.tipMax = new Tip(el.find('.rangeslider__tip-max'));
 
         this.handleFrom = new Handle(this.rangeslider.el.find('.rangeslider__handle-from'));
-        this.handleFrom.el.mousedown(e => this.onMouseDownByHandle(e));
+        this.handleFrom.el.on('mousedown.handleFrom', e => this.onMouseDownByHandle(e));
         this.offsetFrom = this.handleFrom.width / 2;
 
         this.handleTo = new Handle(this.rangeslider.el.find('.rangeslider__handle-to'));
-        this.handleTo.el.mousedown(e => this.onMouseDownByHandle(e));
+        this.handleTo.el.on('mousedown.handleTo', e => this.onMouseDownByHandle(e));
         this.offsetTo = this.handleTo.width / 2;
 
         this.rangeslider.addControls([
@@ -164,18 +164,19 @@ class TRSView {
         if (ar1.length != ar2.length) return false;
         return ar1.every((value, index) => value === ar2[index]);
     }
-    onMouseDownByHandle(e: JQuery.MouseDownEvent) {
+    onMouseDownByHandle(e: JQuery.TriggeredEvent) {
         const currentHandle: Handle = $(e.target).is(this.handleFrom.el) ? this.handleFrom : this.handleTo;
         currentHandle.isMoving = true;
         const clientPos = this.settings.isVertical ? e.clientY : e.clientX;
         const shiftPos = clientPos - currentHandle.offset;
 
-        this.rangeslider.el.mousemove(e => this.onMouseMove(e, currentHandle, shiftPos));
-        $(document).mousemove(e => this.onMouseMove(e, currentHandle, shiftPos));
-        currentHandle.el.mouseup(e => this.onMouseUp(e, currentHandle));
-        $(document).mouseup(e => this.onMouseUp(e, currentHandle));
+        this.rangeslider.el.on('mousemove.rangeslider', e => this.onMouseMove(e, currentHandle, shiftPos));
+        const $document = $(document);
+        $document.on('mousemove.document', e => this.onMouseMove(e, currentHandle, shiftPos));
+        currentHandle.el.on('mouseup.handle', e => this.onMouseUp(e, currentHandle));
+        $document.on('mouseup.document', e => this.onMouseUp(e, currentHandle));
     }
-    onMouseMove(e: JQuery.MouseMoveEvent, currentHandle: Handle, shiftPos: number) {
+    onMouseMove(e: JQuery.TriggeredEvent, currentHandle: Handle, shiftPos: number) {
         const $target = $(e.target);
 
         const offsetPos = this.settings.isVertical ? e.offsetY : e.offsetX;
@@ -207,14 +208,14 @@ class TRSView {
 
         return result;
     }
-    onMouseUp(e: JQuery.MouseUpEvent, currentHandle: Handle) {
+    onMouseUp(e: JQuery.TriggeredEvent, currentHandle: Handle) {
         currentHandle.isMoving = false;
-        this.rangeslider.el.off('mousemove');
-        currentHandle.el.off('mouseup');
-        $(document).off('mousemove');
-        $(document).off('mouseup');
+        this.rangeslider.el.off('mousemove.rangeslider');
+        currentHandle.el.off('mouseup.handle');
+        $(document).off('mousemove.document');
+        $(document).off('mouseup.document');
     }
-    onMouseDownByLine(e: JQuery.MouseDownEvent) {
+    onMouseDownByLine(e: JQuery.TriggeredEvent) {
         e.preventDefault();
         let offsetPos = this.settings.isVertical ? e.offsetY : e.offsetX;
 
@@ -231,7 +232,7 @@ class TRSView {
 
         const newEvent = e;
         newEvent.target = nearHandle.el;
-        nearHandle.el.trigger(newEvent, 'mousedown');
+        nearHandle.el.trigger(newEvent, 'mousedown.handle');
     }
     getNearestHandle(pos: number): Handle {
         if (this.settings.isTwoHandles) {
@@ -317,11 +318,11 @@ class TRSView {
             const tax = this.line.size - this.tipMax.size;
             let distanceMin = this.tipFrom.pos - this.tipMin.size;
             const distanceMax = tax - this.tipTo.pos - this.tipTo.size;
-            let distancBetweenTipFromAndTipMax = 1;
-            distancBetweenTipFromAndTipMax = tax - this.tipFrom.pos - this.tipFrom.size;
+            let distanceBetweenTipFromAndTipMax = 1;
+            distanceBetweenTipFromAndTipMax = tax - this.tipFrom.pos - this.tipFrom.size;
             distanceMin < 1 ? this.tipMin.hide() : this.tipMin.show();
             distanceMax < 1 ? this.tipMax.hide() : this.tipMax.show();
-            if (distancBetweenTipFromAndTipMax < 1) this.tipMax.hide();
+            if (distanceBetweenTipFromAndTipMax < 1) this.tipMax.hide();
 
             if (!this.settings.isTwoHandles) {
                 distanceMin = this.tipTo.pos - this.tipMin.size;
