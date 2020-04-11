@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 class CRangeSliderOptions implements RangeSliderOptions {
     isVertical?: boolean;
     isTwoHandles?: boolean;

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import TRSView from './view';
 import TRSModel from './model';
 import Handle from './entities/handle';
@@ -22,8 +23,8 @@ class TRSPresenter {
         this.model.validate();
         this.view.drawSlider(null, this.model.settings, true);
     }
-    onHandlePositionUpdate(handle: Handle, newPos: number) {
-        const result: HandleMovingResult = this.view.moveHandle(handle, newPos);
+    onHandlePositionUpdate(handle: Handle, pxNewPos: number) {
+        const result: HandleMovingResult = this.view.moveHandle(handle, pxNewPos);
         if (result.isFromHandle) {
             if (result.isUsingItems) this.model.settings.items.indexFrom = result.index;
             this.model.settings.valueFrom = result.value;

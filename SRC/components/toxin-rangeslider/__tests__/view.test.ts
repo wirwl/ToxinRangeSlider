@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import TRSView from '../core/view';
 import TRSModel from '../core/model';
 

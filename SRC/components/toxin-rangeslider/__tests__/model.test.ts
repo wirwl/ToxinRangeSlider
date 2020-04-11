@@ -1,5 +1,3 @@
-import TRSPresenter from '../core/presenter';
-import '../../toxin-rangeslider/toxin-rangeslider';
 import TRSModel from '../core/model';
 
 let model: TRSModel;
