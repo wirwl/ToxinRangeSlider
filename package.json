@@ -4,12 +4,9 @@
   "description": "Task №2",
   "main": "index.js",
   "scripts": {
-    "clr": "rm -r Result",
-    "clr:dev": "rm -r Result\\dev",
-    "clr:prod": "rm -r Result\\prod",
-    "dev": "webpack --mode=development --display-error-details --display errors-only",
-    "prod": "webpack --mode=production --display errors-only",
-    "le": "webpack-dev-server --open --mode=development --display-error-details --open-page index.html",
+    "dev": "webpack-dev-server --open --mode=development --display-error-details --display errors-only",
+    "build": "webpack --mode=production --display-error-details --display errors-only",
+    "deploy": "gh-pages -r https://github.com/wirwl/wirwl.github.io  -b master -d Result -e PetProjects/FSD/ToxinRangeSlider",
     "test": "jest",
     "test:c": "jest --coverage",
     "test:w": "jest --watch",
@@ -36,6 +33,7 @@
     "@typescript-eslint/parser": "^2.24.0",
     "autoprefixer": "^9.7.4",
     "babel-loader": "^8.0.6",
+    "clean-webpack-plugin": "^3.0.0",
     "copy-webpack-plugin": "^5.1.1",
     "css-loader": "^3.2.0",
     "eslint": "^6.8.0",
@@ -83,6 +81,7 @@
   "dependencies": {
     "@types/expect-puppeteer": "^4.4.0",
     "@types/jest-environment-puppeteer": "^4.3.1",
+    "gh-pages": "^3.0.0",
     "jest-environment-puppeteer": "^4.4.0"
   }
 }

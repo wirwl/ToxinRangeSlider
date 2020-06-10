@@ -9,6 +9,7 @@ const flexbugsfixes = require('postcss-flexbugs-fixes');
 const merge = require('webpack-merge');
 const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 let devServer;
 process.noDeprecation = true;
@@ -17,7 +18,7 @@ process.traceDeprecation = true;
 module.exports = ((env, argv) => {
 
     var isDev = argv.mode === 'development';
-    var pathOutput = isDev ? 'Result/dev' : 'Result/prod';
+    var pathOutput = 'Result';
     var dtValue = isDev ? 'source-map' : 'none';
 
     function reloadHtml() {
@@ -226,6 +227,7 @@ module.exports = ((env, argv) => {
             filename: 'toxin-rangeslider.js'
         },
         plugins: [
+            new CleanWebpackPlugin(),
             new MiniCssExtractPlugin({ filename: 'toxin-rangeslider.css' }),
             new CopyPlugin([
                 {
