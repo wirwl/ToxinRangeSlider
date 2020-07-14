@@ -80,19 +80,13 @@ $('#my-element').data('toxinRangeSlider')
 
   >**yarn install** - install all dependencies
 
-  >**yarn clr** - clear output folder (remove all files and directories)
+  >**yarn dev** - execute project with webpack-dev-server for development with live reloading
 
-  >**yarn clr:dev** - clear output folder (remove all files and directories in dev folder)
+  >**yarn build** - build project with production mode
 
-  >**yarn clr:prod** - clear output folder (remove all files and directories in prod folder)
-
-  >**yarn dev** - build project with development mode
-
-  >**yarn prod** - build project with production mode
+  >**yarn deploy** - deploy project on github.io
 
   >**yarn test** - run all tests
-
-  >**yarn le** - run index.html with [webpack-dev-server](https://www.npmjs.com/package/webpack-dev-server) for editing with live reloading
 
 
 
