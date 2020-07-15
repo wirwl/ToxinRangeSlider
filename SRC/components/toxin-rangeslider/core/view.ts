@@ -71,6 +71,7 @@ class TRSView {
         ]);
         this.settings = new CRangeSliderOptions();
     }
+
     drawSlider(os: CRangeSliderOptions, ns: CRangeSliderOptions | RangeSliderOptions, isFirstDraw = false) {
         this.settings.extend(ns);
 
@@ -159,11 +160,13 @@ class TRSView {
             }
         }
     }
+
     isEqualArrays(ar1: (string | number)[], ar2: (string | number)[]): boolean {
         if (!ar1 || !ar2) return false;
         if (ar1.length != ar2.length) return false;
         return ar1.every((value, index) => value === ar2[index]);
     }
+
     onMouseDownByHandle(e: JQuery.TriggeredEvent) {
         const currentHandle: Handle = $(e.target).is(this.handleFrom.el) ? this.handleFrom : this.handleTo;
         currentHandle.isMoving = true;
@@ -176,6 +179,7 @@ class TRSView {
         currentHandle.el.on('mouseup.handle', e => this.onMouseUp(e, currentHandle));
         $document.on('mouseup.document', e => this.onMouseUp(e, currentHandle));
     }
+
     onMouseMove(e: JQuery.TriggeredEvent, currentHandle: Handle, shiftPos: number) {
         const $target = $(e.target);
 
@@ -191,6 +195,7 @@ class TRSView {
 
         return false;
     }
+
     validate(pos: number, currentHandle: Handle): number {
         let result = pos;
         const lw = this.line.size;
@@ -208,6 +213,7 @@ class TRSView {
 
         return result;
     }
+
     onMouseUp(e: JQuery.TriggeredEvent, currentHandle: Handle) {
         currentHandle.isMoving = false;
         this.rangeslider.el.off('mousemove.rangeslider');
@@ -215,6 +221,7 @@ class TRSView {
         $(document).off('mousemove.document');
         $(document).off('mouseup.document');
     }
+
     onMouseDownByLine(e: JQuery.TriggeredEvent) {
         e.preventDefault();
         let offsetPos = this.settings.isVertical ? e.offsetY : e.offsetX;
@@ -234,6 +241,7 @@ class TRSView {
         newEvent.target = nearHandle.el;
         nearHandle.el.trigger(newEvent, 'mousedown.handle');
     }
+
     getNearestHandle(pos: number): Handle {
         if (this.settings.isTwoHandles) {
             if (pos < this.handleFrom.pos) return this.handleFrom;
@@ -246,6 +254,7 @@ class TRSView {
             return this.handleTo;
         }
     }
+
     moveHandle(currentHandle: Handle, pxX: number): HandleMovingResult {
         currentHandle.pos = pxX;
         let restoreIndex = -1;
@@ -278,6 +287,7 @@ class TRSView {
             index: restoreIndex,
         };
     }
+
     drawLineSelected(currentHandle: Handle) {
         if (this.settings.isTwoHandles) {
             if (currentHandle.is(this.handleFrom)) this.lineSelected.pos = this.handleFrom.pos + this.offsetFrom;
@@ -287,6 +297,7 @@ class TRSView {
             this.lineSelected.size = currentHandle.pos + currentHandle.size - this.offsetTo + 1;
         }
     }
+
     drawTips(currentHandle: Handle) {
         this.tipFrom.text = this.settings.valueFrom;
         this.tipTo.text = this.settings.valueTo;
@@ -330,6 +341,7 @@ class TRSView {
             }
         }
     }
+
     convertRelativeValueToPixelValue(val: number): number {
         const lw = this.line.size - this.offsetFrom - this.offsetTo;
         const isHasValues = this.settings.items && this.settings.items.values && this.settings.items.values.length > 1;
@@ -344,6 +356,7 @@ class TRSView {
         }
         return result;
     }
+
     convertPixelValueToRelativeValue(val: number): number {
         const lw = this.line.size - this.offsetFrom - this.offsetTo;
         const percent = val / lw;
@@ -353,6 +366,7 @@ class TRSView {
         );
         return result;
     }
+
     getSteppedPos(pxValue: number): number {
         const pxLength = this.line.size - this.offsetFrom - this.offsetTo;
         const isDefinedStep = this.settings.stepValue > 0;
@@ -385,6 +399,7 @@ class TRSView {
                 const remainder = pxLength - newPos;
                 if (pxValue > newPos + remainder / 2) newPos += remainder;
             }
+            if (newPos > pxLength) newPos = pxLength;
             return newPos;
         }
         return null;

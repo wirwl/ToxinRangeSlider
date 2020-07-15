@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import CRangeSliderOptions from './entities/crangeslideroptions';
 
 class TRSModel {
@@ -14,11 +15,13 @@ class TRSModel {
         items: null,
         onHandlePositionChange(this: HandleMovingResult): void {},
     };
+
     constructor(options: RangeSliderOptions) {
         this.settings = new CRangeSliderOptions();
         this.settings.extend(TRSModel.defaults);
         this.settings.extend(options);
     }
+
     validate() {
         if (this.settings.isHaveItems) {
             if (this.settings.items.indexTo > this.settings.items.values.length - 1)
