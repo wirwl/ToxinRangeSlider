@@ -84,11 +84,26 @@ $(document).ready(() => {
         });
 
         $valueFrom.focusout(function(this: HTMLInputElement) {
+            if (rangeslider.data.isHaveItems) {
+                const indexFrom = rangeslider.data.findIndexByItem(this.value);
+                if (indexFrom == -1) this.value = rangeslider.data.valueFrom as string;
+                if (indexFrom > rangeslider.data.items.indexTo) this.value = rangeslider.data.valueTo as string;
+            } else {
+                if (parseInt(this.value) > rangeslider.data.valueTo) this.value = rangeslider.data.valueTo as string;
+            }
             rangeslider.update({ valueFrom: this.value });
             if (rangeslider.data.isHaveItems) $indexFrom.val(rangeslider.data.items.indexFrom);
         });
 
         $valueTo.focusout(function(this: HTMLInputElement) {
+            if (rangeslider.data.isHaveItems) {
+                const indexTo = rangeslider.data.findIndexByItem(this.value);
+                if (indexTo == -1) this.value = rangeslider.data.valueTo as string;
+                if (indexTo < rangeslider.data.items.indexFrom) this.value = rangeslider.data.valueFrom as string;
+            } else {
+                if (parseInt(this.value) < rangeslider.data.valueFrom)
+                    this.value = rangeslider.data.valueFrom as string;
+            }
             rangeslider.update({ valueTo: this.value });
             if (rangeslider.data.isHaveItems) $indexTo.val(rangeslider.data.items.indexTo);
         });
