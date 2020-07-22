@@ -28,6 +28,11 @@ class Rangeslider extends TRSElement {
         });
     }
 
+    constructor(el: JQuery<HTMLElement>) {
+        super(el);
+        el.on('dragstart', e => e.preventDefault());
+    }
+
     addControls(controls: (Tip | Handle | Line)[]) {
         this.controls = controls;
     }
