@@ -76,7 +76,7 @@ $('#my-element').data('toxinRangeSlider')
 ![General types](UML/gt.png)
 
 ## Some usefull commands
-  >**git clone https://github.com/wirwl/toxinhotel.git** - copy project from remote repository to local computer
+  >**git clone https://github.com/wirwl/ToxinRangeSlider.git** - copy project from remote repository to local computer
 
   >**yarn install** - install all dependencies
 
