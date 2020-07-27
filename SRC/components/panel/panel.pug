@@ -12,7 +12,7 @@ mixin panel(data)
   - const isHasMinValue = isHasSlider && data.slider.minValue;
   - const isHasMaxValue = isHasSlider && data.slider.maxValue;
 
-  .panel.js-panel(class = (data.isVertical ? 'panel_is-vertical' : '') id=data.id)
+  form.panel.js-panel(autocomplete = "off" class = (data.isVertical ? 'panel_is-vertical' : '') id=data.id)
     .panel__values
       .panel__boolean-values
         .panel__checkbox-is-vertical.js-panel__checkbox-is-vertical

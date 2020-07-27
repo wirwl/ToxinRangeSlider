@@ -83,6 +83,10 @@ $(document).ready(() => {
             rangeslider.update({ stepValue: parseInt(this.value) });
         });
 
+        $stepValue.change(function(event) {
+            event.target.focus();
+        });
+
         $valueFrom.focusout(function(this: HTMLInputElement) {
             if (rangeslider.data.isHaveItems) {
                 const indexFrom = rangeslider.data.findIndexByItem(this.value);
