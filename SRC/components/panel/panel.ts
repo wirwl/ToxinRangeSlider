@@ -1,4 +1,5 @@
 import TRSPresenter from '../toxin-rangeslider/core/presenter';
+import { parse } from '@babel/core';
 
 $(document).ready(() => {
     const $panels = $('.panel');
@@ -86,6 +87,10 @@ $(document).ready(() => {
             return ($stepValue.val() as number) < getRangeLength();
         }
 
+        function preventMinusTyping(event: any) {
+            if (event.key == '-') event.preventDefault();
+        }
+
         $minValue.on('input.minValue', function(this: HTMLInputElement, event) {
             this.value = this.value.replace(/\D+/g, '');
             let minValue = parseInt(this.value);
@@ -130,7 +135,7 @@ $(document).ready(() => {
                 });
         });
 
-        $stepValue.on('input.stepValue', function(this: HTMLInputElement, event) {
+        $stepValue.on('input.stepValue', function(this: HTMLInputElement) {
             const value = parseInt(this.value);
             if (value < 1) this.value = '1';
             if (!isStepValid()) this.value = getRangeLength().toString();
@@ -138,41 +143,63 @@ $(document).ready(() => {
         });
 
         $valueFrom.on('input.valueFrom', function(this: HTMLInputElement, event) {
-            if (rangeslider.data.isHaveItems) {
-                const indexFrom = rangeslider.data.findIndexByItem(this.value);
-                if (indexFrom == -1) this.value = rangeslider.data.valueFrom as string;
-                if (indexFrom > rangeslider.data.items.indexTo) this.value = rangeslider.data.valueTo as string;
-            } else {
-                this.value = this.value.replace(/\D+/g, '');
-                if (parseInt(this.value) > rangeslider.data.valueTo) this.value = rangeslider.data.valueTo as string;
-            }
-            if (!isNaN(parseInt(this.value))) {
+            if (this.value.length > 0) {
+                if (rangeslider.data.isHaveItems) {
+                    const indexFrom = rangeslider.data.findIndexByItem(this.value);
+                    if (indexFrom > rangeslider.data.items.indexTo) this.value = rangeslider.data.valueTo as string;
+                } else {
+                    this.value = this.value.replace(/\D+/g, '');
+                    const value = parseInt(this.value);
+                    if (value < rangeslider.data.minValue) this.value = rangeslider.data.minValue as string;
+                    if (parseInt(this.value) > rangeslider.data.valueTo)
+                        this.value = rangeslider.data.valueTo as string;
+                }
+
                 rangeslider.update({ valueFrom: this.value });
                 if (rangeslider.data.isHaveItems) $indexFrom.val(rangeslider.data.items.indexFrom);
             }
         });
 
         $valueTo.on('input.valueTo', function(this: HTMLInputElement) {
-            if (rangeslider.data.isHaveItems) {
-                const indexTo = rangeslider.data.findIndexByItem(this.value);
-                if (indexTo == -1) this.value = rangeslider.data.valueTo as string;
-                if (indexTo < rangeslider.data.items.indexFrom) this.value = rangeslider.data.valueFrom as string;
-            } else {
-                this.value = this.value.replace(/\D+/g, '');
-                if (parseInt(this.value) < rangeslider.data.valueFrom)
-                    this.value = rangeslider.data.valueFrom as string;
-            }
-            if (!isNaN(parseInt(this.value))) {
-                rangeslider.update({ valueTo: this.value });
-                if (rangeslider.data.isHaveItems) $indexTo.val(rangeslider.data.items.indexTo);
+            if (this.value.length > 0) {
+                if (rangeslider.data.isHaveItems) {
+                    const indexTo = rangeslider.data.findIndexByItem(this.value);
+                    if (indexTo == -1) this.value = rangeslider.data.valueTo as string;
+                    if (indexTo < rangeslider.data.items.indexFrom) this.value = rangeslider.data.valueFrom as string;
+                } else {
+                    this.value = this.value.replace(/\D+/g, '');
+                    const value = parseInt(this.value);
+                    if (rangeslider.data.isTwoHandles && value < rangeslider.data.valueFrom)
+                        this.value = rangeslider.data.valueFrom as string;
+                    if (!rangeslider.data.isTwoHandles && value < rangeslider.data.minValue)
+                        this.value = rangeslider.data.minValue as string;
+                    if (value > rangeslider.data.maxValue) this.value = rangeslider.data.maxValue as string;
+                }
+                if (!rangeslider.data.isHaveItems && !isNaN(parseInt(this.value))) {
+                    rangeslider.update({ valueTo: this.value });
+                    if (rangeslider.data.isHaveItems) $indexTo.val(rangeslider.data.items.indexTo);
+                }
             }
         });
 
-        $indexFrom.focusout(function(this: HTMLInputElement) {
+        $indexFrom.on('input', function(this: HTMLInputElement) {
+            const indexFrom = parseInt(this.value);
+            const indexTo = parseInt($indexTo.val() as string);
+            if (indexFrom > indexTo) this.value = indexTo.toString();
             rangeslider.update({ items: { indexFrom: parseInt(this.value) } });
             $valueFrom.val(rangeslider.data.valueFrom);
         });
-        $indexTo.focusout(function(this: HTMLInputElement) {
+
+        $stepValue.keypress(preventMinusTyping);
+        $indexFrom.keypress(preventMinusTyping);
+        $indexTo.keypress(preventMinusTyping);
+
+        $indexTo.on('input', function(this: HTMLInputElement) {
+            const maxIndex = rangeslider.data.items.values.length - 1;
+            const indexFrom = parseInt($indexFrom.val() as string);
+            const indexTo = parseInt(this.value);
+            if (indexTo < indexFrom) this.value = indexFrom.toString();
+            if (indexTo > maxIndex) this.value = maxIndex.toString();
             rangeslider.update({ items: { indexTo: parseInt(this.value) } });
             $valueTo.val(rangeslider.data.valueTo);
         });
