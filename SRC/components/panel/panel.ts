@@ -54,6 +54,7 @@ $(document).ready(() => {
         $isShowTips.change(function(this: HTMLInputElement) {
             rangeslider.update({ isTip: this.checked });
         });
+
         function updatePanelValues() {
             $minValue.val(rangeslider.data.minValue);
             $maxValue.val(rangeslider.data.maxValue);
@@ -69,12 +70,23 @@ $(document).ready(() => {
                 $indexTo.prop('disabled', true);
             }
         }
+
+        function getRangeLength(): number {
+            return ($maxValue.val() as number) - ($minValue.val() as number);
+        }
+
+        function isStepValid(): boolean {
+            return ($stepValue.val() as number) < getRangeLength();
+        }
+
         $minValue.focusout(function(this: HTMLInputElement) {
+            if (!isStepValid()) $stepValue.val(getRangeLength().toString());
             rangeslider.update({ minValue: parseFloat(this.value) });
             updatePanelValues();
         });
 
         $maxValue.focusout(function(this: HTMLInputElement) {
+            if (!isStepValid()) $stepValue.val(getRangeLength().toString());
             rangeslider.update({ maxValue: parseFloat(this.value) });
             updatePanelValues();
         });
@@ -85,6 +97,21 @@ $(document).ready(() => {
 
         $stepValue.change(function(event) {
             event.target.focus();
+            const inputStep = event.target as HTMLInputElement;
+            if (parseInt(inputStep.value) < 1) inputStep.value = '1';
+            if (!isStepValid()) inputStep.value = getRangeLength().toString();
+        });
+
+        $stepValue.keypress(function(event) {
+            if (event.key == '-') event.preventDefault();
+        });
+
+        $stepValue.keyup(function(event) {
+            const inputStep = event.target as HTMLInputElement;
+            if (!isStepValid()) {
+                inputStep.value = getRangeLength().toString();
+                event.preventDefault();
+            }
         });
 
         $valueFrom.focusout(function(this: HTMLInputElement) {
