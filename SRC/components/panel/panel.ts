@@ -44,10 +44,17 @@ $(document).ready(() => {
             rangeslider.update({ isTwoHandles: this.checked });
             if (!this.checked) {
                 $valueFrom.prop('disabled', true);
-                $indexFrom.prop('disabled', true);
+                if (rangeslider.data.isHaveItems) $indexFrom.prop('disabled', true);
             } else {
                 $valueFrom.prop('disabled', false);
-                $indexFrom.prop('disabled', false);
+                if (rangeslider.data.isHaveItems) $indexFrom.prop('disabled', false);
+                if (!rangeslider.data.isHaveItems) {
+                    const minValue: number = parseInt($minValue.val() as string);
+                    const maxValue: number = parseInt($maxValue.val() as string);
+                    const valueFrom: number = parseInt($valueFrom.val() as string);
+                    if (valueFrom < minValue || valueFrom > maxValue) $valueFrom.val(minValue);
+                    rangeslider.update({ valueFrom: $valueFrom.val() as number });
+                }
             }
         });
 
@@ -110,7 +117,7 @@ $(document).ready(() => {
             rangeslider.update({ stepValue: value });
         });
 
-        $valueFrom.on('input', function(this: HTMLInputElement, event) {
+        $valueFrom.on('input.valueFrom', function(this: HTMLInputElement, event) {
             if (rangeslider.data.isHaveItems) {
                 const indexFrom = rangeslider.data.findIndexByItem(this.value);
                 if (indexFrom == -1) this.value = rangeslider.data.valueFrom as string;
@@ -125,7 +132,7 @@ $(document).ready(() => {
             }
         });
 
-        $valueTo.on('input', function(this: HTMLInputElement) {
+        $valueTo.on('input.valueTo', function(this: HTMLInputElement) {
             if (rangeslider.data.isHaveItems) {
                 const indexTo = rangeslider.data.findIndexByItem(this.value);
                 if (indexTo == -1) this.value = rangeslider.data.valueTo as string;
