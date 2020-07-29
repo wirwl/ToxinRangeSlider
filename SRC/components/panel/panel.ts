@@ -88,26 +88,46 @@ $(document).ready(() => {
 
         $minValue.on('input.minValue', function(this: HTMLInputElement, event) {
             this.value = this.value.replace(/\D+/g, '');
-            const value = parseInt(this.value);
+            let minValue = parseInt(this.value);
             const maxValue = parseInt($maxValue.val() as string);
-            if (value == maxValue) this.value = (value - 1).toString();
-            if (!isStepValid()) $stepValue.val(getRangeLength().toString());
-            if (!isNaN(value)) {
-                rangeslider.update({ minValue: this.value });
-                updatePanelValues();
+            if (minValue >= maxValue) {
+                this.value = (maxValue - 1).toString();
+                minValue = parseInt(this.value);
             }
+            const toValue = parseInt($valueTo.val() as string);
+            const fromValue = parseInt($valueFrom.val() as string);
+            if (toValue < minValue) $valueTo.val(minValue);
+            if (rangeslider.data.isTwoHandles && fromValue < minValue) $valueFrom.val(this.value);
+
+            if (!isStepValid()) $stepValue.val(getRangeLength().toString());
+            if (!isNaN(minValue))
+                rangeslider.update({
+                    minValue: this.value,
+                    valueFrom: $valueFrom.val() as number,
+                    valueTo: $valueTo.val() as number,
+                });
         });
 
         $maxValue.on('input.maxValue', function(this: HTMLInputElement, event) {
             this.value = this.value.replace(/\D+/g, '');
-            const value = parseInt(this.value);
+            let maxValue = parseInt(this.value);
             const minValue = parseInt($minValue.val() as string);
-            if (value == minValue) this.value = (value + 1).toString();
-            if (!isStepValid()) $stepValue.val(getRangeLength().toString());
-            if (!isNaN(value)) {
-                rangeslider.update({ maxValue: this.value });
-                updatePanelValues();
+            if (maxValue <= minValue) {
+                this.value = (maxValue + 1).toString();
+                maxValue = parseInt(this.value);
             }
+            const toValue = parseInt($valueTo.val() as string);
+            const fromValue = parseInt($valueFrom.val() as string);
+            if (toValue > maxValue) $valueTo.val(maxValue);
+            if (rangeslider.data.isTwoHandles && fromValue > maxValue) $valueFrom.val(minValue);
+
+            if (!isStepValid()) $stepValue.val(getRangeLength().toString());
+            if (!isNaN(maxValue))
+                rangeslider.update({
+                    maxValue: this.value,
+                    valueFrom: $valueFrom.val() as number,
+                    valueTo: $valueTo.val() as number,
+                });
         });
 
         $stepValue.on('input.stepValue', function(this: HTMLInputElement, event) {
