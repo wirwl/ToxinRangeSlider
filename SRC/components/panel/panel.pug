@@ -38,7 +38,7 @@ mixin panel(data)
             +select-items({title:'Items', isRemoveDisabled: zeroValues , items: isHasItems ?  data.slider.items.values : [], isDisabled: !isUsingItems})
         .panel__section3
           .panel__input-index-from.js-panel__input-index-from
-            +input({type: 'text', text:'Index from', value: isHasItems ? data.slider.items.indexFrom : '', isDisabled: !isUsingItems || !data.slider.isTwoHandles  })            
+            +input({type: 'number', text:'Index from', value: isHasItems ? data.slider.items.indexFrom : '', isDisabled: !isUsingItems || !data.slider.isTwoHandles, minValue: 0})            
           .panel__input-index-to.js-panel__input-index-to
-            +input({type: 'text', text:'Index to', value: isHasItems ? data.slider.items.indexTo : '', isDisabled: !isUsingItems })
+            +input({type: 'number', text:'Index to', value: isHasItems ? data.slider.items.indexTo : '', isDisabled: !isUsingItems, minValue: 0})
     .panel__toxin-rangeslider.toxin-rangeslider-here(data-options=data.slider)

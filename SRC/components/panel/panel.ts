@@ -79,64 +79,66 @@ $(document).ready(() => {
             return ($stepValue.val() as number) < getRangeLength();
         }
 
-        $minValue.focusout(function(this: HTMLInputElement) {
+        $minValue.on('input.minValue', function(this: HTMLInputElement, event) {
+            this.value = this.value.replace(/\D+/g, '');
+            const value = parseInt(this.value);
+            const maxValue = parseInt($maxValue.val() as string);
+            if (value == maxValue) this.value = (value - 1).toString();
             if (!isStepValid()) $stepValue.val(getRangeLength().toString());
-            rangeslider.update({ minValue: parseFloat(this.value) });
-            updatePanelValues();
-        });
-
-        $maxValue.focusout(function(this: HTMLInputElement) {
-            if (!isStepValid()) $stepValue.val(getRangeLength().toString());
-            rangeslider.update({ maxValue: parseFloat(this.value) });
-            updatePanelValues();
-        });
-
-        $stepValue.focusout(function(this: HTMLInputElement) {
-            rangeslider.update({ stepValue: parseInt(this.value) });
-        });
-
-        $stepValue.change(function(event) {
-            event.target.focus();
-            const inputStep = event.target as HTMLInputElement;
-            if (parseInt(inputStep.value) < 1) inputStep.value = '1';
-            if (!isStepValid()) inputStep.value = getRangeLength().toString();
-        });
-
-        $stepValue.keypress(function(event) {
-            if (event.key == '-') event.preventDefault();
-        });
-
-        $stepValue.keyup(function(event) {
-            const inputStep = event.target as HTMLInputElement;
-            if (!isStepValid()) {
-                inputStep.value = getRangeLength().toString();
-                event.preventDefault();
+            if (!isNaN(value)) {
+                rangeslider.update({ minValue: this.value });
+                updatePanelValues();
             }
         });
 
-        $valueFrom.focusout(function(this: HTMLInputElement) {
+        $maxValue.on('input.maxValue', function(this: HTMLInputElement, event) {
+            this.value = this.value.replace(/\D+/g, '');
+            const value = parseInt(this.value);
+            const minValue = parseInt($minValue.val() as string);
+            if (value == minValue) this.value = (value + 1).toString();
+            if (!isStepValid()) $stepValue.val(getRangeLength().toString());
+            if (!isNaN(value)) {
+                rangeslider.update({ maxValue: this.value });
+                updatePanelValues();
+            }
+        });
+
+        $stepValue.on('input.stepValue', function(this: HTMLInputElement, event) {
+            const value = parseInt(this.value);
+            if (value < 1) this.value = '1';
+            if (!isStepValid()) this.value = getRangeLength().toString();
+            rangeslider.update({ stepValue: value });
+        });
+
+        $valueFrom.on('input', function(this: HTMLInputElement, event) {
             if (rangeslider.data.isHaveItems) {
                 const indexFrom = rangeslider.data.findIndexByItem(this.value);
                 if (indexFrom == -1) this.value = rangeslider.data.valueFrom as string;
                 if (indexFrom > rangeslider.data.items.indexTo) this.value = rangeslider.data.valueTo as string;
             } else {
+                this.value = this.value.replace(/\D+/g, '');
                 if (parseInt(this.value) > rangeslider.data.valueTo) this.value = rangeslider.data.valueTo as string;
             }
-            rangeslider.update({ valueFrom: this.value });
-            if (rangeslider.data.isHaveItems) $indexFrom.val(rangeslider.data.items.indexFrom);
+            if (!isNaN(parseInt(this.value))) {
+                rangeslider.update({ valueFrom: this.value });
+                if (rangeslider.data.isHaveItems) $indexFrom.val(rangeslider.data.items.indexFrom);
+            }
         });
 
-        $valueTo.focusout(function(this: HTMLInputElement) {
+        $valueTo.on('input', function(this: HTMLInputElement) {
             if (rangeslider.data.isHaveItems) {
                 const indexTo = rangeslider.data.findIndexByItem(this.value);
                 if (indexTo == -1) this.value = rangeslider.data.valueTo as string;
                 if (indexTo < rangeslider.data.items.indexFrom) this.value = rangeslider.data.valueFrom as string;
             } else {
+                this.value = this.value.replace(/\D+/g, '');
                 if (parseInt(this.value) < rangeslider.data.valueFrom)
                     this.value = rangeslider.data.valueFrom as string;
             }
-            rangeslider.update({ valueTo: this.value });
-            if (rangeslider.data.isHaveItems) $indexTo.val(rangeslider.data.items.indexTo);
+            if (!isNaN(parseInt(this.value))) {
+                rangeslider.update({ valueTo: this.value });
+                if (rangeslider.data.isHaveItems) $indexTo.val(rangeslider.data.items.indexTo);
+            }
         });
 
         $indexFrom.focusout(function(this: HTMLInputElement) {

@@ -1,4 +1,4 @@
-mixin input({text, type, value, isDisabled, minValue})
+mixin input({text, type, value, isDisabled, minValue, pattern})
   label.input
     span.input__text #{text}
-    input(type = type value = value disabled = isDisabled min = minValue).input__field.js-input__field
+    input(type = type pattern=pattern value = value disabled = isDisabled min = minValue).input__field.js-input__field
