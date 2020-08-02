@@ -80,8 +80,7 @@ $(document).ready(() => {
             }
         }
 
-        function getRangeLength(): number {
-            //return ($maxValue.val() as number) - ($minValue.val() as number);
+        function getRangeLength(): number {            
             return (rangeslider.data.maxValue as number) - (rangeslider.data.minValue as number);
         }
 
