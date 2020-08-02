@@ -81,7 +81,8 @@ $(document).ready(() => {
         }
 
         function getRangeLength(): number {
-            return ($maxValue.val() as number) - ($minValue.val() as number);
+            //return ($maxValue.val() as number) - ($minValue.val() as number);
+            return (rangeslider.data.maxValue as number) - (rangeslider.data.minValue as number);
         }
 
         function isStepValid(): boolean {
@@ -95,7 +96,7 @@ $(document).ready(() => {
         $minValue.on('input.minValue', function (this: HTMLInputElement, event) {
             let minValue = parseInt(this.value);
             if (!isNaN(minValue)) {
-                if (minValue != 0) this.value = minValue.toString();
+                this.value = minValue.toString();
                 const maxValue = parseInt($maxValue.val() as string);
                 if (minValue >= maxValue) {
                     this.value = (maxValue - 1).toString();
@@ -117,7 +118,7 @@ $(document).ready(() => {
         $maxValue.on('input.maxValue', function (this: HTMLInputElement, event) {
             let maxValue = parseInt(this.value);
             if (!isNaN(maxValue)) {
-                if (maxValue != 0) this.value = maxValue.toString();
+                this.value = maxValue.toString();
                 const minValue = parseInt($minValue.val() as string);
                 if (maxValue <= minValue) {
                     this.value = (minValue + 1).toString();
@@ -137,15 +138,6 @@ $(document).ready(() => {
             }
         });
 
-        $stepValue.on('input.stepValue', function (this: HTMLInputElement) {
-            if (this.value.length) {
-                const value = parseInt(this.value);
-                if (value < 1) this.value = '1';
-                if (!isStepValid()) this.value = getRangeLength().toString();
-                rangeslider.update({ stepValue: value });
-            }
-        });
-
         $valueFrom.on('input.valueFrom', function (this: HTMLInputElement, event) {
             let valueFrom = parseInt(this.value);
             if (!isNaN(valueFrom)) {
@@ -153,7 +145,7 @@ $(document).ready(() => {
                     const indexFrom = rangeslider.data.findIndexByItem(this.value);
                     if (indexFrom > rangeslider.data.items.indexTo) this.value = rangeslider.data.valueTo as string;
                 } else {
-                    if (valueFrom!=0) this.value = valueFrom.toString();                    
+                    this.value = valueFrom.toString();
                     if (valueFrom < rangeslider.data.minValue) this.value = rangeslider.data.minValue as string;
                     if (parseInt(this.value) > rangeslider.data.valueTo)
                         this.value = rangeslider.data.valueTo as string;
@@ -171,7 +163,7 @@ $(document).ready(() => {
                     if (indexTo == -1) this.value = rangeslider.data.valueTo as string;
                     if (indexTo < rangeslider.data.items.indexFrom) this.value = rangeslider.data.valueFrom as string;
                 } else {
-                    if (valueTo!=0) this.value = valueTo.toString();                    
+                    this.value = valueTo.toString();
                     if (rangeslider.data.isTwoHandles && valueTo < rangeslider.data.valueFrom)
                         this.value = rangeslider.data.valueFrom as string;
                     if (!rangeslider.data.isTwoHandles && valueTo < rangeslider.data.minValue)
@@ -204,6 +196,15 @@ $(document).ready(() => {
                 if (indexTo > maxIndex) this.value = maxIndex.toString();
                 rangeslider.update({ items: { indexTo: parseInt(this.value) } });
                 $valueTo.val(rangeslider.data.valueTo);
+            }
+        });
+
+        $stepValue.on('input.stepValue', function (this: HTMLInputElement) {
+            if (this.value.length) {
+                const value = parseInt(this.value);
+                if (value < 1) this.value = '1';
+                if (!isStepValid()) this.value = getRangeLength().toString();
+                rangeslider.update({ stepValue: value });
             }
         });
 
