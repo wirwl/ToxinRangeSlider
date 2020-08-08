@@ -82,7 +82,7 @@ class Panel {
         this.$buttonRemove.on('click.buttonRemove', this.handleButtonRemoveClick.bind(this));
     }
 
-    handleInputsFocusout(event: JQuery.FocusOutEvent) {
+    private handleInputsFocusout(event: JQuery.FocusOutEvent) {
         const $element = $(event.target);
         if ($element.parent().parent().hasClass('js-panel__input-min-value'))
             $element.val(this.rangeslider.data.minValue);
@@ -310,5 +310,5 @@ class Panel {
     };
 }
 
-const panels = $('.panel');
-panels.each((index, element) => { new Panel(element) });
+const $panels = $('.panel');
+$panels.each((index, element) => { new Panel(element) });
