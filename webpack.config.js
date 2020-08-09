@@ -148,18 +148,6 @@ module.exports = ((env, argv) => {
                     loader: 'source-map-loader'
                 },
                 {
-                    test: /\.m?js$/,
-                    exclude: /(node_modules)/,
-                    use: {
-                        loader: 'babel-loader',
-                        options: {
-                            presets: ['@babel/preset-env'],
-                            plugins: ['@babel/plugin-proposal-object-rest-spread'],
-                            cacheDirectory: true,
-                        }
-                    }
-                },
-                {
                     test: /\.(png|jpe?g|gif|svg)$/,
                     include: /(components)/,
                     loader: 'file-loader',
