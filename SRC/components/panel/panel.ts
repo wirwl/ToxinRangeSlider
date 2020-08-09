@@ -64,9 +64,9 @@ class Panel {
             },
         });
 
-        this.$isVertical.change(this.handleIsVerticalChange.bind(this));
-        this.$isTwoHandles.change(this.handleIsTwoHandlesChange.bind(this));
-        this.$isShowTips.change(this.handleIsShowTipsChange.bind(this));
+        this.$isVertical.on('change.isVertical', this.handleIsVerticalChange.bind(this));
+        this.$isTwoHandles.on('change.isTwoHandles', this.handleIsTwoHandlesChange.bind(this));
+        this.$isShowTips.on('change', this.handleIsShowTipsChange.bind(this));
         this.$minValue.on('input.minValue', this.handleMinValueInput.bind(this));
         this.$maxValue.on('input.maxValue', this.handleMaxValueInput.bind(this));
         this.$valueFrom.on('input.valueFrom', this.handleValueFromInput.bind(this));
