@@ -9,7 +9,7 @@ class TRSModel {
         isTip: true,
         minValue: 0,
         maxValue: 1000,
-        stepValue: 0,
+        stepValue: 1,
         valueFrom: 0,
         valueTo: 1000,
         items: null,

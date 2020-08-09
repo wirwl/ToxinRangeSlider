@@ -106,11 +106,11 @@ class Panel {
             const value = parseInt(el.value);
             if (value < 1) el.value = '1';
             if (!this.isStepValid()) el.value = this.getRangeLength().toString();
-            this.rangeslider.update({ stepValue: value });
+            this.rangeslider.update({ stepValue: parseInt(el.value) });
         }
     };
 
-    handleButtonRemoveClick(event: JQuery.ClickEvent) {
+    private handleButtonRemoveClick(event: JQuery.ClickEvent) {
         const $selectOptions = this.$select.find('option');
         const isUsingItems = this.select.length > 1;
         this.$minValue.prop('disabled', isUsingItems);
@@ -255,8 +255,6 @@ class Panel {
     };
 
     private updatePanelValues() {
-        console.log('called updatePanelValues');
-        console.log(this);
         this.$minValue.val(this.rangeslider.data.minValue);
         this.$maxValue.val(this.rangeslider.data.maxValue);
         this.$valueFrom.val(this.rangeslider.data.valueFrom);
