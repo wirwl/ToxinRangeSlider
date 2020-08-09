@@ -198,7 +198,7 @@ module.exports = ((env, argv) => {
     var jqueryCFG = {
         plugins: [
             new CopyPlugin([
-                { from: './src/jquery/dist/jquery.js', to: pathOutput + '/jquery/jquery.js' }
+                { from: './node_modules/jquery/dist/jquery.js', to: pathOutput + '/jquery/jquery.js' }
             ])
         ]
     }
@@ -219,7 +219,7 @@ module.exports = ((env, argv) => {
             new MiniCssExtractPlugin({ filename: 'toxin-rangeslider.css' }),
             new CopyPlugin([
                 {
-                    from: './SRC/jquery/dist/jquery.js',
+                    from: './node_modules/jquery/dist/jquery.js',
                     to: path.resolve(__dirname, pathOutput + '/jquery/jquery.js')
                 }
             ])
