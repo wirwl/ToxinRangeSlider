@@ -77,12 +77,12 @@ class TRSView {
         this.settings.extend(ns);
 
         if (ns.isVertical != os?.isVertical) {
-            this.rangeslider.isVertical = ns.isVertical;
+            this.rangeslider.setIsVertical(ns.isVertical);
             isFirstDraw = true;
         }
 
         if (isFirstDraw || ns.isTwoHandles != os?.isTwoHandles) {
-            this.rangeslider.isInterval = ns.isTwoHandles;
+            this.rangeslider.setIsInterval(ns.isTwoHandles);
             isFirstDraw = true;
         }
         if (isFirstDraw || ns.isTip != os?.isTip)
@@ -99,10 +99,10 @@ class TRSView {
             }
 
         if (isFirstDraw || this.settings.getMinValue() != os?.getMinValue()) {
-            this.tipMin.text = this.settings.getMinValue();
+            this.tipMin.setText(this.settings.getMinValue());
         }
         if (isFirstDraw || this.settings.getMaxValue() != os?.getMaxValue()) {
-            this.tipMax.text = this.settings.getMaxValue();
+            this.tipMax.setText(this.settings.getMaxValue());
         }
 
         const isItemValuesChanged = !this.isEqualArrays(os?.items?.values, ns.items?.values);
@@ -110,8 +110,8 @@ class TRSView {
             if (this.settings.items?.values) {
                 const count = this.settings.items.values.length;
                 if (count > 1) {
-                    this.tipMin.text = this.settings.items.values[0];
-                    this.tipMax.text = this.settings.items.values[count - 1];
+                    this.tipMin.setText(this.settings.items.values[0]);
+                    this.tipMax.setText(this.settings.items.values[count - 1]);
                 }
             }
         }
@@ -170,7 +170,7 @@ class TRSView {
 
     onMouseDownByHandle(e: JQuery.TriggeredEvent) {
         const currentHandle: Handle = $(e.target).is(this.handleFrom.el) ? this.handleFrom : this.handleTo;
-        currentHandle.isMoving = true;
+        currentHandle.setIsMoving(true);
         const clientPos = this.settings.isVertical ? e.clientY : e.clientX;
         const shiftPos = clientPos - currentHandle.getOffset();
 
@@ -216,7 +216,7 @@ class TRSView {
     }
 
     onMouseUp(e: JQuery.TriggeredEvent, currentHandle: Handle) {
-        currentHandle.isMoving = false;
+        currentHandle.setIsMoving(false);
         this.rangeslider.el.off('mousemove.rangeslider');
         currentHandle.el.off('mouseup.handle');
         $(document).off('mousemove.document');
@@ -300,8 +300,8 @@ class TRSView {
     }
 
     drawTips(currentHandle: Handle) {
-        this.tipFrom.text = this.settings.getValueFrom();
-        this.tipTo.text = this.settings.getValueTo();
+        this.tipFrom.setText(this.settings.getValueFrom());
+        this.tipTo.setText(this.settings.getValueTo());
 
         this.tipFrom.setPos(this.handleFrom.getPos() + (this.handleFrom.getSize() - this.tipFrom.getSize()) / 2);
         this.tipTo.setPos(this.handleTo.getPos() + (this.handleTo.getSize() - this.tipTo.getSize()) / 2);
@@ -310,7 +310,7 @@ class TRSView {
             const distanceBetweenHandles = this.tipTo.getPos() - this.tipFrom.getPos() - this.tipFrom.getSize();
             if (distanceBetweenHandles < 1) {
                 this.tipTo.hide();
-                this.tipFrom.text = this.tipFrom.text + '-' + this.tipTo.text;
+                this.tipFrom.setText(this.tipFrom.getText() + '-' + this.tipTo.getText());
                 this.tipFrom.setPos(
                     this.handleFrom.getPos() +
                     (this.handleTo.getPos() - this.handleFrom.getPos() + this.handleTo.getSize() - this.tipFrom.getSize()) / 2);
@@ -321,7 +321,7 @@ class TRSView {
                 (!this.settings.getIsHaveItems() && this.settings.getValueFrom() == this.settings.getValueTo()) ||
                 (this.settings.getIsHaveItems() && this.settings.items.indexFrom == this.settings.items.indexTo)
             ) {
-                this.tipFrom.text = this.settings.getValueFrom();
+                this.tipFrom.setText(this.settings.getValueFrom());
                 this.tipFrom.setPos(this.handleFrom.getPos() + (this.handleFrom.getSize() - this.tipFrom.getSize()) / 2);
             }
         }
