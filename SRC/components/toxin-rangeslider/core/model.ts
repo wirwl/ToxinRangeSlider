@@ -23,7 +23,7 @@ class TRSModel {
     }
 
     validate() {
-        if (this.settings.isHaveItems) {
+        if (this.settings.getIsHaveItems()) {
             if (this.settings.items.indexTo > this.settings.items.values.length - 1)
                 this.settings.items.indexTo = this.settings.items.values.length - 1;
             if (this.settings.isTwoHandles) {
@@ -32,13 +32,13 @@ class TRSModel {
                 if (this.settings.items.indexFrom < 0) this.settings.items.indexFrom = 0;
             }
         } else {
-            const size = (this.settings.maxValue as number) - (this.settings.minValue as number);
+            const size = (this.settings.getMaxValue() as number) - (this.settings.getMinValue() as number);
             if (this.settings.stepValue < 0) this.settings.stepValue = 0;
             if (this.settings.stepValue > size) this.settings.stepValue = size;
-            if (this.settings.valueTo > this.settings.maxValue) this.settings.valueTo = this.settings.maxValue;
+            if (this.settings.getValueTo() > this.settings.getMaxValue()) this.settings.setValueTo(this.settings.getMaxValue());
             if (this.settings.isTwoHandles) {
-                if (this.settings.valueFrom > this.settings.valueTo) this.settings.valueFrom = this.settings.valueTo;
-                if (this.settings.valueFrom < this.settings.minValue) this.settings.valueFrom = this.settings.minValue;
+                if (this.settings.getValueFrom() > this.settings.getValueTo()) this.settings.setValueFrom(this.settings.getValueTo());
+                if (this.settings.getValueFrom() < this.settings.getMinValue()) this.settings.setValueFrom(this.settings.getMinValue());
             }
         }
     }

@@ -85,15 +85,15 @@ class Panel {
     private handleInputsFocusout(event: JQuery.FocusOutEvent) {
         const $element = $(event.target);
         if ($element.parent().parent().hasClass('js-panel__input-min-value'))
-            $element.val(this.rangeslider.data.minValue);
+            $element.val(this.rangeslider.data.getMinValue());
         if ($element.parent().parent().hasClass('js-panel__input-max-value'))
-            $element.val(this.rangeslider.data.maxValue);
+            $element.val(this.rangeslider.data.getMaxValue());
         if ($element.parent().parent().hasClass('js-panel__input-step-value'))
             $element.val(this.rangeslider.data.stepValue);
         if ($element.parent().parent().hasClass('js-panel__input-value-from'))
-            $element.val(this.rangeslider.data.valueFrom);
+            $element.val(this.rangeslider.data.getValueFrom());
         if ($element.parent().parent().hasClass('js-panel__input-value-to'))
-            $element.val(this.rangeslider.data.valueTo);
+            $element.val(this.rangeslider.data.getValueTo());
         if ($element.parent().parent().hasClass('js-panel__input-index-from'))
             $element.val(this.rangeslider.data.items.indexFrom);
         if ($element.parent().parent().hasClass('js-panel__input-index-to'))
@@ -144,7 +144,7 @@ class Panel {
             const indexTo = parseInt(this.$indexTo.val() as string);
             if (indexFrom > indexTo) el.value = indexTo.toString();
             this.rangeslider.update({ items: { indexFrom: parseInt(el.value) } });
-            this.$valueFrom.val(this.rangeslider.data.valueFrom);
+            this.$valueFrom.val(this.rangeslider.data.getValueFrom());
         }
     };
 
@@ -157,7 +157,7 @@ class Panel {
             if (indexTo < indexFrom) el.value = indexFrom.toString();
             if (indexTo > maxIndex) el.value = maxIndex.toString();
             this.rangeslider.update({ items: { indexTo: parseInt(el.value) } });
-            this.$valueTo.val(this.rangeslider.data.valueTo);
+            this.$valueTo.val(this.rangeslider.data.getValueTo());
         }
     };
 
@@ -165,17 +165,17 @@ class Panel {
         const el = event.target as HTMLInputElement;
         let valueFrom = parseInt(el.value);
         if (!isNaN(valueFrom)) {
-            if (this.rangeslider.data.isHaveItems) {
+            if (this.rangeslider.data.getIsHaveItems()) {
                 const indexFrom = this.rangeslider.data.findIndexByItem(el.value);
-                if (indexFrom > this.rangeslider.data.items.indexTo) el.value = this.rangeslider.data.valueTo as string;
+                if (indexFrom > this.rangeslider.data.items.indexTo) el.value = this.rangeslider.data.getValueTo() as string;
             } else {
                 el.value = valueFrom.toString();
-                if (valueFrom < this.rangeslider.data.minValue) el.value = this.rangeslider.data.minValue as string;
-                if (parseInt(el.value) > this.rangeslider.data.valueTo)
-                    el.value = this.rangeslider.data.valueTo as string;
+                if (valueFrom < this.rangeslider.data.getMinValue()) el.value = this.rangeslider.data.getMinValue() as string;
+                if (parseInt(el.value) > this.rangeslider.data.getValueTo())
+                    el.value = this.rangeslider.data.getValueTo() as string;
             }
             this.rangeslider.update({ valueFrom: el.value });
-            if (this.rangeslider.data.isHaveItems) this.$indexFrom.val(this.rangeslider.data.items.indexFrom);
+            if (this.rangeslider.data.getIsHaveItems()) this.$indexFrom.val(this.rangeslider.data.items.indexFrom);
         }
     };
 
@@ -183,21 +183,21 @@ class Panel {
         const el = event.target as HTMLInputElement;
         let valueTo = parseInt(el.value);
         if (!isNaN(valueTo)) {
-            if (this.rangeslider.data.isHaveItems) {
+            if (this.rangeslider.data.getIsHaveItems()) {
                 const indexTo = this.rangeslider.data.findIndexByItem(el.value);
-                if (indexTo == -1) el.value = this.rangeslider.data.valueTo as string;
-                if (indexTo < this.rangeslider.data.items.indexFrom) el.value = this.rangeslider.data.valueFrom as string;
+                if (indexTo == -1) el.value = this.rangeslider.data.getValueTo() as string;
+                if (indexTo < this.rangeslider.data.items.indexFrom) el.value = this.rangeslider.data.getValueFrom() as string;
             } else {
                 el.value = valueTo.toString();
-                if (this.rangeslider.data.isTwoHandles && valueTo < this.rangeslider.data.valueFrom)
-                    el.value = this.rangeslider.data.valueFrom as string;
-                if (!this.rangeslider.data.isTwoHandles && valueTo < this.rangeslider.data.minValue)
-                    el.value = this.rangeslider.data.minValue as string;
-                if (valueTo > this.rangeslider.data.maxValue) el.value = this.rangeslider.data.maxValue as string;
+                if (this.rangeslider.data.isTwoHandles && valueTo < this.rangeslider.data.getValueFrom())
+                    el.value = this.rangeslider.data.getValueFrom() as string;
+                if (!this.rangeslider.data.isTwoHandles && valueTo < this.rangeslider.data.getMinValue())
+                    el.value = this.rangeslider.data.getMinValue() as string;
+                if (valueTo > this.rangeslider.data.getMaxValue()) el.value = this.rangeslider.data.getMaxValue() as string;
             }
-            if (!this.rangeslider.data.isHaveItems && !isNaN(parseInt(el.value))) {
+            if (!this.rangeslider.data.getIsHaveItems() && !isNaN(parseInt(el.value))) {
                 this.rangeslider.update({ valueTo: el.value });
-                if (this.rangeslider.data.isHaveItems) this.$indexTo.val(this.rangeslider.data.items.indexTo);
+                if (this.rangeslider.data.getIsHaveItems()) this.$indexTo.val(this.rangeslider.data.items.indexTo);
             }
         }
     };
@@ -255,10 +255,10 @@ class Panel {
     };
 
     private updatePanelValues() {
-        this.$minValue.val(this.rangeslider.data.minValue);
-        this.$maxValue.val(this.rangeslider.data.maxValue);
-        this.$valueFrom.val(this.rangeslider.data.valueFrom);
-        this.$valueTo.val(this.rangeslider.data.valueTo);
+        this.$minValue.val(this.rangeslider.data.getMinValue());
+        this.$maxValue.val(this.rangeslider.data.getMaxValue());
+        this.$valueFrom.val(this.rangeslider.data.getValueFrom());
+        this.$valueTo.val(this.rangeslider.data.getValueTo());
         if (this.select.length > 1) {
             this.$indexFrom.prop('disabled', false);
             this.$indexTo.prop('disabled', false);
@@ -271,7 +271,7 @@ class Panel {
     }
 
     private getRangeLength(): number {
-        return (this.rangeslider.data.maxValue as number) - (this.rangeslider.data.minValue as number);
+        return (this.rangeslider.data.getMaxValue() as number) - (this.rangeslider.data.getMinValue() as number);
     }
 
     private isStepValid(): boolean {
@@ -293,11 +293,11 @@ class Panel {
         this.rangeslider.update({ isTwoHandles: checkbox.checked });
         if (!checkbox.checked) {
             this.$valueFrom.prop('disabled', true);
-            if (this.rangeslider.data.isHaveItems) this.$indexFrom.prop('disabled', true);
+            if (this.rangeslider.data.getIsHaveItems()) this.$indexFrom.prop('disabled', true);
         } else {
             this.$valueFrom.prop('disabled', false);
-            if (this.rangeslider.data.isHaveItems) this.$indexFrom.prop('disabled', false);
-            if (!this.rangeslider.data.isHaveItems) {
+            if (this.rangeslider.data.getIsHaveItems()) this.$indexFrom.prop('disabled', false);
+            if (!this.rangeslider.data.getIsHaveItems()) {
                 const minValue: number = parseInt(this.$minValue.val() as string);
                 const maxValue: number = parseInt(this.$maxValue.val() as string);
                 const valueFrom: number = parseInt(this.$valueFrom.val() as string);

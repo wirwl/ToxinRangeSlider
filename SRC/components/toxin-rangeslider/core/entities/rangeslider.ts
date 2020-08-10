@@ -23,7 +23,7 @@ class Rangeslider extends TRSElement {
         this._isVertical = value;
         value ? this.el.addClass('rangeslider_is-vertical') : this.el.removeClass('rangeslider_is-vertical');
         this.controls.forEach(val => {
-            val.isVertical = value;
+            val.setIsVertical(value);
             val.refresh();
         });
     }
