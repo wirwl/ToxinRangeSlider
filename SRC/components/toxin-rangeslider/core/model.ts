@@ -40,10 +40,13 @@ class TRSModel {
             const size = (this.settings.getMaxValue() as number) - (this.settings.getMinValue() as number);
             if (stepValue < 0) stepValue = 0;
             if (stepValue > size) stepValue = size;
-            if (this.settings.getValueTo() > this.settings.getMaxValue()) this.settings.setValueTo(this.settings.getMaxValue());
+            if (this.settings.getValueTo() > this.settings.getMaxValue())
+                this.settings.setValueTo(this.settings.getMaxValue());
             if (isTwoHandles) {
-                if (this.settings.getValueFrom() > this.settings.getValueTo()) this.settings.setValueFrom(this.settings.getValueTo());
-                if (this.settings.getValueFrom() < this.settings.getMinValue()) this.settings.setValueFrom(this.settings.getMinValue());
+                if (this.settings.getValueFrom() > this.settings.getValueTo())
+                    this.settings.setValueFrom(this.settings.getValueTo());
+                if (this.settings.getValueFrom() < this.settings.getMinValue())
+                    this.settings.setValueFrom(this.settings.getMinValue());
             }
         }
     }

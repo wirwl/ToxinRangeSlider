@@ -75,24 +75,29 @@ class TRSView {
 
     drawSlider(os: CRangeSliderOptions, ns: CRangeSliderOptions, isFirstDraw = false) {
         this.settings.extend(ns);
+        const {
+            isVertical, isTip, isTwoHandles,
+            items: { indexFrom, indexTo, values }            
+        } = this.settings;
 
         if (ns.isVertical != os?.isVertical) {
-            this.rangeslider.setIsVertical(ns.isVertical);
+            this.rangeslider.setIsVertical(isVertical);
             isFirstDraw = true;
         }
 
         if (isFirstDraw || ns.isTwoHandles != os?.isTwoHandles) {
-            this.rangeslider.setIsInterval(ns.isTwoHandles);
+            this.rangeslider.setIsInterval(isTwoHandles);
             isFirstDraw = true;
         }
+
         if (isFirstDraw || ns.isTip != os?.isTip)
-            if (ns.isTip) {
-                if (ns.isTwoHandles) this.tipFrom.show();
+            if (isTip) {
+                if (isTwoHandles) this.tipFrom.show();
                 this.tipTo.show();
                 this.tipMin.show();
                 this.tipMax.show();
             } else {
-                if (ns.isTwoHandles) this.tipFrom.hide();
+                if (isTwoHandles) this.tipFrom.hide();
                 this.tipTo.hide();
                 this.tipMin.hide();
                 this.tipMax.hide();
@@ -101,22 +106,23 @@ class TRSView {
         if (isFirstDraw || this.settings.getMinValue() != os?.getMinValue()) {
             this.tipMin.setText(this.settings.getMinValue());
         }
+
         if (isFirstDraw || this.settings.getMaxValue() != os?.getMaxValue()) {
             this.tipMax.setText(this.settings.getMaxValue());
         }
 
         const isItemValuesChanged = !this.isEqualArrays(os?.items?.values, ns.items?.values);
         if (isFirstDraw || isItemValuesChanged) {
-            if (this.settings.items?.values) {
-                const count = this.settings.items.values.length;
+            if (values) {
+                const count = values.length;
                 if (count > 1) {
-                    this.tipMin.setText(this.settings.items.values[0]);
-                    this.tipMax.setText(this.settings.items.values[count - 1]);
+                    this.tipMin.setText(values[0]);
+                    this.tipMax.setText(values[count - 1]);
                 }
             }
         }
 
-        if (ns.isTwoHandles)
+        if (isTwoHandles)
             if (
                 isFirstDraw ||
                 ns.getValueFrom() != os.getValueFrom() ||
@@ -125,7 +131,7 @@ class TRSView {
                 isItemValuesChanged
             ) {
                 const val = this.settings.getIsHaveItems()
-                    ? this.settings.items.indexFrom
+                    ? indexFrom
                     : (this.settings.getValueFrom() as number);
                 const posXWithOutStep = this.convertRelativeValueToPixelValue(val);
                 const posXWithStep = this.getSteppedPos(posXWithOutStep);
@@ -139,24 +145,25 @@ class TRSView {
             ns.getMaxValue() != os?.getMaxValue() ||
             isItemValuesChanged
         ) {
-            const val = this.settings.getIsHaveItems() ? this.settings.items.indexTo : (this.settings.getValueTo() as number);
+            const val = this.settings.getIsHaveItems() ? indexTo : (this.settings.getValueTo() as number);
             const posXWithOutStep = this.convertRelativeValueToPixelValue(val);
             const posXWithStep = this.getSteppedPos(posXWithOutStep);
             this.moveHandle(this.handleTo, posXWithStep == null ? posXWithOutStep : posXWithStep);
         }
+
         if (this.settings.getIsHaveItems()) {
             const pxLength = this.line.getSize() - this.offsetFrom - this.offsetTo;
-            const pxStep = pxLength / (this.settings.items.values.length - 1);
+            const pxStep = pxLength / (values.length - 1);
             if (
-                this.settings.isTwoHandles &&
+                isTwoHandles &&
                 (isFirstDraw || (os && os.items && ns.items.indexFrom != os.items.indexFrom))
             ) {
-                const newPos = ns.items.indexFrom * pxStep;
+                const newPos = indexFrom * pxStep;
                 this.moveHandle(this.handleFrom, newPos);
             }
 
             if (isFirstDraw || (os && os.items && ns.items.indexTo != os.items.indexTo)) {
-                const newPos = ns.items.indexTo * pxStep;
+                const newPos = indexTo * pxStep;
                 this.moveHandle(this.handleTo, newPos);
             }
         }
