@@ -5,11 +5,11 @@ class CRangeSliderOptions implements RangeSliderOptions {
     isTip?: boolean;
 
     private _minValue?: number;
-    public getMinValue(): number | string {
+    getMinValue(): number | string {
         return this.getIsHaveItems() ? this.items.values[0] : this._minValue;
     }
 
-    public setMinValue(value: number | string) {
+    setMinValue(value: number | string) {
         if (!this.getIsHaveItems()) this._minValue = parseFloat(value.toString());
     }
 

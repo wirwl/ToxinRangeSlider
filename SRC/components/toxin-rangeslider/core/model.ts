@@ -13,7 +13,7 @@ class TRSModel {
         valueFrom: 0,
         valueTo: 1000,
         items: null,
-        onHandlePositionChange(this: HandleMovingResult): void {},
+        onHandlePositionChange(this: HandleMovingResult): void { },
     };
 
     constructor(options: RangeSliderOptions) {
@@ -23,20 +23,25 @@ class TRSModel {
     }
 
     validate() {
+        let {
+            items: { indexFrom, indexTo, values },
+            stepValue, isTwoHandles
+        } = this.settings;
+
         if (this.settings.getIsHaveItems()) {
-            if (this.settings.items.indexTo > this.settings.items.values.length - 1)
-                this.settings.items.indexTo = this.settings.items.values.length - 1;
-            if (this.settings.isTwoHandles) {
-                if (this.settings.items.indexFrom > this.settings.items.indexTo)
-                    this.settings.items.indexFrom = this.settings.items.indexTo;
-                if (this.settings.items.indexFrom < 0) this.settings.items.indexFrom = 0;
+            if (indexTo > values.length - 1)
+                indexTo = values.length - 1;
+            if (isTwoHandles) {
+                if (indexFrom > indexTo)
+                    indexFrom = indexTo;
+                if (indexFrom < 0) indexFrom = 0;
             }
         } else {
             const size = (this.settings.getMaxValue() as number) - (this.settings.getMinValue() as number);
-            if (this.settings.stepValue < 0) this.settings.stepValue = 0;
-            if (this.settings.stepValue > size) this.settings.stepValue = size;
+            if (stepValue < 0) stepValue = 0;
+            if (stepValue > size) stepValue = size;
             if (this.settings.getValueTo() > this.settings.getMaxValue()) this.settings.setValueTo(this.settings.getMaxValue());
-            if (this.settings.isTwoHandles) {
+            if (isTwoHandles) {
                 if (this.settings.getValueFrom() > this.settings.getValueTo()) this.settings.setValueFrom(this.settings.getValueTo());
                 if (this.settings.getValueFrom() < this.settings.getMinValue()) this.settings.setValueFrom(this.settings.getMinValue());
             }
