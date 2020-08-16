@@ -89,7 +89,9 @@ class CRangeSliderOptions implements RangeSliderOptions {
         if (typeof minValue !== 'undefined')
             if (!isUsingItemsValues) this._minValue = parseFloat(minValue.toString());
         if (typeof maxValue !== 'undefined')
-            if (!isUsingItemsValues) this._maxValue = parseFloat(maxValue.toString());
+            if (!isUsingItemsValues) 
+            //this._maxValue = parseFloat(maxValue.toString());
+            this.setMaxValue(maxValue);
         if (typeof o.stepValue !== 'undefined') this.stepValue = o.stepValue;
         if (typeof valueFrom !== 'undefined')
             if (!isUsingItemsValues) this._valueFrom = parseFloat(valueFrom.toString());

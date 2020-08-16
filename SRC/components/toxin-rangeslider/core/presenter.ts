@@ -3,7 +3,7 @@ import TRSView from './view';
 import TRSModel from './model';
 import Handle from './entities/handle';
 import CRangeSliderOptions from './entities/crangeslideroptions';
-const $ = require('../../../jquery/dist/jquery');
+const $ = require('jquery');
 
 class TRSPresenter {
     view: TRSView;
@@ -15,8 +15,8 @@ class TRSPresenter {
         this.view.onHandlePositionUpdate = this.onHandlePositionUpdate.bind(this);
         this.init();
     }
-    init() {
-        $.extend(true, this.model.settings, this.view.data);
+    init() {        
+        this.model.settings.extend(this.view.data);
         this.model.validate();
         this.view.drawSlider(null, this.model.settings, true);
     }

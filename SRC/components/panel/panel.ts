@@ -241,7 +241,8 @@ class Panel {
             if (toValue > maxValue) this.$valueTo.val(maxValue);
             if (this.rangeslider.data.isTwoHandles && fromValue > maxValue) this.$valueFrom.val(minValue);
 
-            if (!this.isStepValid()) this.$stepValue.val(this.getRangeLength().toString());
+            if (!this.isStepValid()) 
+                this.$stepValue.val(this.getRangeLength().toString());
             this.rangeslider.update({
                 maxValue: el.value,
                 valueFrom: this.$valueFrom.val() as number,
@@ -271,7 +272,7 @@ class Panel {
     }
 
     private getRangeLength(): number {
-        return (this.rangeslider.data.getMaxValue() as number) - (this.rangeslider.data.getMinValue() as number);
+        return (this.$maxValue.val() as number) - (this.$minValue.val() as number);        
     }
 
     private isStepValid(): boolean {
