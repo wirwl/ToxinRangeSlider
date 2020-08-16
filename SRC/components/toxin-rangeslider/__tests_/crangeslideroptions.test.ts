@@ -7,7 +7,7 @@ beforeAll(() => {
         isVertical: false,
         isTwoHandles: true,
         isTip: true,
-        _minValue: 0,
+        minValue: 0,
         maxValue: 1220,
         stepValue: 0,
         valueFrom: 0,

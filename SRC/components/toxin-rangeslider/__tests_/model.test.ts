@@ -33,7 +33,7 @@ describe('Check correctness of validate() function, that correct invalid values'
             expect(model.settings.stepValue).toBe(0);
         });
         test('Check if stepValue field value is greater than length of rangeslider', () => {
-            model.settings.extend({ items: { values: [] }, _minValue: 100, maxValue: 1000, stepValue: 3000 });
+            model.settings.extend({ items: { values: [] }, minValue: 100, maxValue: 1000, stepValue: 3000 });
             model.validate();
             expect(model.settings.stepValue).toBe(900);
         });
@@ -49,7 +49,7 @@ describe('Check correctness of validate() function, that correct invalid values'
                 expect(model.settings.getValueFrom()).toBe(1234);
             });
             test('Check if valueFrom field value is less than minValue field value ', () => {
-                model.settings.extend({ items: { values: [] }, valueFrom: 2000, _minValue: 3000, maxValue: 5000 });
+                model.settings.extend({ items: { values: [] }, valueFrom: 2000, minValue: 3000, maxValue: 5000 });
                 model.validate();
                 expect(model.settings.getValueFrom()).toBe(3000);
             });

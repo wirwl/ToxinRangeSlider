@@ -4,21 +4,21 @@ class CRangeSliderOptions implements RangeSliderOptions {
     isTwoHandles?: boolean;
     isTip?: boolean;
 
-    private _minValue?: number;
+    minValue?: number;
     getMinValue(): number | string {
-        return this.getIsHaveItems() ? this.items.values[0] : this._minValue;
+        return this.getIsHaveItems() ? this.items.values[0] : this.minValue;
     }
 
     setMinValue(value: number | string) {
-        if (!this.getIsHaveItems()) this._minValue = parseFloat(value.toString());
+        if (!this.getIsHaveItems()) this.minValue = parseFloat(value.toString());
     }
 
-    private _maxValue?: number;
+    maxValue?: number;
     getMaxValue(): number | string {
-        return this.getIsHaveItems() ? this.items.values[this.items.values.length - 1] : this._maxValue;
+        return this.getIsHaveItems() ? this.items.values[this.items.values.length - 1] : this.maxValue;
     }
     setMaxValue(value: number | string) {
-        if (!this.getIsHaveItems()) this._maxValue = parseFloat(value.toString());
+        if (!this.getIsHaveItems()) this.maxValue = parseFloat(value.toString());
     }
 
     stepValue?: number;
@@ -27,30 +27,30 @@ class CRangeSliderOptions implements RangeSliderOptions {
     }
     setIsHaveItems(value: boolean) { }
 
-    private _valueFrom?: number;
+    valueFrom?: number;
     getValueFrom(): number | string {
         if (this.items?.values?.length > 1) {
             return this.items.values[this.items.indexFrom];
-        } else return this._valueFrom;
+        } else return this.valueFrom;
     }
     setValueFrom(value: number | string) {
         if (this.items?.values?.length > 1) {
             const newIndex = this.findIndexByItem(value);
             if (newIndex > -1) this.items.indexFrom = newIndex;
-        } else this._valueFrom = parseFloat(value.toString());
+        } else this.valueFrom = parseFloat(value.toString());
     }
 
-    private _valueTo?: number;
+    valueTo?: number;
     getValueTo(): number | string {
         if (this.items?.values?.length > 1) {
             return this.items.values[this.items.indexTo];
-        } else return this._valueTo;
+        } else return this.valueTo;
     }
     setValueTo(value: number | string) {
         if (this.getIsHaveItems()) {
             const newIndex = this.findIndexByItem(value);
             if (newIndex > -1) this.items.indexTo = newIndex;
-        } else this._valueTo = parseFloat(value.toString());
+        } else this.valueTo = parseFloat(value.toString());
     }
 
     items: RangeSliderItems;
@@ -67,37 +67,38 @@ class CRangeSliderOptions implements RangeSliderOptions {
     }
 
     extend(o: RangeSliderOptions | CRangeSliderOptions) {
-        if (!o) return;
+        if (!o) return;        
+        const {
+            items,            
+            isVertical, isTwoHandles, isTip,
+            minValue, maxValue, valueFrom, valueTo,
+            stepValue
+        } = o;
+        const {
+            indexFrom, indexTo, values
+        } = items || {undefined};
 
-        const minValue = ((o as CRangeSliderOptions).getMinValue) ? (o as CRangeSliderOptions).getMinValue() : (o as RangeSliderOptions).minValue;
-        const maxValue = ((o as CRangeSliderOptions).getMaxValue) ? (o as CRangeSliderOptions).getMaxValue() : (o as RangeSliderOptions).maxValue;
-        const valueFrom = ((o as CRangeSliderOptions).getValueFrom) ? (o as CRangeSliderOptions).getValueFrom() : (o as RangeSliderOptions).valueFrom;
-        const valueTo = ((o as CRangeSliderOptions).getValueTo) ? (o as CRangeSliderOptions).getValueTo() : (o as RangeSliderOptions).valueTo;
-        
-
-        if (typeof o.items !== 'undefined') {
-            if (typeof o.items?.indexFrom !== 'undefined') this.items.indexFrom = o.items.indexFrom;
-            if (typeof o.items?.indexTo !== 'undefined') this.items.indexTo = o.items.indexTo;
-            if (typeof o.items?.values !== 'undefined') this.items.values = [...o.items.values];
+        if (typeof items !== 'undefined') {
+            if (typeof indexFrom !== 'undefined') this.items.indexFrom = indexFrom;
+            if (typeof indexTo !== 'undefined') this.items.indexTo = indexTo;
+            if (typeof values !== 'undefined') this.items.values = [...values];
         }
 
         const isUsingItemsValues = this.items && this.items.values && this.items.values.length > 1;
 
-        if (typeof o.isVertical !== 'undefined') this.isVertical = o.isVertical;
-        if (typeof o.isTwoHandles !== 'undefined') this.isTwoHandles = o.isTwoHandles;
-        if (typeof o.isTip !== 'undefined') this.isTip = o.isTip;
+        if (typeof isVertical !== 'undefined') this.isVertical = isVertical;
+        if (typeof isTwoHandles !== 'undefined') this.isTwoHandles = isTwoHandles;
+        if (typeof isTip !== 'undefined') this.isTip = isTip;
         if (typeof minValue !== 'undefined')
-            if (!isUsingItemsValues) this._minValue = parseFloat(minValue.toString());
+            if (!isUsingItemsValues) this.minValue = parseFloat(minValue.toString());
         if (typeof maxValue !== 'undefined')
-            if (!isUsingItemsValues) 
-            //this._maxValue = parseFloat(maxValue.toString());
-            this.setMaxValue(maxValue);
-        if (typeof o.stepValue !== 'undefined') this.stepValue = o.stepValue;
+            if (!isUsingItemsValues) this.maxValue = parseFloat(maxValue.toString());
+        if (typeof stepValue !== 'undefined') this.stepValue = stepValue;
         if (typeof valueFrom !== 'undefined')
-            if (!isUsingItemsValues) this._valueFrom = parseFloat(valueFrom.toString());
+            if (!isUsingItemsValues) this.valueFrom = parseFloat(valueFrom.toString());
             else this.setValueFrom(valueFrom);
         if (typeof valueTo !== 'undefined')
-            if (!isUsingItemsValues) this._valueTo = parseFloat(valueTo.toString());
+            if (!isUsingItemsValues) this.valueTo = parseFloat(valueTo.toString());
             else this.setValueTo(valueTo);
         if (typeof o.onHandlePositionChange !== 'undefined') this.onHandlePositionChange = o.onHandlePositionChange;
     }
