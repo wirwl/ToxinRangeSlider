@@ -1,4 +1,4 @@
-mixin checkbox(data)
+mixin checkbox({isChecked, text})
   label.checkbox
-    input(type='checkbox' checked = data.isChecked).checkbox__input.js-checkbox__input
-    span.checkbox__text #{data.text}
+    input(type='checkbox' checked = isChecked).checkbox__input.js-checkbox__input
+    span.checkbox__text #{text}
