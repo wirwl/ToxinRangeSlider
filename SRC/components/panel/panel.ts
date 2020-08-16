@@ -131,8 +131,7 @@ class Panel {
         this.$stepValue.prop('disabled', isUsingItems);
         const options = $.map($selectOptions, function (option: HTMLOptionElement) {
             return option.value;
-        });
-        console.log(options);
+        });        
         this.rangeslider.update({ items: { values: options } });
         this.updatePanelValues();
     };

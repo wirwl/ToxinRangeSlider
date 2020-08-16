@@ -9,16 +9,16 @@ class TRSView {
     private offsetFrom: number;
     private offsetTo: number;
     private htmlTemplate =
-        "<div class='rangeslider'>" +
-        "<div class='rangeslider__tip-min'>00</div>" +
-        "<div class='rangeslider__tip rangeslider__tip-from'>23</div>" +
-        "<div class='rangeslider__tip rangeslider__tip-to'>456</div>" +
-        "<div class='rangeslider__tip-max'>99</div>" +
-        "<div class='rangeslider__line'></div>" +
-        "<div class='rangeslider__line-selected'></div>" +
-        "<div class='rangeslider__handle rangeslider__handle-from'></div>" +
-        "<div class='rangeslider__handle rangeslider__handle-to'></div>" +
-        '</div>';
+        `<div class='rangeslider'>
+        <div class='rangeslider__tip-min'>00</div>
+        <div class='rangeslider__tip rangeslider__tip-from'>23</div>
+        <div class='rangeslider__tip rangeslider__tip-to'>456</div>
+        <div class='rangeslider__tip-max'>99</div>
+        <div class='rangeslider__line'></div>
+        <div class='rangeslider__line-selected'></div>
+        <div class='rangeslider__handle rangeslider__handle-from'></div>
+        <div class='rangeslider__handle rangeslider__handle-to'></div>
+        </div>`;
     el: JQuery<Element>;
     rangeslider: Rangeslider;
     list: HTMLUListElement | null;
@@ -292,10 +292,10 @@ class TRSView {
     drawLineSelected(currentHandle: Handle) {
         if (this.settings.isTwoHandles) {
             if (currentHandle.is(this.handleFrom)) this.lineSelected.setPos(this.handleFrom.getPos() + this.offsetFrom);
-            this.lineSelected.setSize (
+            this.lineSelected.setSize(
                 this.handleTo.getPos() - this.handleFrom.getPos() + this.handleTo.getSize() - this.offsetFrom - this.offsetTo + 1);
         } else {
-            this.lineSelected.setSize ( currentHandle.getPos() + currentHandle.getSize() - this.offsetTo + 1);
+            this.lineSelected.setSize(currentHandle.getPos() + currentHandle.getSize() - this.offsetTo + 1);
         }
     }
 
