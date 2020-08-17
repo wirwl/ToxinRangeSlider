@@ -206,8 +206,8 @@ module.exports = ((env, argv) => {
     var pluginCFG = merge({}, common, {
         entry: {
             plugin: [
-                './src/components/toxin-rangeslider/toxin-rangeslider.ts',
-                './src/components/toxin-rangeslider/toxin-rangeslider.less'
+                './SRC/components/toxin-rangeslider/toxin-rangeslider.ts',
+                './SRC/components/toxin-rangeslider/toxin-rangeslider.less'
             ]
         },
         output: {
