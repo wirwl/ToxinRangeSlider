@@ -29,12 +29,12 @@ class CRangeSliderOptions implements RangeSliderOptions {
 
     valueFrom?: number;
     getValueFrom(): number | string {
-        if (this.items?.values?.length > 1) {
+        if (this.getIsHaveItems())
             return this.items.values[this.items.indexFrom];
-        } else return this.valueFrom;
+        return this.valueFrom;
     }
     setValueFrom(value: number | string) {
-        if (this.items?.values?.length > 1) {
+        if (this.getIsHaveItems()) {
             const newIndex = this.findIndexByItem(value);
             if (newIndex > -1) this.items.indexFrom = newIndex;
         } else this.valueFrom = parseFloat(value.toString());
@@ -42,9 +42,9 @@ class CRangeSliderOptions implements RangeSliderOptions {
 
     valueTo?: number;
     getValueTo(): number | string {
-        if (this.items?.values?.length > 1) {
+        if (this.getIsHaveItems())
             return this.items.values[this.items.indexTo];
-        } else return this.valueTo;
+        return this.valueTo;
     }
     setValueTo(value: number | string) {
         if (this.getIsHaveItems()) {
@@ -67,16 +67,16 @@ class CRangeSliderOptions implements RangeSliderOptions {
     }
 
     extend(o: RangeSliderOptions | CRangeSliderOptions) {
-        if (!o) return;        
+        if (!o) return;
         const {
-            items,            
+            items,
             isVertical, isTwoHandles, isTip,
             minValue, maxValue, valueFrom, valueTo,
             stepValue
         } = o;
         const {
             indexFrom, indexTo, values
-        } = items || {undefined};
+        } = items || { undefined };
 
         if (typeof items !== 'undefined') {
             if (typeof indexFrom !== 'undefined') this.items.indexFrom = indexFrom;
