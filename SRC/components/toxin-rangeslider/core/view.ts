@@ -125,9 +125,9 @@ class TRSView {
         if (isTwoHandles)
             if (
                 isFirstDraw ||
-                ns.getValueFrom() != os.getValueFrom() ||
-                ns.getMinValue() != os.getMinValue() ||
-                ns.getMaxValue() != os.getMaxValue() ||
+                (os!=null && ns.getValueFrom() != os!.getValueFrom()) ||
+                (os!=null && ns.getMinValue() != os!.getMinValue()) ||
+                (os!=null && ns.getMaxValue() != os!.getMaxValue()) ||
                 isItemValuesChanged
             ) {
                 const val = this.settings.getIsHaveItems()

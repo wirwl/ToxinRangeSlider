@@ -1,2 +1,2 @@
-global.jQuery = require('./SRC/jquery/dist/jquery');
+global.jQuery = require('jquery');
 global.$ = global.jQuery;
