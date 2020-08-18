@@ -1,2 +1,3 @@
-import TRSElement from '../entities/element';
+import TRSElement from './element';
+
 export default class Line extends TRSElement {}

@@ -1,113 +1,134 @@
 class TRSElement {
-    el: JQuery<HTMLElement>;
+  el: JQuery<HTMLElement>;
 
-    protected _isVertical = false;
-    getIsVertical(): boolean {
-        return this._isVertical;
-    }
-    setIsVertical(value: boolean) {
-        this._isVertical = value;
-        this.el.removeAttr('style');
-    }
+  protected _isVertical = false;
 
-    protected _x: number;
-    getX(): number {
-        return this._x;
-    }
-    setX(value: number) {
-        this._x = value;
-        this.el.css('left', value);
-    }
+  getIsVertical(): boolean {
+    return this._isVertical;
+  }
 
-    protected _right: number;
-    getRight(): number {
-        return this._right;
-    }
-    setRight(value: number) {
-        this._right = value;
-        this.el.css('right', value);
-    }
+  setIsVertical(value: boolean) {
+    this._isVertical = value;
+    this.el.removeAttr('style');
+  }
 
-    protected _bottom: number;
-    getBottom(): number {
-        return this._bottom;
-    }
-    setBottom(value: number) {
-        this._bottom = value;
-        this.el.css('bottom', value);
-    }
+  protected _x: number;
 
-    private _y: number;
-    getY(): number {
-        return this._y;
-    }
-    setY(value: number) {
-        this._y = value;
-        this.el.css('top', value);
-    }
+  getX(): number {
+    return this._x;
+  }
 
-    getOffsetTop(): number {
-        return this.el.offset().top;
-    }
+  setX(value: number) {
+    this._x = value;
+    this.el.css('left', value);
+  }
 
-    getOffsetLeft(): number {
-        return this.el.offset().left;
-    }
+  protected _right: number;
 
-    getOffset(): number {
-        return this.getIsVertical() ? this.getOffsetTop() : this.getOffsetLeft();
-    }
+  getRight(): number {
+    return this._right;
+  }
 
-    getPos(): number {
-        return this.getIsVertical() ? this.getY() : this.getX();
-    }
-    setPos(value: number) {
-        this.getIsVertical() ? (this.setY(value)) : (this.setX(value));
-    }
+  setRight(value: number) {
+    this._right = value;
+    this.el.css('right', value);
+  }
 
-    protected _width: number;
-    getWidth(): number {
-        return this._width;
-    }
-    setWidth(value: number) {
-        this._width = value;
-        this.el.css('width', value);
-    }
+  protected _bottom: number;
 
-    protected _height: number;
-    getHeight(): number {
-        return this._height;
-    }
-    setHeight(value: number) {
-        this._height = value;
-        this.el.css('height', value);
-    }
+  getBottom(): number {
+    return this._bottom;
+  }
 
-    getSize(): number {
-        return this.getIsVertical() ? this.getHeight() : this.getWidth();
-    }
-    setSize(value: number) {
-        this.getIsVertical() ? (this.setHeight(value)) : (this.setWidth(value));
-    }
+  setBottom(value: number) {
+    this._bottom = value;
+    this.el.css('bottom', value);
+  }
 
-    constructor(el: JQuery<HTMLElement>) {
-        this.el = el;
-        this.refresh();
-    }
-    refresh() {
-        this._x = parseFloat(this.el.css('left'));
-        this._y = parseFloat(this.el.css('top'));
-        this._width = parseFloat(this.el.css('width'));
-        this._height = parseFloat(this.el.css('height'));
-        this._right = parseFloat(this.el.css('right'));
-        this._bottom = parseFloat(this.el.css('bottom'));
-    }
-    show() {
-        this.el.show();
-    }
-    hide() {
-        this.el.hide();
-    }
+  private _y: number;
+
+  getY(): number {
+    return this._y;
+  }
+
+  setY(value: number) {
+    this._y = value;
+    this.el.css('top', value);
+  }
+
+  getOffsetTop(): number {
+    return this.el.offset().top;
+  }
+
+  getOffsetLeft(): number {
+    return this.el.offset().left;
+  }
+
+  getOffset(): number {
+    return this.getIsVertical() ? this.getOffsetTop() : this.getOffsetLeft();
+  }
+
+  getPos(): number {
+    return this.getIsVertical() ? this.getY() : this.getX();
+  }
+
+  setPos(value: number) {
+    if (this.getIsVertical()) this.setY(value);
+    else this.setX(value);
+  }
+
+  protected _width: number;
+
+  getWidth(): number {
+    return this._width;
+  }
+
+  setWidth(value: number) {
+    this._width = value;
+    this.el.css('width', value);
+  }
+
+  protected _height: number;
+
+  getHeight(): number {
+    return this._height;
+  }
+
+  setHeight(value: number) {
+    this._height = value;
+    this.el.css('height', value);
+  }
+
+  getSize(): number {
+    return this.getIsVertical() ? this.getHeight() : this.getWidth();
+  }
+
+  setSize(value: number) {
+    if (this.getIsVertical()) this.setHeight(value);
+    else this.setWidth(value);
+  }
+
+  constructor(el: JQuery<HTMLElement>) {
+    this.el = el;
+    this.refresh();
+  }
+
+  refresh() {
+    this._x = parseFloat(this.el.css('left'));
+    this._y = parseFloat(this.el.css('top'));
+    this._width = parseFloat(this.el.css('width'));
+    this._height = parseFloat(this.el.css('height'));
+    this._right = parseFloat(this.el.css('right'));
+    this._bottom = parseFloat(this.el.css('bottom'));
+  }
+
+  show() {
+    this.el.show();
+  }
+
+  hide() {
+    this.el.hide();
+  }
 }
 
 export default TRSElement;
