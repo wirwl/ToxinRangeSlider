@@ -217,57 +217,38 @@ class Panel {
 
   private handleValueFromInput(event: JQuery.ChangeEvent) {
     const el = event.target as HTMLInputElement;
-    const valueFrom = parseInt(el.value, 10);
-    if (!Number.isNaN(valueFrom)) {
-      if (this.rangeslider.data.getIsHaveItems()) {
-        const indexFrom = this.rangeslider.data.findIndexByItem(el.value);
-        if (indexFrom > this.rangeslider.data.items.indexTo) {
-          el.value = this.rangeslider.data.getValueTo() as string;
-        }
-      } else {
-        el.value = valueFrom.toString();
-        if (valueFrom < this.rangeslider.data.getMinValue()) {
-          el.value = this.rangeslider.data.getMinValue() as string;
-        }
-        if (parseInt(el.value, 10) > this.rangeslider.data.getValueTo()) {
-          el.value = this.rangeslider.data.getValueTo() as string;
-        }
-      }
-      this.rangeslider.update({ valueFrom: el.value });
-      if (this.rangeslider.data.getIsHaveItems()) {
-        this.$indexFrom.val(this.rangeslider.data.items.indexFrom);
-      }
+
+    if (this.rangeslider.data.getIsHaveItems()) {
+      const indexFrom = this.rangeslider.data.findIndexByItem(el.value);
+
+      if (indexFrom === -1) return;
+
+      this.rangeslider.update({ items: { indexFrom } });
+      this.$indexFrom.val(indexFrom);
+    } else {
+      if (Number.isNaN(Number(el.value))) return;
+      this.rangeslider.update({ valueFrom: Number(el.value) });
     }
   }
 
   private handleValueToInput(event: JQuery.ChangeEvent) {
     const el = event.target as HTMLInputElement;
-    const valueTo = parseInt(el.value, 10);
-    if (!Number.isNaN(valueTo)) {
-      if (this.rangeslider.data.getIsHaveItems()) {
-        const indexTo = this.rangeslider.data.findIndexByItem(el.value);
-        if (indexTo === -1) el.value = this.rangeslider.data.getValueTo() as string;
-        if (indexTo < this.rangeslider.data.items.indexFrom) {
-          el.value = this.rangeslider.data.getValueFrom() as string;
-        }
-      } else {
-        el.value = valueTo.toString();
-        if (this.rangeslider.data.isTwoHandles && valueTo < this.rangeslider.data.getValueFrom()) {
-          el.value = this.rangeslider.data.getValueFrom() as string;
-        }
-        if (!this.rangeslider.data.isTwoHandles && valueTo < this.rangeslider.data.getMinValue()) {
-          el.value = this.rangeslider.data.getMinValue() as string;
-        }
-        if (valueTo > this.rangeslider.data.getMaxValue()) {
-          el.value = this.rangeslider.data.getMaxValue() as string;
-        }
+
+    if (this.rangeslider.data.getIsHaveItems()) {
+      const indexTo = this.rangeslider.data.findIndexByItem(el.value);
+
+      if (indexTo === -1) return;
+
+      this.rangeslider.update({ items: { indexTo } });
+      this.$indexTo.val(indexTo);
+    } else {
+      if (Number.isNaN(Number(el.value))) return;
+      let newValueTo = Number(el.value);
+      if (this.rangeslider.data.isTwoHandles) {
+        const valueFrom = Number(this.$valueFrom.val());
+        if (newValueTo < this.$valueFrom.val()) newValueTo = valueFrom;
       }
-      if (!this.rangeslider.data.getIsHaveItems() && !Number.isNaN(parseInt(el.value, 10))) {
-        this.rangeslider.update({ valueTo: el.value });
-        if (this.rangeslider.data.getIsHaveItems()) {
-          this.$indexTo.val(this.rangeslider.data.items.indexTo);
-        }
-      }
+      this.rangeslider.update({ valueTo: newValueTo });
     }
   }
 
@@ -376,7 +357,8 @@ class Panel {
         const minValue: number = parseInt(this.$minValue.val() as string, 10);
         const maxValue: number = parseInt(this.$maxValue.val() as string, 10);
         const valueFrom: number = parseInt(this.$valueFrom.val() as string, 10);
-        if (valueFrom < minValue || valueFrom > maxValue) this.$valueFrom.val(minValue);
+        const valueTo: number = parseInt(this.$valueTo.val() as string, 10);
+        if (valueFrom < minValue || valueFrom > valueTo || valueFrom > maxValue) this.$valueFrom.val(minValue);
         this.rangeslider.update({ valueFrom: this.$valueFrom.val() as number });
       }
     }

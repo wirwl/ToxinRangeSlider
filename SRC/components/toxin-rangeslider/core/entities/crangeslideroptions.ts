@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 class CRangeSliderOptions implements RangeSliderOptions {
+  static emptySettings = new CRangeSliderOptions({ items: {} });
+
   isVertical?: boolean;
 
   isTwoHandles?: boolean;
@@ -71,7 +73,7 @@ class CRangeSliderOptions implements RangeSliderOptions {
   }
 
   findIndexByItem(item: number | string): number {
-    return this.items.values.findIndex(value => value === item);
+    return this.items.values.findIndex(value => value.toString() === item);
   }
 
   extend(o: RangeSliderOptions | CRangeSliderOptions) {

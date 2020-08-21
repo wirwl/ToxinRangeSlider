@@ -34,8 +34,8 @@ function ConfigureJSDOM() {
 beforeAll(async () => {
   ConfigureJSDOM();
   view = new TRSView($('.test-in-jest'));
-  view.settings.extend(TRSModel.defaults);
-  view.settings.extend({
+  view.currentSettings.extend(TRSModel.defaults);
+  view.currentSettings.extend({
     isVertical: false,
     isTwoHandles: true,
     isTip: true,
@@ -104,7 +104,7 @@ describe('Check result of getNearestHandle() function. Six different tests.', ()
   });
   describe('If there are one handle.', () => {
     beforeAll(() => {
-      view.settings.extend({
+      view.currentSettings.extend({
         isTwoHandles: false,
         valueTo: 491,
       });
@@ -124,25 +124,25 @@ describe('Check result of moveHandle() function', () => {
     const relValue = view.convertPixelValueToRelativeValue(10);
     expect(result.isFromHandle).toBe(true);
     expect(result.value).toBe(relValue);
-    expect(result.isUsingItems).toBe(view.settings.items?.values?.length > 1);
+    expect(result.isUsingItems).toBe(view.currentSettings.items?.values?.length > 1);
   });
   test('If rangeslider has collection of items', () => {
-    view.settings.extend({ items: { values: [1, 2, 3, 4, 5], indexFrom: 0, indexTo: 4 } });
+    view.currentSettings.extend({ items: { values: [1, 2, 3, 4, 5], indexFrom: 0, indexTo: 4 } });
     const result: HandleMovingResult = view.moveHandle(view.handleTo, 20);
     const relValue = view.convertPixelValueToRelativeValue(20);
     expect(result.isFromHandle).toBe(false);
     expect(result.value).toBe(relValue);
-    expect(result.isUsingItems).toBe(view.settings.items?.values?.length > 1);
+    expect(result.isUsingItems).toBe(view.currentSettings.items?.values?.length > 1);
   });
 });
 
 describe('Check result of convertRelativeValueToPixelValue() function', () => {
   test('If passed value is index for values array', () => {
-    view.settings.extend({ items: { values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] } });
+    view.currentSettings.extend({ items: { values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] } });
     expect(view.convertRelativeValueToPixelValue(3)).toBe(102);
   });
   test('If passed value is relative value', () => {
-    view.settings.extend({ minValue: 100, maxValue: 1100, items: { values: [] } });
+    view.currentSettings.extend({ minValue: 100, maxValue: 1100, items: { values: [] } });
     expect(view.convertRelativeValueToPixelValue(600)).toBe(187);
   });
 });
@@ -157,7 +157,7 @@ describe('Check result of validate() function', () => {
   describe('If there are two handles', () => {
     beforeEach(() => {
       view.drawSlider(
-        null,
+        CRangeSliderOptions.emptySettings,
         new CRangeSliderOptions({
           isTwoHandles: true,
           minValue: 0,
@@ -184,7 +184,7 @@ describe('Check result of validate() function', () => {
   describe('If only one handle', () => {
     beforeEach(() => {
       view.drawSlider(
-        null,
+        CRangeSliderOptions.emptySettings,
         new CRangeSliderOptions({
           isTwoHandles: false,
           minValue: 0,
@@ -207,7 +207,7 @@ describe('Check result of validate() function', () => {
 describe('Check result of getSteppedPos() function', () => {
   beforeEach(() => {
     view.drawSlider(
-      null,
+      CRangeSliderOptions.emptySettings,
       new CRangeSliderOptions({
         isTwoHandles: true,
         minValue: 0,
@@ -224,7 +224,7 @@ describe('Check result of getSteppedPos() function', () => {
   });
   test('If there is step. Step is defined, rounding down ', () => {
     view.drawSlider(
-      null,
+      CRangeSliderOptions.emptySettings,
       new CRangeSliderOptions({
         minValue: 0,
         maxValue: 374,
@@ -235,7 +235,7 @@ describe('Check result of getSteppedPos() function', () => {
   });
   test('If there is step. Step is defined, rounding up ', () => {
     view.drawSlider(
-      null,
+      CRangeSliderOptions.emptySettings,
       new CRangeSliderOptions({
         minValue: 0,
         maxValue: 374,
@@ -245,16 +245,22 @@ describe('Check result of getSteppedPos() function', () => {
     expect(view.getSteppedPos(60)).toBe(100);
   });
   test('If there is step. Step not defined but pixel length of rangeslider is bigger than relative length, rounding down', () => {
-    view.drawSlider(null, new CRangeSliderOptions({ minValue: 0, maxValue: 93.5, stepValue: 0 }));
+    view.drawSlider(
+      CRangeSliderOptions.emptySettings,
+      new CRangeSliderOptions({ minValue: 0, maxValue: 93.5, stepValue: 0 }),
+    );
     expect(view.getSteppedPos(1)).toBe(0);
   });
   test('If there is step. Step not defined but pixel length of rangeslider is bigger than relative length, rounding up', () => {
-    view.drawSlider(null, new CRangeSliderOptions({ minValue: 0, maxValue: 93.5, stepValue: 0 }));
+    view.drawSlider(
+      CRangeSliderOptions.emptySettings,
+      new CRangeSliderOptions({ minValue: 0, maxValue: 93.5, stepValue: 0 }),
+    );
     expect(view.getSteppedPos(2)).toBe(4);
   });
   test('If there is step. Defined set of values, rounding down', () => {
     view.drawSlider(
-      null,
+      CRangeSliderOptions.emptySettings,
       new CRangeSliderOptions({
         items: { values: [0, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024], indexFrom: 0, indexTo: 9 },
       }),
@@ -263,7 +269,7 @@ describe('Check result of getSteppedPos() function', () => {
   });
   test('If there is step. Defined set of values, rounding up', () => {
     view.drawSlider(
-      null,
+      CRangeSliderOptions.emptySettings,
       new CRangeSliderOptions({
         items: { values: [0, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024], indexFrom: 0, indexTo: 9 },
       }),

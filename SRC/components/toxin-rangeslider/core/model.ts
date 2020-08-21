@@ -43,20 +43,23 @@ class TRSModel {
     } else {
       const maxValue = this.settings.getMaxValue() as number;
       const minValue = this.settings.getMinValue() as number;
+      let valueFrom = this.settings.getValueFrom() as number;
+      const valueTo = this.settings.getValueTo() as number;
       const size = maxValue - minValue;
+
       if (stepValue < 0) this.settings.stepValue = 0;
       if (stepValue > size) this.settings.stepValue = size;
-      if (this.settings.getValueTo() > this.settings.getMaxValue()) {
-        this.settings.setValueTo(this.settings.getMaxValue());
-      }
+
       if (isTwoHandles) {
-        if (this.settings.getValueFrom() > this.settings.getValueTo()) {
-          this.settings.setValueFrom(this.settings.getValueTo());
+        if (valueFrom > valueTo) {
+          valueFrom = valueTo;
+          this.settings.setValueFrom(valueTo);
         }
-        if (this.settings.getValueFrom() < this.settings.getMinValue()) {
-          this.settings.setValueFrom(this.settings.getMinValue());
-        }
-      }
+        if (valueTo < valueFrom) this.settings.setValueTo(valueFrom);
+        if (valueFrom < minValue) this.settings.setValueFrom(minValue);
+      } else if (valueTo < minValue) this.settings.setValueTo(minValue);
+
+      if (valueTo > maxValue) this.settings.setValueTo(maxValue);
     }
   }
 }

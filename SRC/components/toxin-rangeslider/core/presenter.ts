@@ -20,7 +20,7 @@ class TRSPresenter {
   init() {
     this.model.settings.extend(this.view.data);
     this.model.validate();
-    this.view.drawSlider(null, this.model.settings, true);
+    this.view.drawSlider(CRangeSliderOptions.emptySettings, this.model.settings, true);
   }
 
   onHandlePositionUpdate(handle: Handle, pxNewPos: number) {
