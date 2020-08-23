@@ -24,7 +24,7 @@ class CRangeSliderOptions implements RangeSliderOptions {
     return this.getIsHaveItems() ? this.items.values[this.items.values.length - 1] : this.maxValue;
   };
 
-  setMaxValue(value: number | string): void {
+  setMaxValue = (value: number | string): void => {
     if (!this.getIsHaveItems()) this.maxValue = parseFloat(value.toString());
   }
 

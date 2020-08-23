@@ -34,7 +34,7 @@ mixin panel({slider, id, isVertical})
             +input({type:'number', text:'Step value', value: isUsingItems ? 1 : stepValue, isDisabled : isUsingItems, minValue: 1})
         .panel__section2
           .panel__input-value-from.js-panel__input-value-from
-            +input({type: 'text', text:'From value', value: isUsingItems ? values[indexFrom] : valueFrom, isDisabled: !isTwoHandles})
+            +input({type: 'text', text:'From value', value: isTwoHandles ? (isUsingItems ? values[indexFrom] : valueFrom) : '', isDisabled: !isTwoHandles})
           .panel__input-value-to.js-panel__input-value-to
             +input({type: 'text', text:'To value', value: isUsingItems ? values[indexTo] : valueTo})
           .panel__si-values      

@@ -40,6 +40,7 @@ class Panel {
   constructor(element: HTMLElement) {
     this.initVariables(element);
     this.addEventListeners();
+    this.updatePanelValues();
   }
 
   private initVariables(element: HTMLElement) {
@@ -160,6 +161,7 @@ class Panel {
   }
 
   private handleStepValueInput(event: JQuery.ChangeEvent) {
+    console.log('handleStepValueInput');
     const el = event.target as HTMLInputElement;
     if (el.value.length) {
       const value = parseInt(el.value, 10);
@@ -309,9 +311,10 @@ class Panel {
     this.rangeslider.update({ isTip: (event.target as HTMLInputElement).checked });
   }
 
-  private updatePanelValues() {
+  private updatePanelValues() {    
     this.$minValue.val(this.rangeslider.data.getMinValue());
     this.$maxValue.val(this.rangeslider.data.getMaxValue());
+    if (this.rangeslider.data.isTwoHandles)
     this.$valueFrom.val(this.rangeslider.data.getValueFrom());
     this.$valueTo.val(this.rangeslider.data.getValueTo());
     if (this.select.length > 1) {
@@ -323,6 +326,7 @@ class Panel {
       this.$indexFrom.prop('disabled', true);
       this.$indexTo.prop('disabled', true);
     }
+    this.$stepValue.val(this.rangeslider.data.stepValue);
   }
 
   private getRangeLength(): number {
@@ -356,12 +360,14 @@ class Panel {
       if (!this.rangeslider.data.getIsHaveItems()) {
         const minValue: number = parseInt(this.$minValue.val() as string, 10);
         const maxValue: number = parseInt(this.$maxValue.val() as string, 10);
-        const valueFrom: number = parseInt(this.$valueFrom.val() as string, 10);
+        let valueFrom: number = parseInt(this.$valueFrom.val() as string, 10);
+        if (Number.isNaN(Number(valueFrom))) valueFrom = minValue;
         const valueTo: number = parseInt(this.$valueTo.val() as string, 10);
-        if (valueFrom < minValue || valueFrom > valueTo || valueFrom > maxValue) this.$valueFrom.val(minValue);
-        this.rangeslider.update({ valueFrom: this.$valueFrom.val() as number });
+        if (valueFrom < minValue || valueFrom > valueTo || valueFrom > maxValue) valueFrom=minValue;
+        this.rangeslider.update({ valueFrom: valueFrom });
       }
     }
+    this.updatePanelValues();
   }
 }
 

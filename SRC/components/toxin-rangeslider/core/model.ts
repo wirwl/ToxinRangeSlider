@@ -31,6 +31,8 @@ class TRSModel {
       getIsHaveItems,
       getMinValue,
       getMaxValue,
+      setMinValue,
+      setMaxValue,
       getValueFrom,
       getValueTo,
       setValueFrom,
@@ -38,6 +40,9 @@ class TRSModel {
     } = this.settings;
 
     if (getIsHaveItems()) {
+      setMinValue(values[0]);
+      setMaxValue(values[values.length-1]);
+
       if (indexTo > values.length - 1) {
         this.settings.items.indexTo = values.length - 1;
       }
@@ -48,19 +53,31 @@ class TRSModel {
         if (indexFrom < 0) this.settings.items.indexFrom = 0;
       }
     } else {
-      const maxValue = getMaxValue() as number;
-      const minValue = getMinValue() as number;
+      let maxValue = getMaxValue() as number;
+      let minValue = getMinValue() as number;
       let valueFrom = getValueFrom() as number;
-      const valueTo = getValueTo() as number;
+      let valueTo = getValueTo() as number;
+
+      if (maxValue<=minValue) {
+        setMinValue(maxValue);        
+        setMaxValue(minValue);
+        minValue=getMinValue() as number;
+        maxValue=getMaxValue() as number;
+        if (valueFrom<minValue || valueFrom>maxValue) setValueFrom(getMinValue());
+        if (valueTo<minValue || valueTo>maxValue) setValueTo(getMaxValue());
+      }
+
       const size = maxValue - minValue;
 
-      if (stepValue < 0) this.settings.stepValue = 0;
-      if (stepValue > size) this.settings.stepValue = size;
+      if (stepValue < 1) this.settings.stepValue = 1;
+      if (this.settings.stepValue > size) this.settings.stepValue = size;
 
       if (isTwoHandles) {
         if (valueFrom > valueTo) {
-          valueFrom = valueTo;
           setValueFrom(valueTo);
+          setValueTo(valueFrom);
+          valueFrom = getValueFrom() as number;
+          valueTo = getValueTo() as number;
         }
         if (valueTo < valueFrom) setValueTo(valueFrom);
         if (valueFrom < minValue) setValueFrom(minValue);

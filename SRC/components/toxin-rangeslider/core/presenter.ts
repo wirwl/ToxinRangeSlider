@@ -20,6 +20,7 @@ class TRSPresenter {
   init() {
     this.model.settings.extend(this.view.data);
     this.model.validate();
+    this.data = this.model.settings;
     this.view.drawSlider(CRangeSliderOptions.emptySettings, this.model.settings, true);
   }
 
