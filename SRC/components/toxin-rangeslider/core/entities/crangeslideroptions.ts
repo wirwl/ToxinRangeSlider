@@ -10,57 +10,57 @@ class CRangeSliderOptions implements RangeSliderOptions {
 
   minValue?: number;
 
-  getMinValue(): number | string {
+  getMinValue = (): number | string => {
     return this.getIsHaveItems() ? this.items.values[0] : this.minValue;
-  }
+  };
 
-  setMinValue(value: number | string) {
+  setMinValue = (value: number | string): void => {
     if (!this.getIsHaveItems()) this.minValue = parseFloat(value.toString());
-  }
+  };
 
   maxValue?: number;
 
-  getMaxValue(): number | string {
+  getMaxValue = (): number | string => {
     return this.getIsHaveItems() ? this.items.values[this.items.values.length - 1] : this.maxValue;
-  }
+  };
 
-  setMaxValue(value: number | string) {
+  setMaxValue(value: number | string): void {
     if (!this.getIsHaveItems()) this.maxValue = parseFloat(value.toString());
   }
 
   stepValue?: number;
 
-  getIsHaveItems(): boolean {
+  getIsHaveItems = (): boolean => {
     return this.items?.values?.length > 1;
-  }
+  };
 
   valueFrom?: number;
 
-  getValueFrom(): number | string {
+  getValueFrom = (): number | string => {
     if (this.getIsHaveItems()) return this.items.values[this.items.indexFrom];
     return this.valueFrom;
-  }
+  };
 
-  setValueFrom(value: number | string) {
+  setValueFrom = (value: number | string): void => {
     if (this.getIsHaveItems()) {
       const newIndex = this.findIndexByItem(value);
       if (newIndex > -1) this.items.indexFrom = newIndex;
     } else this.valueFrom = parseFloat(value.toString());
-  }
+  };
 
   valueTo?: number;
 
-  getValueTo(): number | string {
+  getValueTo = (): number | string => {
     if (this.getIsHaveItems()) return this.items.values[this.items.indexTo];
     return this.valueTo;
-  }
+  };
 
-  setValueTo(value: number | string) {
+  setValueTo = (value: number | string): void => {
     if (this.getIsHaveItems()) {
       const newIndex = this.findIndexByItem(value);
       if (newIndex > -1) this.items.indexTo = newIndex;
     } else this.valueTo = parseFloat(value.toString());
-  }
+  };
 
   items: RangeSliderItems;
 
