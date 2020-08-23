@@ -4,7 +4,7 @@ const tsPreset = require('ts-jest/jest-preset');
 
 module.exports = merge.recursive({}, tsPreset, {
   testEnvironment: 'jsdom',
-  roots: ['<rootDir>/src'],
+  roots: ['<rootDir>/SRC'],
   testMatch: ['**/__tests__/**/*.+(ts|tsx|js)'],
   transform: {
     '^.+\\.(ts|tsx)$': 'ts-jest',
