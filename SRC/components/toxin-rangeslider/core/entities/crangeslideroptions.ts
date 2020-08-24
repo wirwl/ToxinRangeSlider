@@ -26,7 +26,7 @@ class CRangeSliderOptions implements RangeSliderOptions {
 
   setMaxValue = (value: number | string): void => {
     if (!this.getIsHaveItems()) this.maxValue = parseFloat(value.toString());
-  }
+  };
 
   stepValue?: number;
 
@@ -73,7 +73,7 @@ class CRangeSliderOptions implements RangeSliderOptions {
   }
 
   findIndexByItem(item: number | string): number {
-    return this.items.values.findIndex(value => value.toString() === item);
+    return this.items.values.findIndex(value => value.toString() === item.toString());
   }
 
   extend(o: RangeSliderOptions | CRangeSliderOptions) {
