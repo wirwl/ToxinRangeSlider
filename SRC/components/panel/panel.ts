@@ -311,11 +311,10 @@ class Panel {
     this.rangeslider.update({ isTip: (event.target as HTMLInputElement).checked });
   }
 
-  private updatePanelValues() {    
+  private updatePanelValues() {
     this.$minValue.val(this.rangeslider.data.getMinValue());
     this.$maxValue.val(this.rangeslider.data.getMaxValue());
-    if (this.rangeslider.data.isTwoHandles)
-    this.$valueFrom.val(this.rangeslider.data.getValueFrom());
+    if (this.rangeslider.data.isTwoHandles) this.$valueFrom.val(this.rangeslider.data.getValueFrom());
     this.$valueTo.val(this.rangeslider.data.getValueTo());
     if (this.select.length > 1) {
       this.$indexFrom.prop('disabled', false);
@@ -363,8 +362,8 @@ class Panel {
         let valueFrom: number = parseInt(this.$valueFrom.val() as string, 10);
         if (Number.isNaN(Number(valueFrom))) valueFrom = minValue;
         const valueTo: number = parseInt(this.$valueTo.val() as string, 10);
-        if (valueFrom < minValue || valueFrom > valueTo || valueFrom > maxValue) valueFrom=minValue;
-        this.rangeslider.update({ valueFrom: valueFrom });
+        if (valueFrom < minValue || valueFrom > valueTo || valueFrom > maxValue) valueFrom = minValue;
+        this.rangeslider.update({ valueFrom });
       }
     }
     this.updatePanelValues();
