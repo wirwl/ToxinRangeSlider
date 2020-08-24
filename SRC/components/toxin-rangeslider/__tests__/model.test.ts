@@ -30,7 +30,7 @@ describe('Check correctness of validate() function, that correct invalid values'
     test('Check if stepValue field value is less than zero', () => {
       model.settings.extend({ items: { values: [] }, stepValue: -5 });
       model.validate();
-      expect(model.settings.stepValue).toBe(0);
+      expect(model.settings.stepValue).toBe(1);
     });
     test('Check if stepValue field value is greater than length of rangeslider', () => {
       model.settings.extend({
