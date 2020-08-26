@@ -8,11 +8,11 @@ class Rangeslider extends TRSElement {
 
   private _isInterval = false;
 
-  IsTwoHandles = (): boolean => {
+  isTwoHandles = (): boolean => {
     return this._isInterval;
   };
 
-  setIsTwoHandles = (value: boolean) => {
+  setTwoHandles = (value: boolean) => {
     this._isInterval = value;
     this.el.find('.rangeslider__line-selected').removeAttr('style');
     if (value) this.el.removeClass('rangeslider_one-handle');
@@ -21,16 +21,16 @@ class Rangeslider extends TRSElement {
 
   protected _isVertical = false;
 
-  IsVertical = (): boolean => {
+  isVertical = (): boolean => {
     return this._isVertical;
   };
 
-  setIsVertical = (value: boolean) => {
+  setVertical = (value: boolean) => {
     this._isVertical = value;
     if (value) this.el.addClass('rangeslider_is-vertical');
     else this.el.removeClass('rangeslider_is-vertical');
     this.controls.forEach(val => {
-      val.setIsVertical(value);
+      val.setVertical(value);
       val.refresh();
     });
   };

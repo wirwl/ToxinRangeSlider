@@ -109,7 +109,7 @@ class TRSView {
       items: { indexFrom: currentIndexFrom, indexTo: currentIndexTo, values: currentValues },
     } = this.currentSettings;
 
-    const { setIsVertical, setIsTwoHandles: setIsInterval } = this.rangeslider;
+    const { setVertical, setTwoHandles } = this.rangeslider;
 
     const isVerticalChanged = currentIsVertical !== oldIsVertical;
     const isTwoHandlesChanged = currentIsTwoHandles !== oldIsTwoHandles;
@@ -123,12 +123,12 @@ class TRSView {
     let isNeedRedraw = false;
 
     if (isVerticalChanged) {
-      setIsVertical(currentIsVertical);
+      setVertical(currentIsVertical);
       isNeedRedraw = true;
     }
 
     if (isNeedRedraw || isTwoHandlesChanged) {
-      setIsInterval(currentIsTwoHandles);
+      setTwoHandles(currentIsTwoHandles);
       isNeedRedraw = true;
     }
 
@@ -205,7 +205,7 @@ class TRSView {
 
   onMouseDownByHandle(e: JQuery.TriggeredEvent) {
     const currentHandle: Handle = $(e.target).is(this.handleFrom.el) ? this.handleFrom : this.handleTo;
-    currentHandle.setIsMoving(true);
+    currentHandle.setMoving(true);
     const clientPos = this.currentSettings.isVertical ? e.clientY : e.clientX;
     const shiftPos = clientPos - currentHandle.getOffset();
 
@@ -252,7 +252,7 @@ class TRSView {
   }
 
   onMouseUp(e: JQuery.TriggeredEvent, currentHandle: Handle) {
-    currentHandle.setIsMoving(false);
+    currentHandle.setMoving(false);
     this.rangeslider.el.off('mousemove.rangeslider');
     currentHandle.el.off('mouseup.handle');
     $(document).off('mousemove.document');

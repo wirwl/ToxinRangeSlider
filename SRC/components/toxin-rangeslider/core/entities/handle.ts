@@ -1,7 +1,7 @@
 import TRSElement from './element';
 
 class Handle extends TRSElement {
-  setIsMoving(value: boolean) {
+  setMoving(value: boolean) {
     if (value) this.el.addClass('rangeslider__handle_isMoving');
     else this.el.removeClass('rangeslider__handle_isMoving');
   }
