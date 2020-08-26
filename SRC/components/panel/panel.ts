@@ -219,7 +219,7 @@ class Panel {
   private handleValueFromInput(event: JQuery.ChangeEvent) {
     const el = event.target as HTMLInputElement;
 
-    if (this.rangeslider.data.getIsHaveItems()) {
+    if (this.rangeslider.data.IsHaveItems()) {
       const indexFrom = this.rangeslider.data.findIndexByItem(el.value);
 
       if (indexFrom === -1) return;
@@ -235,7 +235,7 @@ class Panel {
   private handleValueToInput(event: JQuery.ChangeEvent) {
     const el = event.target as HTMLInputElement;
 
-    if (this.rangeslider.data.getIsHaveItems()) {
+    if (this.rangeslider.data.IsHaveItems()) {
       const indexTo = this.rangeslider.data.findIndexByItem(el.value);
 
       if (indexTo === -1) return;
@@ -351,11 +351,11 @@ class Panel {
     this.rangeslider.update({ isTwoHandles: checkbox.checked });
     if (!checkbox.checked) {
       this.$valueFrom.prop('disabled', true);
-      if (this.rangeslider.data.getIsHaveItems()) this.$indexFrom.prop('disabled', true);
+      if (this.rangeslider.data.IsHaveItems()) this.$indexFrom.prop('disabled', true);
     } else {
       this.$valueFrom.prop('disabled', false);
-      if (this.rangeslider.data.getIsHaveItems()) this.$indexFrom.prop('disabled', false);
-      if (!this.rangeslider.data.getIsHaveItems()) {
+      if (this.rangeslider.data.IsHaveItems()) this.$indexFrom.prop('disabled', false);
+      if (!this.rangeslider.data.IsHaveItems()) {
         const minValue: number = parseInt(this.$minValue.val() as string, 10);
         const maxValue: number = parseInt(this.$maxValue.val() as string, 10);
         let valueFrom: number = parseInt(this.$valueFrom.val() as string, 10);

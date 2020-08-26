@@ -8,7 +8,7 @@ class Rangeslider extends TRSElement {
 
   private _isInterval = false;
 
-  getIsTwoHandles = (): boolean => {
+  IsTwoHandles = (): boolean => {
     return this._isInterval;
   };
 
@@ -21,7 +21,7 @@ class Rangeslider extends TRSElement {
 
   protected _isVertical = false;
 
-  getIsVertical = (): boolean => {
+  IsVertical = (): boolean => {
     return this._isVertical;
   };
 

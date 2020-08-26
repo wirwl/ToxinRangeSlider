@@ -3,7 +3,7 @@ class TRSElement {
 
   protected _isVertical = false;
 
-  getIsVertical(): boolean {
+  IsVertical(): boolean {
     return this._isVertical;
   }
 
@@ -65,15 +65,15 @@ class TRSElement {
   }
 
   getOffset(): number {
-    return this.getIsVertical() ? this.getOffsetTop() : this.getOffsetLeft();
+    return this.IsVertical() ? this.getOffsetTop() : this.getOffsetLeft();
   }
 
   getPos(): number {
-    return this.getIsVertical() ? this.getY() : this.getX();
+    return this.IsVertical() ? this.getY() : this.getX();
   }
 
   setPos(value: number) {
-    if (this.getIsVertical()) this.setY(value);
+    if (this.IsVertical()) this.setY(value);
     else this.setX(value);
   }
 
@@ -100,11 +100,11 @@ class TRSElement {
   }
 
   getSize(): number {
-    return this.getIsVertical() ? this.getHeight() : this.getWidth();
+    return this.IsVertical() ? this.getHeight() : this.getWidth();
   }
 
   setSize(value: number) {
-    if (this.getIsVertical()) this.setHeight(value);
+    if (this.IsVertical()) this.setHeight(value);
     else this.setWidth(value);
   }
 
