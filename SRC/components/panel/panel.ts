@@ -161,7 +161,6 @@ class Panel {
   }
 
   private handleStepValueInput(event: JQuery.ChangeEvent) {
-    console.log('handleStepValueInput');
     const el = event.target as HTMLInputElement;
     if (el.value.length) {
       const value = parseInt(el.value, 10);
