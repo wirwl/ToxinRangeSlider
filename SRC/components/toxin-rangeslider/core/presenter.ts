@@ -25,15 +25,17 @@ class TRSPresenter {
   }
 
   onHandlePositionUpdate(handle: Handle, pxNewPos: number) {
-    const result: HandleMovingResult = this.view.moveHandle(handle, pxNewPos);
-    if (result.isFromHandle) {
-      if (result.isUsingItems) this.model.settings.items.indexFrom = result.index;
-      this.model.settings.setValueFrom(result.value);
+    const { setValueFrom, setValueTo, onHandlePositionChange } = this.model.settings;
+    const { isFromHandle, isUsingItems, index, value } = this.view.moveHandle(handle, pxNewPos);
+
+    if (isFromHandle) {
+      if (isUsingItems) this.model.settings.items.indexFrom = index;
+      setValueFrom(value);
     } else {
-      if (result.isUsingItems) this.model.settings.items.indexTo = result.index;
-      this.model.settings.setValueTo(result.value);
+      if (isUsingItems) this.model.settings.items.indexTo = index;
+      setValueTo(value);
     }
-    this.model.settings.onHandlePositionChange.call(result);
+    onHandlePositionChange.call({ isFromHandle, isUsingItems, index, value });
   }
 
   update(opt: RangeSliderOptions) {
