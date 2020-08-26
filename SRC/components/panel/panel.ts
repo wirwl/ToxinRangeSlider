@@ -316,9 +316,11 @@ class Panel {
     if (this.rangeslider.data.isTwoHandles) this.$valueFrom.val(this.rangeslider.data.getValueFrom());
     this.$valueTo.val(this.rangeslider.data.getValueTo());
     if (this.select.length > 1) {
-      this.$indexFrom.prop('disabled', false);
+      if (this.rangeslider.data.isTwoHandles) {
+        this.$indexFrom.prop('disabled', false);
+        this.$indexFrom.val(this.rangeslider.data.items.indexFrom);
+      }
       this.$indexTo.prop('disabled', false);
-      this.$indexFrom.val(this.rangeslider.data.items.indexFrom);
       this.$indexTo.val(this.rangeslider.data.items.indexTo);
     } else {
       this.$indexFrom.prop('disabled', true);
@@ -351,6 +353,7 @@ class Panel {
     this.rangeslider.update({ isTwoHandles: checkbox.checked });
     if (!checkbox.checked) {
       this.$valueFrom.prop('disabled', true);
+      console.log(this.rangeslider.data.IsHaveItems());
       if (this.rangeslider.data.IsHaveItems()) this.$indexFrom.prop('disabled', true);
     } else {
       this.$valueFrom.prop('disabled', false);

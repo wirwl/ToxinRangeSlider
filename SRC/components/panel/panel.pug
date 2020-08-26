@@ -41,7 +41,7 @@ mixin panel({slider, id, isVertical})
             +select-items({title:'Items', isRemoveDisabled: zeroValues , items: isHasItems ?  values : [], isDisabled: !isUsingItems})
         .panel__section3
           .panel__input-index-from.js-panel__input-index-from
-            +input({type: 'number', text:'Index from', value: isHasItems ? indexFrom : '', isDisabled: !isUsingItems || !isTwoHandles, minValue: 0})            
+            +input({type: 'number', text:'Index from', value: isTwoHandles ? (isHasItems ? indexFrom : '') : '', isDisabled: !isUsingItems || !isTwoHandles, minValue: 0})            
           .panel__input-index-to.js-panel__input-index-to
             +input({type: 'number', text:'Index to', value: isHasItems ? indexTo : '', isDisabled: !isUsingItems, minValue: 0})
     .panel__toxin-rangeslider.toxin-rangeslider-here(data-options=slider)
