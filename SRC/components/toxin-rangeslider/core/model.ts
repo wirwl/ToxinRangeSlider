@@ -25,9 +25,12 @@ class TRSModel {
 
   validate() {
     const {
+      items,
       items: { indexFrom, indexTo, values },
       stepValue,
       isTwoHandles,
+      isVertical,
+      isTip,
       IsHaveItems,
       getMinValue,
       getMaxValue,
@@ -58,7 +61,26 @@ class TRSModel {
       let valueFrom = getValueFrom() as number;
       let valueTo = getValueTo() as number;
 
-      if (maxValue <= minValue) {
+      if (typeof isVertical !== 'boolean') this.settings.isVertical = TRSModel.defaults.isVertical;
+      if (typeof isTwoHandles !== 'boolean') this.settings.isTwoHandles = TRSModel.defaults.isTwoHandles;
+      if (typeof isTip !== 'boolean') this.settings.isTip = TRSModel.defaults.isTip;
+      if (Number.isNaN(Number(minValue))) setMinValue(TRSModel.defaults.minValue);
+      if (Number.isNaN(Number(maxValue))) setMaxValue(TRSModel.defaults.maxValue);
+      if (Number.isNaN(Number(valueFrom))) setValueFrom(TRSModel.defaults.valueFrom);
+      if (Number.isNaN(Number(valueTo))) setValueTo(TRSModel.defaults.valueTo);
+      if (Number.isNaN(Number(stepValue))) this.settings.stepValue = TRSModel.defaults.stepValue;
+      if (typeof items !== 'object') this.settings.items = TRSModel.defaults.items;
+
+      if (minValue === maxValue) {
+        setValueFrom(minValue);
+        valueFrom = getValueFrom() as number;
+        setMaxValue(minValue + 1);
+        maxValue = getMaxValue() as number;
+        setValueTo(maxValue);
+        valueTo = getValueTo() as number;
+      }
+
+      if (maxValue < minValue) {
         setMinValue(maxValue);
         setMaxValue(minValue);
         minValue = getMinValue() as number;
