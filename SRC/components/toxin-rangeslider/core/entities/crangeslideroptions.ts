@@ -15,7 +15,7 @@ class CRangeSliderOptions implements RangeSliderOptions {
   };
 
   setMinValue = (value: number | string): void => {
-    if (!this.IsHaveItems()) this.minValue = parseInt(value.toString());
+    if (!this.IsHaveItems()) this.minValue = parseFloat(value.toString());
   };
 
   maxValue?: number;
@@ -25,7 +25,7 @@ class CRangeSliderOptions implements RangeSliderOptions {
   };
 
   setMaxValue = (value: number | string): void => {
-    if (!this.IsHaveItems()) this.maxValue = parseInt(value.toString());
+    if (!this.IsHaveItems()) this.maxValue = parseFloat(value.toString());
   };
 
   stepValue?: number;
@@ -45,7 +45,7 @@ class CRangeSliderOptions implements RangeSliderOptions {
     if (this.IsHaveItems()) {
       const newIndex = this.findIndexByItem(value);
       if (newIndex > -1) this.items.indexFrom = newIndex;
-    } else this.valueFrom = parseInt(value.toString());
+    } else this.valueFrom = parseFloat(value.toString());
   };
 
   valueTo?: number;
@@ -59,7 +59,7 @@ class CRangeSliderOptions implements RangeSliderOptions {
     if (this.IsHaveItems()) {
       const newIndex = this.findIndexByItem(value);
       if (newIndex > -1) this.items.indexTo = newIndex;
-    } else this.valueTo = parseInt(value.toString());
+    } else this.valueTo = parseFloat(value.toString());
   };
 
   items: RangeSliderItems;
@@ -93,15 +93,15 @@ class CRangeSliderOptions implements RangeSliderOptions {
     if (isTwoHandles !== null && typeof isTwoHandles !== 'undefined') this.isTwoHandles = isTwoHandles;
     if (isTip !== null && typeof isTip !== 'undefined') this.isTip = isTip;
     if (minValue !== null && typeof minValue !== 'undefined')
-      if (!isUsingItemsValues) this.minValue = parseInt(minValue.toString(), 10);
+      if (!isUsingItemsValues) this.minValue = parseFloat(minValue.toString());
     if (maxValue !== null && typeof maxValue !== 'undefined')
-      if (!isUsingItemsValues) this.maxValue = parseInt(maxValue.toString(), 10);
+      if (!isUsingItemsValues) this.maxValue = parseFloat(maxValue.toString());
     if (stepValue !== null && typeof stepValue !== 'undefined') this.stepValue = stepValue;
     if (valueFrom !== null && typeof valueFrom !== 'undefined')
-      if (!isUsingItemsValues) this.valueFrom = parseInt(valueFrom.toString(), 10);
+      if (!isUsingItemsValues) this.valueFrom = parseFloat(valueFrom.toString());
       else this.setValueFrom(valueFrom);
     if (valueTo !== null && typeof valueTo !== 'undefined')
-      if (!isUsingItemsValues) this.valueTo = parseInt(valueTo.toString(), 10);
+      if (!isUsingItemsValues) this.valueTo = parseFloat(valueTo.toString());
       else this.setValueTo(valueTo);
     if (o.onHandlePositionChange !== null && typeof o.onHandlePositionChange !== 'undefined')
       this.onHandlePositionChange = o.onHandlePositionChange;

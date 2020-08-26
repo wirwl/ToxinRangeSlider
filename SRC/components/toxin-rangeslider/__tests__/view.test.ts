@@ -254,7 +254,7 @@ describe('Check result of getSteppedPos() function', () => {
   test('If there is step. Step not defined but pixel length of rangeslider is bigger than relative length, rounding up', () => {
     view.drawSlider(
       CRangeSliderOptions.emptySettings,
-      new CRangeSliderOptions({ minValue: 0, maxValue: 93.5, stepValue: 0 }),
+      new CRangeSliderOptions({ minValue: 0, maxValue: 93.5, stepValue: 1 }),
     );
     expect(view.getSteppedPos(2)).toBe(4);
   });
