@@ -353,7 +353,6 @@ class Panel {
     this.rangeslider.update({ isTwoHandles: checkbox.checked });
     if (!checkbox.checked) {
       this.$valueFrom.prop('disabled', true);
-      console.log(this.rangeslider.data.IsHaveItems());
       if (this.rangeslider.data.IsHaveItems()) this.$indexFrom.prop('disabled', true);
     } else {
       this.$valueFrom.prop('disabled', false);

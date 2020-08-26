@@ -14,11 +14,9 @@ function ConfigureJSDOM() {
   const textHTML =
     '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body><div class="test-in-jest"></div></body></html>';
   const fixWidth = '.test-in-jest {width: 390px;}.rangeslider{width: 390px;}.rangeslider__line{width: 390px;}';
-  const urlLess = new URL(
-    path.normalize(`${__dirname}../../../../components/toxin-rangeslider/toxin-rangeslider.less`),
-  );
+  const urlLess = path.normalize(`${__dirname}../../../../components/toxin-rangeslider/toxin-rangeslider.less`);
 
-  const LessFromFile = fs.readFileSync(urlLess.href, 'utf8');
+  const LessFromFile = fs.readFileSync(urlLess, 'utf8');
 
   less.render(LessFromFile, (e: Less.RenderError, output: Less.RenderOutput | undefined) => {
     cssFromLess = output.css;
