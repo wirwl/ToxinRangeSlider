@@ -311,6 +311,9 @@ class Panel {
   }
 
   private updatePanelValues() {
+    this.$isVertical.prop('checked', this.rangeslider.data.isVertical);
+    this.$isTwoHandles.prop('checked', this.rangeslider.data.isTwoHandles);
+    this.$isShowTips.prop('checked', this.rangeslider.data.isTip);
     this.$minValue.val(this.rangeslider.data.getMinValue());
     this.$maxValue.val(this.rangeslider.data.getMaxValue());
     if (this.rangeslider.data.isTwoHandles) this.$valueFrom.val(this.rangeslider.data.getValueFrom());
