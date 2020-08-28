@@ -46,6 +46,9 @@ class TRSModel {
       setMinValue(values[0]);
       setMaxValue(values[values.length - 1]);
 
+      if (typeof indexFrom === 'undefined') this.settings.items.indexFrom = 0;
+      if (typeof indexTo === 'undefined') this.settings.items.indexTo = values.length - 1;
+
       if (indexTo > values.length - 1) {
         this.settings.items.indexTo = values.length - 1;
       }

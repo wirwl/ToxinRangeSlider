@@ -25,6 +25,10 @@ class Panel {
 
   private $select: JQuery<HTMLElement>;
 
+  private $selectButtonAdd: JQuery<HTMLElement>;
+
+  private $selectButtonRemove: JQuery<HTMLElement>;
+
   private select: HTMLSelectElement;
 
   private $rangesliderRootElement: JQuery<HTMLElement>;
@@ -56,6 +60,8 @@ class Panel {
     this.$buttonAdd = this.$panel.find('.js-select-items').find('.js-select-items__button-add');
     this.$buttonRemove = this.$panel.find('.js-select-items').find('.js-select-items__button-remove');
     this.$select = this.$panel.find('.js-select-items').find('.js-select-items__options');
+    this.$selectButtonAdd = this.$select.parent().find('js-select-items__button-add');
+    this.$selectButtonRemove = this.$select.parent().find('js-select-items__button-remove');
     this.select = this.$select[0] as HTMLSelectElement;
     this.$rangesliderRootElement = this.$panel.find('.toxin-rangeslider-here');
     this.rangeslider = this.$rangesliderRootElement.data('toxinRangeSlider');
