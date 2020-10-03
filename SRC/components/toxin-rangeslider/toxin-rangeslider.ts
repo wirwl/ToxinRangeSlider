@@ -2,7 +2,7 @@ import TRSPresenter from './core/presenter';
 import TRSView from './core/view';
 import TRSModel from './core/model';
 
-$.fn.toxinRangeSlider = function(this: JQuery<HTMLElement>, options: RangeSliderOptions): JQuery {
+$.fn.toxinRangeSlider = function(this: JQuery<HTMLElement>, options?: RangeSliderOptions): JQuery {
   this.each(function() {
     if (!$.data(this, 'toxinRangeSlider')) {
       $.data(this, 'toxinRangeSlider', new TRSPresenter(new TRSModel(options), new TRSView($(this))));

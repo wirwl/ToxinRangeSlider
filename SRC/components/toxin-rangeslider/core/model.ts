@@ -13,14 +13,13 @@ class TRSModel {
     stepValue: 1,
     valueFrom: 0,
     valueTo: 1000,
-    items: null,
     onHandlePositionChange(this: HandleMovingResult): void {},
   };
 
-  constructor(options: RangeSliderOptions) {
+  constructor(options?: RangeSliderOptions) {
     this.settings = new CRangeSliderOptions();
     this.settings.extend(TRSModel.defaults);
-    this.settings.extend(options);
+    this.settings.extend(options!);
   }
 
   validate() {
@@ -43,20 +42,20 @@ class TRSModel {
     } = this.settings;
 
     if (IsHaveItems()) {
-      setMinValue(values[0]);
-      setMaxValue(values[values.length - 1]);
+      setMinValue(values![0]!);
+      setMaxValue(values![values!.length - 1]);
 
       if (typeof indexFrom === 'undefined') this.settings.items.indexFrom = 0;
-      if (typeof indexTo === 'undefined') this.settings.items.indexTo = values.length - 1;
+      if (typeof indexTo === 'undefined') this.settings.items.indexTo = values!.length - 1;
 
-      if (indexTo > values.length - 1) {
-        this.settings.items.indexTo = values.length - 1;
+      if (indexTo! > values!.length - 1) {
+        this.settings.items.indexTo = values!.length - 1;
       }
       if (isTwoHandles) {
-        if (indexFrom > indexTo) {
+        if (indexFrom! > indexTo!) {
           this.settings.items.indexFrom = indexTo;
         }
-        if (indexFrom < 0) this.settings.items.indexFrom = 0;
+        if (indexFrom! < 0) this.settings.items.indexFrom = 0;
       }
     } else {
       let maxValue = getMaxValue() as number;
@@ -67,12 +66,12 @@ class TRSModel {
       if (typeof isVertical !== 'boolean') this.settings.isVertical = TRSModel.defaults.isVertical;
       if (typeof isTwoHandles !== 'boolean') this.settings.isTwoHandles = TRSModel.defaults.isTwoHandles;
       if (typeof isTip !== 'boolean') this.settings.isTip = TRSModel.defaults.isTip;
-      if (Number.isNaN(Number(minValue))) setMinValue(TRSModel.defaults.minValue);
-      if (Number.isNaN(Number(maxValue))) setMaxValue(TRSModel.defaults.maxValue);
-      if (Number.isNaN(Number(valueFrom))) setValueFrom(TRSModel.defaults.valueFrom);
-      if (Number.isNaN(Number(valueTo))) setValueTo(TRSModel.defaults.valueTo);
+      if (Number.isNaN(Number(minValue))) setMinValue(TRSModel.defaults.minValue!);
+      if (Number.isNaN(Number(maxValue))) setMaxValue(TRSModel.defaults.maxValue!);
+      if (Number.isNaN(Number(valueFrom))) setValueFrom(TRSModel.defaults.valueFrom!);
+      if (Number.isNaN(Number(valueTo))) setValueTo(TRSModel.defaults.valueTo!);
       if (Number.isNaN(Number(stepValue))) this.settings.stepValue = TRSModel.defaults.stepValue;
-      if (typeof items !== 'object') this.settings.items = TRSModel.defaults.items;
+      if (typeof items !== 'object') this.settings.items = TRSModel.defaults.items!;
 
       if (minValue === maxValue) {
         setValueFrom(minValue);
@@ -94,8 +93,8 @@ class TRSModel {
 
       const size = maxValue - minValue;
 
-      if (stepValue < 1) this.settings.stepValue = 1;
-      if (this.settings.stepValue > size) this.settings.stepValue = size;
+      if (stepValue! < 1) this.settings.stepValue = 1;
+      if (this.settings.stepValue! > size) this.settings.stepValue = size;
 
       if (isTwoHandles) {
         if (valueFrom > valueTo) {

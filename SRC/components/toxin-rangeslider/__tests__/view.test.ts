@@ -19,7 +19,7 @@ function ConfigureJSDOM() {
   const LessFromFile = fs.readFileSync(urlLess, 'utf8');
 
   less.render(LessFromFile, (e: Less.RenderError, output: Less.RenderOutput | undefined) => {
-    cssFromLess = output.css;
+    cssFromLess = output!.css;
   });
   document.documentElement.innerHTML = textHTML;
   const head = document.getElementsByTagName('head')[0];
@@ -122,7 +122,7 @@ describe('Check result of moveHandle() function', () => {
     const relValue = view.convertPixelValueToRelativeValue(10);
     expect(result.isFromHandle).toBe(true);
     expect(result.value).toBe(relValue);
-    expect(result.isUsingItems).toBe(view.currentSettings.items?.values?.length > 1);
+    expect(result.isUsingItems).toBe(view.currentSettings.items?.values!?.length > 1);
   });
   test('If rangeslider has collection of items', () => {
     view.currentSettings.extend({ items: { values: [1, 2, 3, 4, 5], indexFrom: 0, indexTo: 4 } });
@@ -130,7 +130,7 @@ describe('Check result of moveHandle() function', () => {
     const relValue = view.convertPixelValueToRelativeValue(20);
     expect(result.isFromHandle).toBe(false);
     expect(result.value).toBe(relValue);
-    expect(result.isUsingItems).toBe(view.currentSettings.items?.values?.length > 1);
+    expect(result.isUsingItems).toBe(view.currentSettings.items?.values!?.length > 1);
   });
 });
 

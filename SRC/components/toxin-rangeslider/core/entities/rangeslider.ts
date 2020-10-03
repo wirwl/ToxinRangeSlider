@@ -4,7 +4,7 @@ import Handle from './handle';
 import Line from './line';
 
 class Rangeslider extends TRSElement {
-  public controls: (Tip | Handle | Line)[];
+  public controls: (Tip | Handle | Line)[] = [];
 
   private _isInterval = false;
 

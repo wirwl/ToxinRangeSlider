@@ -10,16 +10,13 @@ class SelectItems {
   private select: HTMLSelectElement;
 
   constructor(element: HTMLElement) {
-    this.initVariables(element);
-    this.addEventListeners();
-  }
-
-  private initVariables(element: HTMLElement) {
     this.$selectItems = $(element);
     this.$buttonAdd = this.$selectItems.find('.js-select-items__button-add');
     this.$buttonRemove = this.$selectItems.find('.js-select-items__button-remove');
     this.$select = this.$selectItems.find('.js-select-items__options');
     this.select = this.$select[0] as HTMLSelectElement;
+
+    this.addEventListeners();
   }
 
   private addEventListeners() {

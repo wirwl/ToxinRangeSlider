@@ -12,7 +12,7 @@ class TRSElement {
     this.el.removeAttr('style');
   }
 
-  protected _x: number;
+  protected _x = 0;
 
   getX(): number {
     return this._x;
@@ -23,7 +23,7 @@ class TRSElement {
     this.el.css('left', value);
   }
 
-  protected _right: number;
+  protected _right = 0;
 
   getRight(): number {
     return this._right;
@@ -34,7 +34,7 @@ class TRSElement {
     this.el.css('right', value);
   }
 
-  protected _bottom: number;
+  protected _bottom = 0;
 
   getBottom(): number {
     return this._bottom;
@@ -45,7 +45,7 @@ class TRSElement {
     this.el.css('bottom', value);
   }
 
-  private _y: number;
+  private _y = 0;
 
   getY(): number {
     return this._y;
@@ -57,11 +57,11 @@ class TRSElement {
   }
 
   getOffsetTop(): number {
-    return this.el.offset().top;
+    return this.el.offset()!.top;
   }
 
   getOffsetLeft(): number {
-    return this.el.offset().left;
+    return this.el.offset()!.left;
   }
 
   getOffset(): number {
@@ -77,7 +77,7 @@ class TRSElement {
     else this.setX(value);
   }
 
-  protected _width: number;
+  protected _width = 0;
 
   getWidth(): number {
     return this._width;
@@ -88,7 +88,7 @@ class TRSElement {
     this.el.css('width', value);
   }
 
-  protected _height: number;
+  protected _height = 0;
 
   getHeight(): number {
     return this._height;

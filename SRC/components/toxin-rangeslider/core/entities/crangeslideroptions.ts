@@ -11,7 +11,7 @@ class CRangeSliderOptions implements RangeSliderOptions {
   minValue?: number;
 
   getMinValue = (): number | string => {
-    return this.IsHaveItems() ? this.items.values[0] : this.minValue;
+    return this.IsHaveItems()! ? this.items.values![0]! : this.minValue!;
   };
 
   setMinValue = (value: number | string): void => {
@@ -21,7 +21,7 @@ class CRangeSliderOptions implements RangeSliderOptions {
   maxValue?: number;
 
   getMaxValue = (): number | string => {
-    return this.IsHaveItems() ? this.items.values[this.items.values.length - 1] : this.maxValue;
+    return this.IsHaveItems()! ? this.items.values![this.items.values!.length - 1] : this.maxValue!;
   };
 
   setMaxValue = (value: number | string): void => {
@@ -31,14 +31,14 @@ class CRangeSliderOptions implements RangeSliderOptions {
   stepValue?: number;
 
   IsHaveItems = (): boolean => {
-    return this.items?.values?.length > 1;
+    return this.items!?.values!?.length > 1;
   };
 
   valueFrom?: number;
 
   getValueFrom = (): number | string => {
-    if (this.IsHaveItems()) return this.items.values[this.items.indexFrom];
-    return this.valueFrom;
+    if (this.IsHaveItems()) return this.items.values![this.items.indexFrom!];
+    return this.valueFrom!;
   };
 
   setValueFrom = (value: number | string): void => {
@@ -51,8 +51,8 @@ class CRangeSliderOptions implements RangeSliderOptions {
   valueTo?: number;
 
   getValueTo = (): number | string => {
-    if (this.IsHaveItems()) return this.items.values[this.items.indexTo];
-    return this.valueTo;
+    if (this.IsHaveItems()) return this.items.values![this.items.indexTo!];
+    return this.valueTo!;
   };
 
   setValueTo = (value: number | string): void => {
@@ -66,14 +66,14 @@ class CRangeSliderOptions implements RangeSliderOptions {
 
   onHandlePositionChange?(this: HandleMovingResult): void;
 
-  constructor(anotherOptions: CRangeSliderOptions | RangeSliderOptions = null) {
+  constructor(anotherOptions?: CRangeSliderOptions | RangeSliderOptions) {
     this.items = {};
     this.onHandlePositionChange = function() {};
     if (anotherOptions) this.extend(anotherOptions);
   }
 
   findIndexByItem(item: number | string): number {
-    return this.items.values.findIndex(value => value.toString() === item.toString());
+    return this.items.values!.findIndex(value => value.toString() === item.toString());
   }
 
   extend(o: RangeSliderOptions | CRangeSliderOptions) {

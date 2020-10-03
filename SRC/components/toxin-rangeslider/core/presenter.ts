@@ -13,6 +13,7 @@ class TRSPresenter {
   constructor(model: TRSModel, view: TRSView) {
     this.view = view;
     this.model = model;
+    this.data = new CRangeSliderOptions();
     this.view.onHandlePositionUpdate = this.onHandlePositionUpdate.bind(this);
     this.init();
   }
@@ -35,7 +36,7 @@ class TRSPresenter {
       if (isUsingItems) this.model.settings.items.indexTo = index;
       setValueTo(value);
     }
-    onHandlePositionChange.call({ isFromHandle, isUsingItems, index, value });
+    onHandlePositionChange!.call({ isFromHandle, isUsingItems, index, value });
   }
 
   update(opt: RangeSliderOptions) {

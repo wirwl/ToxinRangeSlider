@@ -26,7 +26,8 @@ class TRSView {
 
   rangeslider: Rangeslider;
 
-  onHandlePositionUpdate: Function;
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  onHandlePositionUpdate: Function = () => {};
 
   data: RangeSliderOptions;
 
@@ -123,12 +124,12 @@ class TRSView {
     let isNeedRedraw = false;
 
     if (isVerticalChanged) {
-      setVertical(currentIsVertical);
+      setVertical(currentIsVertical!);
       isNeedRedraw = true;
     }
 
     if (isNeedRedraw || isTwoHandlesChanged) {
-      setTwoHandles(currentIsTwoHandles);
+      setTwoHandles(currentIsTwoHandles!);
       isNeedRedraw = true;
     }
 
@@ -154,7 +155,7 @@ class TRSView {
       this.tipMax.setText(currentGetMaxValue());
     }
 
-    const isItemValuesChanged = !this.isEqualArrays(oldValues, currentValues);
+    const isItemValuesChanged = !this.isEqualArrays(oldValues!, currentValues!);
     if (isNeedRedraw || isItemValuesChanged) {
       if (currentValues) {
         const count = currentValues.length;
@@ -168,7 +169,7 @@ class TRSView {
     if (currentIsTwoHandles) {
       if (isNeedRedraw || valueFromChanged || minValueChanged || maxValueChanged || isItemValuesChanged) {
         const val = currentIsHaveItems() ? currentIndexFrom : (currentGetValueFrom() as number);
-        const posXWithOutStep = this.convertRelativeValueToPixelValue(val);
+        const posXWithOutStep = this.convertRelativeValueToPixelValue(val!);
         const posXWithStep = this.getSteppedPos(posXWithOutStep);
         this.moveHandle(this.handleFrom, posXWithStep == null ? posXWithOutStep : posXWithStep);
       }
@@ -176,28 +177,28 @@ class TRSView {
 
     if (isNeedRedraw || valueToChanged || minValueChanged || maxValueChanged || isItemValuesChanged) {
       const val = currentIsHaveItems() ? currentIndexTo : (currentGetValueTo() as number);
-      const posXWithOutStep = this.convertRelativeValueToPixelValue(val);
+      const posXWithOutStep = this.convertRelativeValueToPixelValue(val!);
       const posXWithStep = this.getSteppedPos(posXWithOutStep);
       this.moveHandle(this.handleTo, posXWithStep == null ? posXWithOutStep : posXWithStep);
     }
 
     if (currentIsHaveItems()) {
       const pxLength = this.line.getSize() - this.offsetFrom - this.offsetTo;
-      const pxStep = pxLength / (currentValues.length - 1);
+      const pxStep = pxLength / (currentValues!.length - 1);
 
       if (currentIsTwoHandles && (isNeedRedraw || indexFromChanged)) {
-        const newPos = currentIndexFrom * pxStep;
+        const newPos = currentIndexFrom! * pxStep;
         this.moveHandle(this.handleFrom, newPos);
       }
 
       if (isNeedRedraw || indexToChanged) {
-        const newPos = currentIndexTo * pxStep;
+        const newPos = currentIndexTo! * pxStep;
         this.moveHandle(this.handleTo, newPos);
       }
     }
   }
 
-  isEqualArrays(ar1: (string | number)[], ar2: (string | number)[]): boolean {
+  isEqualArrays(ar1: (string | number)[] | null, ar2: (string | number)[] | null): boolean {
     if (!ar1 || !ar2) return false;
     if (ar1.length !== ar2.length) return false;
     return ar1.every((value, index) => value === ar2[index]);
@@ -207,7 +208,7 @@ class TRSView {
     const currentHandle: Handle = $(e.target).is(this.handleFrom.el) ? this.handleFrom : this.handleTo;
     currentHandle.setMoving(true);
     const clientPos = this.currentSettings.isVertical ? e.clientY : e.clientX;
-    const shiftPos = clientPos - currentHandle.getOffset();
+    const shiftPos = clientPos! - currentHandle.getOffset();
 
     this.rangeslider.el.on('mousemove.rangeslider', e => this.onMouseMove(e, currentHandle, shiftPos));
     const $document = $(document);
@@ -221,11 +222,11 @@ class TRSView {
     const { isVertical } = this.currentSettings;
 
     const offsetPos = isVertical ? e.offsetY : e.offsetX;
-    const targetOffset = isVertical ? $target.offset().top : $target.offset().left;
-    let newPos = this.getSteppedPos(offsetPos + targetOffset - this.line.getOffset() - this.offsetFrom);
+    const targetOffset = isVertical ? $target.offset()!.top : $target.offset()!.left;
+    let newPos = this.getSteppedPos(offsetPos! + targetOffset - this.line.getOffset() - this.offsetFrom);
 
     const clientPos = isVertical ? e.clientY : e.clientX;
-    if (newPos == null) newPos = clientPos - this.line.getOffset() - shiftPos;
+    if (newPos == null) newPos = clientPos! - this.line.getOffset() - shiftPos;
     newPos = this.validate(newPos, currentHandle);
 
     this.onHandlePositionUpdate(currentHandle, newPos);
@@ -263,17 +264,17 @@ class TRSView {
     e.preventDefault();
     let offsetPos = this.currentSettings.isVertical ? e.offsetY : e.offsetX;
 
-    if (offsetPos < this.offsetFrom) offsetPos = this.offsetFrom;
-    if (offsetPos > this.line.getSize() - this.offsetTo) {
+    if (offsetPos! < this.offsetFrom) offsetPos = this.offsetFrom;
+    if (offsetPos! > this.line.getSize() - this.offsetTo) {
       offsetPos = this.line.getSize() - this.offsetTo;
     }
 
-    const nearHandle = this.getNearestHandle(offsetPos);
+    const nearHandle = this.getNearestHandle(offsetPos!);
 
-    let newPos = this.getSteppedPos(offsetPos - this.offsetFrom);
+    let newPos = this.getSteppedPos(offsetPos! - this.offsetFrom);
     if (newPos == null) {
       const offset = nearHandle.is(this.handleFrom) ? this.offsetFrom : this.handleTo.getSize() - this.offsetTo;
-      newPos = offsetPos - offset;
+      newPos = offsetPos! - offset;
     }
     this.onHandlePositionUpdate(nearHandle, newPos);
 
@@ -308,7 +309,7 @@ class TRSView {
     let restoreIndex = -1;
     if (IsHaveItems()) {
       const lw = this.line.getSize() - this.offsetFrom - this.offsetTo;
-      const pxStep = lw / (values.length - 1);
+      const pxStep = lw / (values!.length - 1);
       restoreIndex = Math.round(pxX / pxStep);
       if (currentHandle.is(this.handleFrom)) this.currentSettings.items.indexFrom = restoreIndex;
       else this.currentSettings.items.indexTo = restoreIndex;
@@ -416,7 +417,7 @@ class TRSView {
     const isHasValues = items && values && values.length > 1;
     let result;
     if (isHasValues) {
-      const pxStep = lw / (values.length - 1);
+      const pxStep = lw / (values!.length - 1);
       result = val * pxStep;
     } else {
       const relLength = (getMaxValue() as number) - (getMinValue() as number);
@@ -436,7 +437,7 @@ class TRSView {
     return result;
   }
 
-  getSteppedPos(pxValue: number): number {
+  getSteppedPos(pxValue: number): number | null {
     const {
       stepValue,
       items,
@@ -445,7 +446,7 @@ class TRSView {
       getMinValue,
     } = this.currentSettings;
     const pxLength = this.line.getSize() - this.offsetFrom - this.offsetTo;
-    const isDefinedStep = stepValue > 0;
+    const isDefinedStep = stepValue! > 0;
     const isDefinedSetOfValues = items && values && values.length > 1;
     const isTooLongLine = pxLength > (getMaxValue() as number) - (getMinValue() as number);
     const isHaveStep = isDefinedStep || isTooLongLine || isDefinedSetOfValues;
@@ -454,23 +455,23 @@ class TRSView {
       let pxStep: number;
 
       if (isDefinedStep) {
-        pxStep = this.convertRelativeValueToPixelValue((getMinValue() as number) + stepValue);
+        pxStep = this.convertRelativeValueToPixelValue((getMinValue() as number) + stepValue!);
       }
 
       if (isTooLongLine) {
         const relativeLength = (getMaxValue() as number) - (getMinValue() as number);
         pxStep = pxLength / relativeLength;
-        if (isDefinedStep) pxStep *= stepValue;
+        if (isDefinedStep) pxStep *= stepValue!;
       }
 
       if (isDefinedSetOfValues) {
-        pxStep = pxLength / (values.length - 1);
+        pxStep = pxLength / (values!.length - 1);
       }
 
-      const nStep = Math.round(pxValue / pxStep);
-      let newPos = nStep * pxStep;
+      const nStep = Math.round(pxValue / pxStep!);
+      let newPos = nStep * pxStep!;
 
-      if (pxValue / pxStep > Math.trunc(pxLength / pxStep)) {
+      if (pxValue / pxStep! > Math.trunc(pxLength / pxStep!)) {
         const remainder = pxLength - newPos;
         if (pxValue > newPos + remainder / 2) newPos += remainder;
       }

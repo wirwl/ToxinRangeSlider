@@ -19,7 +19,7 @@ function ConfigureJSDOM() {
   const LessFromFile = fs.readFileSync(urlLess, 'utf8');
 
   less.render(LessFromFile, (e: Less.RenderError, output: Less.RenderOutput | undefined) => {
-    cssFromLess = output.css;
+    cssFromLess = output!.css;
   });
   document.documentElement.innerHTML = textHTML;
   const head = document.getElementsByTagName('head')[0];
