@@ -352,7 +352,7 @@ class Panel {
     return Number(this.$stepValue.val()) < this.getRangeLength();
   }
 
-  private preventMinusTyping(event: any) {
+  private preventMinusTyping(event: JQuery.TriggeredEvent) {
     if (event.key === '-') event.preventDefault();
   }
 
