@@ -66,10 +66,12 @@ class TRSView {
 
     this.handleFrom = new Handle(this.rangeslider.el.find('.rangeslider__handle-from'));
     this.handleFrom.el.on('mousedown.handleFrom', e => this.onMouseDownByHandle(e));
+    this.tipFrom.el.on('mousedown.tipFrom', e => this.onMouseDownByHandle(e));
     this.offsetFrom = this.handleFrom.getWidth() / 2;
 
     this.handleTo = new Handle(this.rangeslider.el.find('.rangeslider__handle-to'));
     this.handleTo.el.on('mousedown.handleTo', e => this.onMouseDownByHandle(e));
+    this.tipTo.el.on('mousedown.tipTo', e => this.onMouseDownByHandle(e));
     this.offsetTo = this.handleTo.getWidth() / 2;
 
     this.rangeslider.addControls([
@@ -205,19 +207,23 @@ class TRSView {
   }
 
   onMouseDownByHandle(e: JQuery.TriggeredEvent) {
-    const currentHandle: Handle = $(e.target).is(this.handleFrom.el) ? this.handleFrom : this.handleTo;
+    const $el = $(e.target);
+    let currentHandle: Handle = this.handleFrom;
+    if ($el.is(this.handleTo.el) || $el.is(this.tipTo.el)) currentHandle = this.handleTo;
+
     currentHandle.setMoving(true);
     const clientPos = this.currentSettings.isVertical ? e.clientY : e.clientX;
     const shiftPos = clientPos! - currentHandle.getOffset();
 
-    this.rangeslider.el.on('mousemove.rangeslider', e => this.onMouseMove(e, currentHandle, shiftPos));
+    this.rangeslider.el.on('mousemove.rangeslider', e => this.onMouseMoveRangeSlider(e, currentHandle, shiftPos));
     const $document = $(document);
-    $document.on('mousemove.document', e => this.onMouseMove(e, currentHandle, shiftPos));
+    $document.on('mousemove.document', e => this.onMouseMoveRangeSlider(e, currentHandle, shiftPos));
     currentHandle.el.on('mouseup.handle', e => this.onMouseUp(e, currentHandle));
+
     $document.on('mouseup.document', e => this.onMouseUp(e, currentHandle));
   }
 
-  onMouseMove(e: JQuery.TriggeredEvent, currentHandle: Handle, shiftPos: number) {
+  onMouseMoveRangeSlider(e: JQuery.TriggeredEvent, currentHandle: Handle, shiftPos: number) {
     const $target = $(e.target);
     const { isVertical } = this.currentSettings;
 
@@ -263,7 +269,6 @@ class TRSView {
   onMouseDownByLine(e: JQuery.TriggeredEvent) {
     e.preventDefault();
     let offsetPos = this.currentSettings.isVertical ? e.offsetY : e.offsetX;
-
     if (offsetPos! < this.offsetFrom) offsetPos = this.offsetFrom;
     if (offsetPos! > this.line.getSize() - this.offsetTo) {
       offsetPos = this.line.getSize() - this.offsetTo;
