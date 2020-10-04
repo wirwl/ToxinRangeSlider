@@ -170,7 +170,7 @@ class TRSView {
 
     if (currentIsTwoHandles) {
       if (isNeedRedraw || valueFromChanged || minValueChanged || maxValueChanged || isItemValuesChanged) {
-        const val = currentIsHaveItems() ? currentIndexFrom : (currentGetValueFrom() as number);
+        const val = currentIsHaveItems() ? currentIndexFrom : Number(currentGetValueFrom());
         const posXWithOutStep = this.convertRelativeValueToPixelValue(val!);
         const posXWithStep = this.getSteppedPos(posXWithOutStep);
         this.moveHandle(this.handleFrom, posXWithStep == null ? posXWithOutStep : posXWithStep);
@@ -178,7 +178,7 @@ class TRSView {
     }
 
     if (isNeedRedraw || valueToChanged || minValueChanged || maxValueChanged || isItemValuesChanged) {
-      const val = currentIsHaveItems() ? currentIndexTo : (currentGetValueTo() as number);
+      const val = currentIsHaveItems() ? currentIndexTo : Number(currentGetValueTo());
       const posXWithOutStep = this.convertRelativeValueToPixelValue(val!);
       const posXWithStep = this.getSteppedPos(posXWithOutStep);
       this.moveHandle(this.handleTo, posXWithStep == null ? posXWithOutStep : posXWithStep);
@@ -425,8 +425,8 @@ class TRSView {
       const pxStep = lw / (values!.length - 1);
       result = val * pxStep;
     } else {
-      const relLength = (getMaxValue() as number) - (getMinValue() as number);
-      const relPercent = (val - (getMinValue() as number)) / relLength;
+      const relLength = Number(getMaxValue()) - Number(getMinValue());
+      const relPercent = (val - Number(getMinValue())) / relLength;
       result = lw * relPercent;
     }
     return result;
@@ -436,9 +436,7 @@ class TRSView {
     const { getMaxValue, getMinValue } = this.currentSettings;
     const lw = this.line.getSize() - this.offsetFrom - this.offsetTo;
     const percent = val / lw;
-    const result = Math.round(
-      (getMinValue() as number) + percent * ((getMaxValue() as number) - (getMinValue() as number)),
-    );
+    const result = Math.round(Number(getMinValue()) + percent * (Number(getMaxValue()) - Number(getMinValue())));
     return result;
   }
 
@@ -453,18 +451,18 @@ class TRSView {
     const pxLength = this.line.getSize() - this.offsetFrom - this.offsetTo;
     const isDefinedStep = stepValue! > 0;
     const isDefinedSetOfValues = items && values && values.length > 1;
-    const isTooLongLine = pxLength > (getMaxValue() as number) - (getMinValue() as number);
+    const isTooLongLine = pxLength > Number(getMaxValue()) - Number(getMinValue());
     const isHaveStep = isDefinedStep || isTooLongLine || isDefinedSetOfValues;
 
     if (isHaveStep) {
       let pxStep: number;
 
       if (isDefinedStep) {
-        pxStep = this.convertRelativeValueToPixelValue((getMinValue() as number) + stepValue!);
+        pxStep = this.convertRelativeValueToPixelValue(Number(getMinValue()) + stepValue!);
       }
 
       if (isTooLongLine) {
-        const relativeLength = (getMaxValue() as number) - (getMinValue() as number);
+        const relativeLength = Number(getMaxValue()) - Number(getMinValue());
         pxStep = pxLength / relativeLength;
         if (isDefinedStep) pxStep *= stepValue!;
       }

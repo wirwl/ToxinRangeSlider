@@ -58,35 +58,35 @@ class TRSModel {
         if (indexFrom! < 0) this.settings.items.indexFrom = 0;
       }
     } else {
-      let maxValue = getMaxValue() as number;
-      let minValue = getMinValue() as number;
-      let valueFrom = getValueFrom() as number;
-      let valueTo = getValueTo() as number;
+      let maxValue = Number(getMaxValue());
+      let minValue = Number(getMinValue());
+      let valueFrom = Number(getValueFrom());
+      let valueTo = Number(getValueTo());
 
       if (typeof isVertical !== 'boolean') this.settings.isVertical = TRSModel.defaults.isVertical;
       if (typeof isTwoHandles !== 'boolean') this.settings.isTwoHandles = TRSModel.defaults.isTwoHandles;
       if (typeof isTip !== 'boolean') this.settings.isTip = TRSModel.defaults.isTip;
-      if (Number.isNaN(Number(minValue))) setMinValue(TRSModel.defaults.minValue!);
-      if (Number.isNaN(Number(maxValue))) setMaxValue(TRSModel.defaults.maxValue!);
-      if (Number.isNaN(Number(valueFrom))) setValueFrom(TRSModel.defaults.valueFrom!);
-      if (Number.isNaN(Number(valueTo))) setValueTo(TRSModel.defaults.valueTo!);
-      if (Number.isNaN(Number(stepValue))) this.settings.stepValue = TRSModel.defaults.stepValue;
+      if (Number.isNaN(minValue)) setMinValue(TRSModel.defaults.minValue!);
+      if (Number.isNaN(maxValue)) setMaxValue(TRSModel.defaults.maxValue!);
+      if (Number.isNaN(valueFrom)) setValueFrom(TRSModel.defaults.valueFrom!);
+      if (Number.isNaN(valueTo)) setValueTo(TRSModel.defaults.valueTo!);
+      if (Number.isNaN(stepValue)) this.settings.stepValue = TRSModel.defaults.stepValue;
       if (typeof items !== 'object') this.settings.items = TRSModel.defaults.items!;
 
       if (minValue === maxValue) {
         setValueFrom(minValue);
-        valueFrom = getValueFrom() as number;
+        valueFrom = Number(getValueFrom());
         setMaxValue(minValue + 1);
-        maxValue = getMaxValue() as number;
+        maxValue = Number(getMaxValue());
         setValueTo(maxValue);
-        valueTo = getValueTo() as number;
+        valueTo = Number(getValueTo());
       }
 
       if (maxValue < minValue) {
         setMinValue(maxValue);
         setMaxValue(minValue);
-        minValue = getMinValue() as number;
-        maxValue = getMaxValue() as number;
+        minValue = Number(getMinValue());
+        maxValue = Number(getMaxValue());
         if (valueFrom < minValue || valueFrom > maxValue) setValueFrom(getMinValue());
         if (valueTo < minValue || valueTo > maxValue) setValueTo(getMaxValue());
       }
@@ -100,8 +100,8 @@ class TRSModel {
         if (valueFrom > valueTo) {
           setValueFrom(valueTo);
           setValueTo(valueFrom);
-          valueFrom = getValueFrom() as number;
-          valueTo = getValueTo() as number;
+          valueFrom = Number(getValueFrom());
+          valueTo = Number(getValueTo());
         }
         if (valueTo < valueFrom) setValueTo(valueFrom);
         if (valueFrom < minValue) setValueFrom(minValue);

@@ -29,7 +29,7 @@ class Panel {
 
   private $selectButtonRemove: JQuery<HTMLElement>;
 
-  private select: HTMLSelectElement;
+  private select: HTMLSelectElement | null;
 
   private $rangesliderRootElement: JQuery<HTMLElement>;
 
@@ -54,9 +54,9 @@ class Panel {
     this.$buttonAdd = this.$panel.find('.js-select-items').find('.js-select-items__button-add');
     this.$buttonRemove = this.$panel.find('.js-select-items').find('.js-select-items__button-remove');
     this.$select = this.$panel.find('.js-select-items').find('.js-select-items__options');
+    this.select = document.querySelector('.js-select-items__options');
     this.$selectButtonAdd = this.$select.parent().find('js-select-items__button-add');
     this.$selectButtonRemove = this.$select.parent().find('js-select-items__button-remove');
-    this.select = this.$select[0] as HTMLSelectElement;
     this.$rangesliderRootElement = this.$panel.find('.toxin-rangeslider-here');
     this.rangeslider = this.$rangesliderRootElement.data('toxinRangeSlider');
     this.$isVertical = this.$panel.find('.js-panel__checkbox-is-vertical').find('.checkbox__input');
@@ -175,7 +175,7 @@ class Panel {
 
   private handleButtonRemoveClick() {
     const $selectOptions = this.$select.find('option');
-    const isUsingItems = this.select.length > 1;
+    const isUsingItems = this.select!.length > 1;
     this.$minValue.prop('disabled', isUsingItems);
     this.$maxValue.prop('disabled', isUsingItems);
     this.$stepValue.prop('disabled', isUsingItems);
@@ -190,7 +190,7 @@ class Panel {
 
   private handleButtonAddClick() {
     const $selectOptions = this.$select.find('option');
-    const isUsingItems = this.select.length > 1;
+    const isUsingItems = this.select!.length > 1;
     this.$minValue.prop('disabled', isUsingItems);
     this.$maxValue.prop('disabled', isUsingItems);
     this.$stepValue.prop('disabled', isUsingItems);
@@ -207,7 +207,7 @@ class Panel {
     const el = event.target as HTMLInputElement;
     if (el.value.length) {
       const indexFrom = parseInt(el.value, 10);
-      const indexTo = parseInt(this.$indexTo.val() as string, 10);
+      const indexTo = parseInt(String(this.$indexTo.val()), 10);
       if (indexFrom > indexTo) el.value = indexTo.toString();
       this.rangeslider.update({ items: { indexFrom: parseInt(el.value, 10) } });
       this.$valueFrom.val(this.rangeslider.data.getValueFrom());
@@ -218,7 +218,7 @@ class Panel {
     const el = event.target as HTMLInputElement;
     if (el.value.length) {
       const maxIndex = this.rangeslider.data.items.values!.length - 1;
-      const indexFrom = parseInt(this.$indexFrom.val() as string, 10);
+      const indexFrom = parseInt(String(this.$indexFrom.val()), 10);
       const indexTo = parseInt(el.value, 10);
       if (indexTo < indexFrom) el.value = indexFrom.toString();
       if (indexTo > maxIndex) el.value = maxIndex.toString();
@@ -265,18 +265,17 @@ class Panel {
   }
 
   private handleMinValueInput(event: JQuery.TriggeredEvent) {
-    console.log('fffffffffffffffuck');
     const el = event.target as HTMLInputElement;
     let minValue = parseInt(el.value, 10);
     if (!Number.isNaN(minValue)) {
       el.value = minValue.toString();
-      const maxValue = parseInt(this.$maxValue.val() as string, 10);
+      const maxValue = parseInt(String(this.$maxValue.val()), 10);
       if (minValue >= maxValue) {
         el.value = (maxValue - 1).toString();
         minValue = parseInt(el.value, 10);
       }
-      const toValue = parseInt(this.$valueTo.val() as string, 10);
-      const fromValue = parseInt(this.$valueFrom.val() as string, 10);
+      const toValue = parseInt(String(this.$valueTo.val()), 10);
+      const fromValue = parseInt(String(this.$valueFrom.val()), 10);
       if (toValue < minValue) this.$valueTo.val(minValue);
       if (this.rangeslider.data.isTwoHandles && fromValue < minValue) {
         this.$valueFrom.val(el.value);
@@ -284,8 +283,8 @@ class Panel {
       if (!this.isStepValid()) this.$stepValue.val(this.getRangeLength().toString());
       this.rangeslider.update({
         minValue: el.value,
-        valueFrom: this.$valueFrom.val() as number,
-        valueTo: this.$valueTo.val() as number,
+        valueFrom: Number(this.$valueFrom.val()),
+        valueTo: Number(this.$valueTo.val()),
       });
     }
   }
@@ -295,13 +294,13 @@ class Panel {
     let maxValue = parseInt(el.value, 10);
     if (!Number.isNaN(maxValue)) {
       el.value = maxValue.toString();
-      const minValue = parseInt(this.$minValue.val() as string, 10);
+      const minValue = parseInt(String(this.$minValue.val()), 10);
       if (maxValue <= minValue) {
         el.value = (minValue + 1).toString();
         maxValue = parseInt(el.value, 10);
       }
-      const toValue = parseInt(this.$valueTo.val() as string, 10);
-      const fromValue = parseInt(this.$valueFrom.val() as string, 10);
+      const toValue = parseInt(String(this.$valueTo.val()), 10);
+      const fromValue = parseInt(String(this.$valueFrom.val()), 10);
       if (toValue > maxValue) this.$valueTo.val(maxValue);
       if (this.rangeslider.data.isTwoHandles && fromValue > maxValue) {
         this.$valueFrom.val(minValue);
@@ -312,14 +311,15 @@ class Panel {
       }
       this.rangeslider.update({
         maxValue: el.value,
-        valueFrom: this.$valueFrom.val() as number,
-        valueTo: this.$valueTo.val() as number,
+        valueFrom: Number(this.$valueFrom.val()),
+        valueTo: Number(this.$valueTo.val()),
       });
     }
   }
 
   private handleIsShowTipsChange(event: JQuery.TriggeredEvent) {
-    this.rangeslider.update({ isTip: (event.target as HTMLInputElement).checked });
+    const el = event.target as HTMLInputElement;
+    this.rangeslider.update({ isTip: el.checked });
   }
 
   private updatePanelValues() {
@@ -330,7 +330,7 @@ class Panel {
     this.$maxValue.val(this.rangeslider.data.getMaxValue());
     if (this.rangeslider.data.isTwoHandles) this.$valueFrom.val(this.rangeslider.data.getValueFrom());
     this.$valueTo.val(this.rangeslider.data.getValueTo());
-    if (this.select.length > 1) {
+    if (this.select!.length > 1) {
       if (this.rangeslider.data.isTwoHandles) {
         this.$indexFrom.prop('disabled', false);
         this.$indexFrom.val(Number(this.rangeslider.data.items.indexFrom));
@@ -345,11 +345,11 @@ class Panel {
   }
 
   private getRangeLength(): number {
-    return (this.$maxValue.val() as number) - (this.$minValue.val() as number);
+    return Number(this.$maxValue.val()) - Number(this.$minValue.val());
   }
 
   private isStepValid(): boolean {
-    return (this.$stepValue.val() as number) < this.getRangeLength();
+    return Number(this.$stepValue.val()) < this.getRangeLength();
   }
 
   private preventMinusTyping(event: any) {
@@ -357,10 +357,10 @@ class Panel {
   }
 
   private handleIsVerticalChange(event: JQuery.TriggeredEvent) {
-    const element = event.target as HTMLInputElement;
-    if (element.checked) this.$panel.addClass('panel_is-vertical');
+    const checkbox = event.target as HTMLInputElement;
+    if (checkbox.checked) this.$panel.addClass('panel_is-vertical');
     else this.$panel.removeClass('panel_is-vertical');
-    this.rangeslider.update({ isVertical: element.checked });
+    this.rangeslider.update({ isVertical: checkbox.checked });
   }
 
   private handleIsTwoHandlesChange(event: JQuery.TriggeredEvent) {
@@ -373,11 +373,11 @@ class Panel {
       this.$valueFrom.prop('disabled', false);
       if (this.rangeslider.data.IsHaveItems()) this.$indexFrom.prop('disabled', false);
       if (!this.rangeslider.data.IsHaveItems()) {
-        const minValue: number = parseInt(this.$minValue.val() as string, 10);
-        const maxValue: number = parseInt(this.$maxValue.val() as string, 10);
-        let valueFrom: number = parseInt(this.$valueFrom.val() as string, 10);
+        const minValue: number = parseInt(String(this.$minValue.val()), 10);
+        const maxValue: number = parseInt(String(this.$maxValue.val()), 10);
+        let valueFrom: number = parseInt(String(this.$valueFrom.val()), 10);
         if (Number.isNaN(Number(valueFrom))) valueFrom = minValue;
-        const valueTo: number = parseInt(this.$valueTo.val() as string, 10);
+        const valueTo: number = parseInt(String(this.$valueTo.val()), 10);
         if (valueFrom < minValue || valueFrom > valueTo || valueFrom > maxValue) valueFrom = minValue;
         this.rangeslider.update({ valueFrom });
       }

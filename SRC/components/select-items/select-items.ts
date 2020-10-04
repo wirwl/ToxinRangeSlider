@@ -7,15 +7,14 @@ class SelectItems {
 
   private $select: JQuery<HTMLElement>;
 
-  private select: HTMLSelectElement;
+  private select: HTMLSelectElement | null;
 
   constructor(element: HTMLElement) {
     this.$selectItems = $(element);
     this.$buttonAdd = this.$selectItems.find('.js-select-items__button-add');
     this.$buttonRemove = this.$selectItems.find('.js-select-items__button-remove');
     this.$select = this.$selectItems.find('.js-select-items__options');
-    this.select = this.$select[0] as HTMLSelectElement;
-
+    this.select = document.querySelector('.js-select-items__options');
     this.addEventListeners();
   }
 
@@ -29,9 +28,9 @@ class SelectItems {
     const newValue = parseInt((randomValue * 1000).toString(), 10).toString();
     const item = prompt('Введите новый объект', newValue);
     if (item) this.$select.append(new Option(item));
-    if (this.select.length > 1) this.$selectItems.removeClass('select-items_not-using');
+    if (this.select!.length > 1) this.$selectItems.removeClass('select-items_not-using');
     else this.$selectItems.addClass('select-items_not-using');
-    if (this.select.length > 0) {
+    if (this.select!.length > 0) {
       this.$buttonRemove.prop('disabled', false);
       this.$buttonRemove.removeClass('select-items__button-remove_disabled');
     }
@@ -39,9 +38,9 @@ class SelectItems {
 
   private handleButtonRemoveClick() {
     this.$select.find('option:selected').remove();
-    if (this.select.length > 1) this.$selectItems.removeClass('select-items_not-using');
+    if (this.select!.length > 1) this.$selectItems.removeClass('select-items_not-using');
     else this.$selectItems.addClass('select-items_not-using');
-    if (this.select.length === 0) {
+    if (this.select!.length === 0) {
       this.$buttonRemove.prop('disabled', true);
       this.$buttonRemove.addClass('select-items__button-remove_disabled');
     }
