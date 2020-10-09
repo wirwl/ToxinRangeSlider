@@ -63,8 +63,25 @@ class Panel {
     this.$isTwoHandles = this.$panel.find('.js-panel__checkbox-is-two-handles').find('.checkbox__input');
     this.$isShowTips = this.$panel.find('.js-panel__checkbox-is-tip').find('.checkbox__input');
 
+    this.bindThis();
     this.addEventListeners();
     this.updatePanelValues();
+  }
+
+  private bindThis() {
+    this.handleIsVerticalChange = this.handleIsVerticalChange.bind(this);
+    this.handleIsTwoHandlesChange = this.handleIsTwoHandlesChange.bind(this);
+    this.handleIsShowTipsChange = this.handleIsShowTipsChange.bind(this);
+    this.handleMinValueInput = this.handleMinValueInput.bind(this);
+    this.handleMaxValueInput = this.handleMaxValueInput.bind(this);
+    this.handleValueFromInput = this.handleValueFromInput.bind(this);
+    this.handleValueToInput = this.handleValueToInput.bind(this);
+    this.handleIndexFromInput = this.handleIndexFromInput.bind(this);
+    this.handleIndexToInput = this.handleIndexToInput.bind(this);
+    this.handleStepValueInput = this.handleStepValueInput.bind(this);
+    this.handleInputsFocusout = this.handleInputsFocusout.bind(this);
+    this.handleButtonAddClick = this.handleButtonAddClick.bind(this);
+    this.handleButtonRemoveClick = this.handleButtonRemoveClick.bind(this);
   }
 
   private addEventListeners() {
@@ -85,22 +102,22 @@ class Panel {
       },
     });
 
-    this.$isVertical.on('change.isVertical', this.handleIsVerticalChange.bind(this));
-    this.$isTwoHandles.on('change.isTwoHandles', this.handleIsTwoHandlesChange.bind(this));
-    this.$isShowTips.on('change.isShowTips', this.handleIsShowTipsChange.bind(this));
-    this.$minValue.on('input.minValue', this.handleMinValueInput.bind(this));
-    this.$maxValue.on('input.maxValue', this.handleMaxValueInput.bind(this));
-    this.$valueFrom.on('input.valueFrom', this.handleValueFromInput.bind(this));
-    this.$valueTo.on('input.valueTo', this.handleValueToInput.bind(this));
-    this.$indexFrom.on('input.indexFrom', this.handleIndexFromInput.bind(this));
-    this.$indexTo.on('input.indexTo', this.handleIndexToInput.bind(this));
-    this.$stepValue.on('input.stepValue', this.handleStepValueInput.bind(this));
+    this.$isVertical.on('change.isVertical', this.handleIsVerticalChange);
+    this.$isTwoHandles.on('change.isTwoHandles', this.handleIsTwoHandlesChange);
+    this.$isShowTips.on('change.isShowTips', this.handleIsShowTipsChange);
+    this.$minValue.on('input.minValue', this.handleMinValueInput);
+    this.$maxValue.on('input.maxValue', this.handleMaxValueInput);
+    this.$valueFrom.on('input.valueFrom', this.handleValueFromInput);
+    this.$valueTo.on('input.valueTo', this.handleValueToInput);
+    this.$indexFrom.on('input.indexFrom', this.handleIndexFromInput);
+    this.$indexTo.on('input.indexTo', this.handleIndexToInput);
+    this.$stepValue.on('input.stepValue', this.handleStepValueInput);
     this.$stepValue.keypress(this.preventMinusTyping);
     this.$indexFrom.keypress(this.preventMinusTyping);
     this.$indexTo.keypress(this.preventMinusTyping);
-    this.$inputs.on('focusout.inputs', this.handleInputsFocusout.bind(this));
-    this.$buttonAdd.on('click.buttonAdd', this.handleButtonAddClick.bind(this));
-    this.$buttonRemove.on('click.buttonRemove', this.handleButtonRemoveClick.bind(this));
+    this.$inputs.on('focusout.inputs', this.handleInputsFocusout);
+    this.$buttonAdd.on('click.buttonAdd', this.handleButtonAddClick);
+    this.$buttonRemove.on('click.buttonRemove', this.handleButtonRemoveClick);
   }
 
   private handleInputsFocusout(event: JQuery.TriggeredEvent) {

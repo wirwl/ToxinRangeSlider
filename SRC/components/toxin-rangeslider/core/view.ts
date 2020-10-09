@@ -54,7 +54,6 @@ class TRSView {
     this.rangeslider = new Rangeslider(el.find('.rangeslider'));
 
     this.line = new Line(el.find('.rangeslider__line'));
-    this.line.el.on('mousedown.line', e => this.onMouseDownByLine(e));
 
     this.lineSelected = new Line(this.rangeslider.el.find('.rangeslider__line-selected'));
 
@@ -65,13 +64,11 @@ class TRSView {
     this.tipMax = new Tip(el.find('.rangeslider__tip-max'));
 
     this.handleFrom = new Handle(this.rangeslider.el.find('.rangeslider__handle-from'));
-    this.handleFrom.el.on('mousedown.handleFrom', e => this.onMouseDownByHandle(e));
-    this.tipFrom.el.on('mousedown.tipFrom', e => this.onMouseDownByHandle(e));
+
     this.offsetFrom = this.handleFrom.getWidth() / 2;
 
     this.handleTo = new Handle(this.rangeslider.el.find('.rangeslider__handle-to'));
-    this.handleTo.el.on('mousedown.handleTo', e => this.onMouseDownByHandle(e));
-    this.tipTo.el.on('mousedown.tipTo', e => this.onMouseDownByHandle(e));
+
     this.offsetTo = this.handleTo.getWidth() / 2;
 
     this.rangeslider.addControls([
@@ -85,6 +82,24 @@ class TRSView {
       this.lineSelected,
     ]);
     this.currentSettings = new CRangeSliderOptions();
+
+    this.bindThis();
+    this.addEventListeners();
+  }
+
+  private bindThis() {
+    this.onMouseDownByLine = this.onMouseDownByLine.bind(this);
+    this.onMouseDownByHandle = this.onMouseDownByHandle.bind(this);
+  }
+
+  private addEventListeners() {
+    this.line.el.on('mousedown.line', this.onMouseDownByLine);
+
+    this.handleFrom.el.on('mousedown.handleFrom', this.onMouseDownByHandle);
+    this.handleTo.el.on('mousedown.handleTo', this.onMouseDownByHandle);
+
+    this.tipFrom.el.on('mousedown.tipFrom', this.onMouseDownByHandle);
+    this.tipTo.el.on('mousedown.tipTo', this.onMouseDownByHandle);
   }
 
   drawSlider(oldSettings: CRangeSliderOptions, newSettings: CRangeSliderOptions) {
@@ -200,13 +215,13 @@ class TRSView {
     }
   }
 
-  isEqualArrays(ar1: (string | number)[] | null, ar2: (string | number)[] | null): boolean {
+  private isEqualArrays(ar1: (string | number)[] | null, ar2: (string | number)[] | null): boolean {
     if (!ar1 || !ar2) return false;
     if (ar1.length !== ar2.length) return false;
     return ar1.every((value, index) => value === ar2[index]);
   }
 
-  onMouseDownByHandle(e: JQuery.TriggeredEvent) {
+  private onMouseDownByHandle(e: JQuery.TriggeredEvent) {
     const $el = $(e.target);
     let currentHandle: Handle = this.handleFrom;
     if ($el.is(this.handleTo.el) || $el.is(this.tipTo.el)) currentHandle = this.handleTo;
@@ -223,7 +238,7 @@ class TRSView {
     $document.on('mouseup.document', e => this.onMouseUp(e, currentHandle));
   }
 
-  onMouseMoveRangeSlider(e: JQuery.TriggeredEvent, currentHandle: Handle, shiftPos: number) {
+  private onMouseMoveRangeSlider(e: JQuery.TriggeredEvent, currentHandle: Handle, shiftPos: number) {
     const $target = $(e.target);
     const { isVertical } = this.currentSettings;
 
@@ -240,7 +255,7 @@ class TRSView {
     return false;
   }
 
-  validate(pos: number, currentHandle: Handle): number {
+  private validate(pos: number, currentHandle: Handle): number {
     let result = pos;
     const lw = this.line.getSize();
     const ch = currentHandle;
@@ -258,7 +273,7 @@ class TRSView {
     return result;
   }
 
-  onMouseUp(e: JQuery.TriggeredEvent, currentHandle: Handle) {
+  private onMouseUp(e: JQuery.TriggeredEvent, currentHandle: Handle) {
     currentHandle.setMoving(false);
     this.rangeslider.el.off('mousemove.rangeslider');
     currentHandle.el.off('mouseup.handle');
@@ -266,7 +281,7 @@ class TRSView {
     $(document).off('mouseup.document');
   }
 
-  onMouseDownByLine(e: JQuery.TriggeredEvent) {
+  private onMouseDownByLine(e: JQuery.TriggeredEvent) {
     e.preventDefault();
     let offsetPos = this.currentSettings.isVertical ? e.offsetY : e.offsetX;
     if (offsetPos! < this.offsetFrom) offsetPos = this.offsetFrom;
@@ -288,7 +303,7 @@ class TRSView {
     nearHandle.el.trigger(newEvent, 'mousedown.handle');
   }
 
-  getNearestHandle(pos: number): Handle {
+  private getNearestHandle(pos: number): Handle {
     if (this.currentSettings.isTwoHandles) {
       if (pos < this.handleFrom.getPos()) return this.handleFrom;
       if (pos > this.handleTo.getPos()) return this.handleTo;
@@ -341,7 +356,7 @@ class TRSView {
     };
   }
 
-  drawLineSelected(currentHandle: Handle) {
+  private drawLineSelected(currentHandle: Handle) {
     if (this.currentSettings.isTwoHandles) {
       if (currentHandle.is(this.handleFrom)) {
         this.lineSelected.setPos(this.handleFrom.getPos() + this.offsetFrom);
@@ -359,7 +374,7 @@ class TRSView {
     }
   }
 
-  drawTips() {
+  private drawTips() {
     const {
       isTwoHandles,
       isTip,
@@ -411,7 +426,7 @@ class TRSView {
     }
   }
 
-  convertRelativeValueToPixelValue(val: number): number {
+  private convertRelativeValueToPixelValue(val: number): number {
     const {
       items,
       items: { values },
@@ -432,7 +447,7 @@ class TRSView {
     return result;
   }
 
-  convertPixelValueToRelativeValue(val: number): number {
+  private convertPixelValueToRelativeValue(val: number): number {
     const { getMaxValue, getMinValue } = this.currentSettings;
     const lw = this.line.getSize() - this.offsetFrom - this.offsetTo;
     const percent = val / lw;
@@ -440,7 +455,7 @@ class TRSView {
     return result;
   }
 
-  getSteppedPos(pxValue: number): number | null {
+  private getSteppedPos(pxValue: number): number | null {
     const {
       stepValue,
       items,

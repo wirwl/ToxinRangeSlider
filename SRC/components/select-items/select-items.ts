@@ -15,12 +15,18 @@ class SelectItems {
     this.$buttonRemove = this.$selectItems.find('.js-select-items__button-remove');
     this.$select = this.$selectItems.find('.js-select-items__options');
     this.select = document.querySelector('.js-select-items__options');
+    this.bindThis();
     this.addEventListeners();
   }
 
+  private bindThis() {
+    this.handleButtonAddClick = this.handleButtonAddClick.bind(this);
+    this.handleButtonRemoveClick = this.handleButtonRemoveClick.bind(this);
+  }
+
   private addEventListeners() {
-    this.$buttonAdd.on('click.buttonAdd', this.handleButtonAddClick.bind(this));
-    this.$buttonRemove.on('click.buttonRemove', this.handleButtonRemoveClick.bind(this));
+    this.$buttonAdd.on('click.buttonAdd', this.handleButtonAddClick);
+    this.$buttonRemove.on('click.buttonRemove', this.handleButtonRemoveClick);
   }
 
   private handleButtonAddClick() {
