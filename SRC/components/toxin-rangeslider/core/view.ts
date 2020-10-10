@@ -322,7 +322,7 @@ class TRSView {
   }
 
   moveHandle(currentHandle: Handle, pxX: number): HandleMovingResult {
-    const { valueFrom, valueTo } = this.currentSettings;
+    let { valueFrom, valueTo } = this.currentSettings;
 
     const values = this.currentSettings.items?.values;
     const isUsingItemsCurrent = values!?.length > 1;
@@ -340,9 +340,13 @@ class TRSView {
         this.currentSettings.items!.indexTo = restoreIndex;
         this.currentSettings.valueTo = values![restoreIndex];
       }
-    } else if (currentHandle.is(this.handleFrom)) {
-      this.currentSettings.valueFrom = this.convertPixelValueToRelativeValue(pxX);
-    } else this.currentSettings.valueTo = this.convertPixelValueToRelativeValue(pxX);
+    } else {
+      if (currentHandle.is(this.handleFrom)) {
+        this.currentSettings.valueFrom = this.convertPixelValueToRelativeValue(pxX);
+      } else this.currentSettings.valueTo = this.convertPixelValueToRelativeValue(pxX);
+      valueFrom = this.currentSettings.valueFrom;
+      valueTo = this.currentSettings.valueTo;
+    }
 
     if (currentHandle.is(this.handleFrom)) {
       this.handleFrom.incZIndex();
@@ -353,8 +357,8 @@ class TRSView {
     }
     this.drawLineSelected(currentHandle);
 
-    this.tipFrom.setText(this.currentSettings.valueFrom!);
-    this.tipTo.setText(this.currentSettings.valueTo!);
+    this.tipFrom.setText(valueFrom!);
+    this.tipTo.setText(valueTo!);
 
     const isHandleFrom = currentHandle.is(this.handleFrom);
     return {
