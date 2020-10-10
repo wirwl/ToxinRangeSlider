@@ -11,14 +11,16 @@ class TRSView {
   private offsetTo: number;
 
   private htmlTemplate = `<div class='rangeslider'>
-        <div class='rangeslider__tip-min'>00</div>
-        <div class='rangeslider__tip rangeslider__tip-from'>23</div>
-        <div class='rangeslider__tip rangeslider__tip-to'>456</div>
+        <div class='rangeslider__tip-min'>00</div>                
         <div class='rangeslider__tip-max'>99</div>
         <div class='rangeslider__line'></div>
         <div class='rangeslider__line-selected'></div>
-        <div class='rangeslider__handle rangeslider__handle-from'></div>
-        <div class='rangeslider__handle rangeslider__handle-to'></div>
+        <div class='rangeslider__handle rangeslider__handle-from'>
+          <div class='rangeslider__tip rangeslider__tip-from'>23</div>
+        </div>
+        <div class='rangeslider__handle rangeslider__handle-to'>
+          <div class='rangeslider__tip rangeslider__tip-to'>456</div>
+        </div>
         </div>`;
 
   el: JQuery<Element>;
@@ -96,9 +98,6 @@ class TRSView {
 
     this.handleFrom.el.on('mousedown.handleFrom', this.onMouseDownByHandle);
     this.handleTo.el.on('mousedown.handleTo', this.onMouseDownByHandle);
-
-    this.tipFrom.el.on('mousedown.tipFrom', this.onMouseDownByHandle);
-    this.tipTo.el.on('mousedown.tipTo', this.onMouseDownByHandle);
   }
 
   drawSlider(oldSettings: RangeSliderOptions, newSettings: RangeSliderOptions) {
@@ -353,7 +352,9 @@ class TRSView {
       this.handleFrom.decZIndex();
     }
     this.drawLineSelected(currentHandle);
-    this.drawTips();
+
+    this.tipFrom.setText(this.currentSettings.valueFrom!);
+    this.tipTo.setText(this.currentSettings.valueTo!);
 
     const isHandleFrom = currentHandle.is(this.handleFrom);
     return {
@@ -382,55 +383,6 @@ class TRSView {
     }
   }
 
-  private drawTips() {
-    const { isTwoHandles, isTip, items, valueFrom, valueTo } = this.currentSettings;
-    const indexFrom = items?.indexFrom;
-    const indexTo = items?.indexTo;
-    const values = items?.values;
-    const isUsingItems = values!?.length > 1;
-
-    this.tipFrom.setText(valueFrom!);
-    this.tipTo.setText(valueTo!);
-
-    this.tipFrom.setPos(this.handleFrom.getPos() + (this.handleFrom.getSize() - this.tipFrom.getSize()) / 2);
-    this.tipTo.setPos(this.handleTo.getPos() + (this.handleTo.getSize() - this.tipTo.getSize()) / 2);
-
-    if (isTwoHandles) {
-      const distanceBetweenHandles = this.tipTo.getPos() - this.tipFrom.getPos() - this.tipFrom.getSize();
-      if (distanceBetweenHandles < 1) {
-        this.tipTo.hide();
-        this.tipFrom.setText(`${this.tipFrom.getText()}-${this.tipTo.getText()}`);
-        this.tipFrom.setPos(
-          this.handleFrom.getPos() +
-            (this.handleTo.getPos() - this.handleFrom.getPos() + this.handleTo.getSize() - this.tipFrom.getSize()) / 2,
-        );
-      } else if (isTip) this.tipTo.show();
-      if ((!isUsingItems && valueFrom === valueTo) || (isUsingItems && indexFrom === indexTo)) {
-        this.tipFrom.setText(valueFrom!);
-        this.tipFrom.setPos(this.handleFrom.getPos() + (this.handleFrom.getSize() - this.tipFrom.getSize()) / 2);
-      }
-    }
-
-    if (isTip) {
-      const tax = this.line.getSize() - this.tipMax.getSize();
-      let distanceMin = this.tipFrom.getPos() - this.tipMin.getSize();
-      const distanceMax = tax - this.tipTo.getPos() - this.tipTo.getSize();
-      let distanceBetweenTipFromAndTipMax = 1;
-      distanceBetweenTipFromAndTipMax = tax - this.tipFrom.getPos() - this.tipFrom.getSize();
-      if (distanceMin < 1) this.tipMin.hide();
-      else this.tipMin.show();
-      if (distanceMax < 1) this.tipMax.hide();
-      else this.tipMax.show();
-      if (distanceBetweenTipFromAndTipMax < 1) this.tipMax.hide();
-
-      if (!isTwoHandles) {
-        distanceMin = this.tipTo.getPos() - this.tipMin.getSize();
-        if (distanceMin < 1) this.tipMin.hide();
-        else this.tipMin.show();
-      }
-    }
-  }
-
   convertRelativeValueToPixelValue(val: number): number {
     const { items, minValue, maxValue } = this.currentSettings;
     const values = items?.values;
@@ -452,7 +404,7 @@ class TRSView {
     const { maxValue, minValue } = this.currentSettings;
     const lw = this.line.getSize() - this.offsetFrom - this.offsetTo;
     const percent = val / lw;
-    const result = Math.round(Number(minValue!) + percent * Number(maxValue!) - Number(minValue!));
+    const result = Math.round(Number(minValue!) + percent * (Number(maxValue!) - Number(minValue!)));
     return result;
   }
 

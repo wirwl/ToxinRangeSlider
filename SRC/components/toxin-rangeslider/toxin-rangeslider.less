@@ -34,32 +34,6 @@
     cursor: pointer;
   }
 
-  &__tip-from {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    top: @xpos-tips;
-    left: 123px;
-    color: white;
-    padding: 0px 3px;
-    border-radius: 3px;
-    white-space: nowrap;
-  }
-
-  &__tip-to {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    top: @xpos-tips;
-    left: 224px;
-    color: white;
-    padding: 0px 3px;
-    border-radius: 3px;
-    white-space: nowrap;
-  }
-
   &__tip-max {
     display: flex;
     justify-content: center;
@@ -109,7 +83,19 @@
     height: 16px;
     left: 123px;
     top: @xpos-handles;
-    z-index: 11;
+    z-index: 11;    
+  }
+
+  &__tip-from {    
+    position: absolute;
+    top: -21px;   
+    left: 50%;    
+    color: white;
+    padding: 0px 3px;
+    border-radius: 3px;
+    white-space: nowrap;
+    text-align: center;
+    transform: translate(-50%);
   }
 
   &__handle-to {
@@ -125,6 +111,17 @@
     z-index: 11;
   }
 
+  &__tip-to {
+    position: absolute;
+    top: -21px;    
+    left: 50%;    
+    color: white;
+    padding: 0px 3px;
+    border-radius: 3px;
+    white-space: nowrap;
+    transform: translate(-50%);
+  }
+
   &__handle {
     background: @color-main;
   }
@@ -137,8 +134,6 @@
   &__handle_isMoving {
     background: @color-main;
     border-color: white;
-
-    border-width: 1px;
   }
 
   &__thinline {
@@ -197,6 +192,13 @@
     .rangeslider__tip-from,
     .rangeslider__tip-to {
       left: 20px;
+    }
+
+    .rangeslider__tip-from,
+    .rangeslider__tip-to {       
+      left: 18px;
+      top: 50%;
+      transform: translateY(-50%);
     }
 
     .rangeslider__tip-max {

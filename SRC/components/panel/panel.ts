@@ -50,7 +50,7 @@ class Panel {
     this.$buttonAdd = this.$panel.find('.js-select-items').find('.js-select-items__button-add');
     this.$buttonRemove = this.$panel.find('.js-select-items').find('.js-select-items__button-remove');
     this.$select = this.$panel.find('.js-select-items').find('.js-select-items__options');
-    this.select = document.querySelector('.js-select-items__options');
+    this.select = this.$select[0] as HTMLSelectElement;
     this.$rangesliderRootElement = this.$panel.find('.toxin-rangeslider-here');
     this.rangeslider = this.$rangesliderRootElement.data('toxinRangeSlider');
     this.$isVertical = this.$panel.find('.js-panel__checkbox-is-vertical').find('.checkbox__input');
@@ -358,6 +358,8 @@ class Panel {
     );
     if (this.rangeslider.data.isTwoHandles) this.$valueFrom.val(this.rangeslider.data.valueFrom!);
     this.$valueTo.val(this.rangeslider.data.valueTo!);
+    console.log(this.select);
+    console.log(this.$select);
     if (this.select!.length > 1) {
       if (this.rangeslider.data.isTwoHandles) {
         this.$indexFrom.prop('disabled', false);
