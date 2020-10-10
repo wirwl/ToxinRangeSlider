@@ -358,8 +358,6 @@ class Panel {
     );
     if (this.rangeslider.data.isTwoHandles) this.$valueFrom.val(this.rangeslider.data.valueFrom!);
     this.$valueTo.val(this.rangeslider.data.valueTo!);
-    console.log(this.select);
-    console.log(this.$select);
     if (this.select!.length > 1) {
       if (this.rangeslider.data.isTwoHandles) {
         this.$indexFrom.prop('disabled', false);

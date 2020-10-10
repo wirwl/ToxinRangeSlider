@@ -36,7 +36,7 @@ class TRSPresenter {
     } else this.model.settings.valueTo = value;
   }
 
-  onHandlePositionUpdate(handle: Handle, pxNewPos: number) {
+  onHandlePositionUpdate(handle: Handle, pxNewPos: number): void {
     const { onHandlePositionChange } = this.model.settings;
     const handleMovingResult = this.view.moveHandle(handle, pxNewPos);
 

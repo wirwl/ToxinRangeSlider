@@ -27,8 +27,7 @@ class TRSView {
 
   rangeslider: Rangeslider;
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  onHandlePositionUpdate: Function = () => {};
+  onHandlePositionUpdate!: (handle: Handle, pxNewPos: number) => void;
 
   data: RangeSliderOptions;
 
@@ -115,7 +114,6 @@ class TRSView {
     const oldIndexTo = oldSettings.items?.indexTo;
     const oldValues = oldSettings.items?.values;
 
-    // this.currentSettings.extend(newSettings);
     $.extend(this.currentSettings, newSettings);
 
     const {
