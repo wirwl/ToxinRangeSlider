@@ -414,7 +414,7 @@ class TRSView {
     const { stepValue, items, maxValue, minValue } = this.currentSettings;
     const values = items?.values;
     const pxLength = this.line.getSize() - this.offsetFrom - this.offsetTo;
-    const isDefinedStep = stepValue! > 0;
+    const isDefinedStep = stepValue! > 1;
     const isDefinedSetOfValues = items && values && values.length > 1;
     const isTooLongLine = pxLength > Number(maxValue!) - Number(minValue!);
     const isHaveStep = isDefinedStep || isTooLongLine || isDefinedSetOfValues;
