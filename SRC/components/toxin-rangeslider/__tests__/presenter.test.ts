@@ -47,10 +47,10 @@ beforeAll(async () => {
 describe('Check if model is updated after handles position change', () => {
   test('Left handle', () => {
     presenter.onHandlePositionUpdate(presenter.view.handleFrom, 150);
-    expect(presenter.model.settings.getValueFrom()).toBe(425);
+    expect(presenter.model.settings.valueFrom).toBe(425);
   });
   test('Right handle', () => {
     presenter.onHandlePositionUpdate(presenter.view.handleFrom, 200);
-    expect(presenter.model.settings.getValueFrom()).toBe(567);
+    expect(presenter.model.settings.valueFrom).toBe(567);
   });
 });

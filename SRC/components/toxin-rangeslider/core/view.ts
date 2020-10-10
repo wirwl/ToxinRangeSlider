@@ -2,10 +2,9 @@ import Handle from './entities/handle';
 import Tip from './entities/tip';
 import Line from './entities/line';
 import Rangeslider from './entities/rangeslider';
-import CRangeSliderOptions from './entities/crangeslideroptions';
 
 class TRSView {
-  currentSettings: CRangeSliderOptions;
+  currentSettings: RangeSliderOptions;
 
   private offsetFrom: number;
 
@@ -81,7 +80,7 @@ class TRSView {
       this.line,
       this.lineSelected,
     ]);
-    this.currentSettings = new CRangeSliderOptions();
+    this.currentSettings = {};
 
     this.bindThis();
     this.addEventListeners();
@@ -102,40 +101,48 @@ class TRSView {
     this.tipTo.el.on('mousedown.tipTo', this.onMouseDownByHandle);
   }
 
-  drawSlider(oldSettings: CRangeSliderOptions, newSettings: CRangeSliderOptions) {
+  drawSlider(oldSettings: RangeSliderOptions, newSettings: RangeSliderOptions) {
     const {
-      getMinValue: oldGetMinValue,
-      getMaxValue: oldGetMaxValue,
-      getValueFrom: oldGetValueFrom,
-      getValueTo: oldGetValueTo,
+      minValue: oldMinValue,
+      maxValue: oldMaxValue,
+      valueFrom: oldValueFrom,
+      valueTo: oldValueTo,
       isVertical: oldIsVertical,
       isTip: oldIsTip,
       isTwoHandles: oldIsTwoHandles,
-      items: { indexFrom: oldIndexFrom, indexTo: oldIndexTo, values: oldValues },
     } = oldSettings;
 
-    this.currentSettings.extend(newSettings);
+    const oldIndexFrom = oldSettings.items?.indexFrom;
+    const oldIndexTo = oldSettings.items?.indexTo;
+    const oldValues = oldSettings.items?.values;
+
+    // this.currentSettings.extend(newSettings);
+    $.extend(this.currentSettings, newSettings);
+
     const {
-      getMinValue: currentGetMinValue,
-      getMaxValue: currentGetMaxValue,
-      getValueFrom: currentGetValueFrom,
-      getValueTo: currentGetValueTo,
-      IsHaveItems: currentIsHaveItems,
+      minValue: currentMinValue,
+      maxValue: currentMaxValue,
+      valueFrom: currentValueFrom,
+      valueTo: currentValueTo,
       isVertical: currentIsVertical,
       isTip: currentIsTip,
       isTwoHandles: currentIsTwoHandles,
-      items: { indexFrom: currentIndexFrom, indexTo: currentIndexTo, values: currentValues },
     } = this.currentSettings;
 
+    const currentIndexFrom = this.currentSettings.items?.indexFrom;
+    const currentIndexTo = this.currentSettings.items?.indexTo;
+    const currentValues = this.currentSettings.items?.values;
+
     const { setVertical, setTwoHandles } = this.rangeslider;
+    const isUsingItemsCurrent = currentValues!?.length > 1;
 
     const isVerticalChanged = currentIsVertical !== oldIsVertical;
     const isTwoHandlesChanged = currentIsTwoHandles !== oldIsTwoHandles;
     const isTipChanged = currentIsTip !== oldIsTip;
-    const minValueChanged = oldGetMinValue() !== currentGetMinValue();
-    const maxValueChanged = oldGetMaxValue() !== currentGetMaxValue();
-    const valueFromChanged = oldGetValueFrom() !== currentGetValueFrom();
-    const valueToChanged = oldGetValueTo() !== currentGetValueTo();
+    const minValueChanged = oldMinValue !== currentMinValue;
+    const maxValueChanged = oldMaxValue !== currentMaxValue;
+    const valueFromChanged = oldValueFrom !== currentValueFrom;
+    const valueToChanged = oldValueTo !== currentValueTo;
     const indexFromChanged = currentIndexFrom !== oldIndexFrom;
     const indexToChanged = currentIndexTo !== oldIndexTo;
     let isNeedRedraw = false;
@@ -165,11 +172,11 @@ class TRSView {
     }
 
     if (isNeedRedraw || minValueChanged) {
-      this.tipMin.setText(currentGetMinValue());
+      this.tipMin.setText(currentMinValue!);
     }
 
     if (isNeedRedraw || maxValueChanged) {
-      this.tipMax.setText(currentGetMaxValue());
+      this.tipMax.setText(currentMaxValue!);
     }
 
     const isItemValuesChanged = !this.isEqualArrays(oldValues!, currentValues!);
@@ -185,7 +192,7 @@ class TRSView {
 
     if (currentIsTwoHandles) {
       if (isNeedRedraw || valueFromChanged || minValueChanged || maxValueChanged || isItemValuesChanged) {
-        const val = currentIsHaveItems() ? currentIndexFrom : Number(currentGetValueFrom());
+        const val = isUsingItemsCurrent ? currentIndexFrom : Number(currentValueFrom);
         const posXWithOutStep = this.convertRelativeValueToPixelValue(val!);
         const posXWithStep = this.getSteppedPos(posXWithOutStep);
         this.moveHandle(this.handleFrom, posXWithStep == null ? posXWithOutStep : posXWithStep);
@@ -193,13 +200,13 @@ class TRSView {
     }
 
     if (isNeedRedraw || valueToChanged || minValueChanged || maxValueChanged || isItemValuesChanged) {
-      const val = currentIsHaveItems() ? currentIndexTo : Number(currentGetValueTo());
+      const val = isUsingItemsCurrent ? currentIndexTo : Number(currentValueTo);
       const posXWithOutStep = this.convertRelativeValueToPixelValue(val!);
       const posXWithStep = this.getSteppedPos(posXWithOutStep);
       this.moveHandle(this.handleTo, posXWithStep == null ? posXWithOutStep : posXWithStep);
     }
 
-    if (currentIsHaveItems()) {
+    if (isUsingItemsCurrent) {
       const pxLength = this.line.getSize() - this.offsetFrom - this.offsetTo;
       const pxStep = pxLength / (currentValues!.length - 1);
 
@@ -215,7 +222,7 @@ class TRSView {
     }
   }
 
-  private isEqualArrays(ar1: (string | number)[] | null, ar2: (string | number)[] | null): boolean {
+  isEqualArrays(ar1: (string | number)[] | null, ar2: (string | number)[] | null): boolean {
     if (!ar1 || !ar2) return false;
     if (ar1.length !== ar2.length) return false;
     return ar1.every((value, index) => value === ar2[index]);
@@ -255,7 +262,7 @@ class TRSView {
     return false;
   }
 
-  private validate(pos: number, currentHandle: Handle): number {
+  validate(pos: number, currentHandle: Handle): number {
     let result = pos;
     const lw = this.line.getSize();
     const ch = currentHandle;
@@ -303,7 +310,7 @@ class TRSView {
     nearHandle.el.trigger(newEvent, 'mousedown.handle');
   }
 
-  private getNearestHandle(pos: number): Handle {
+  getNearestHandle(pos: number): Handle {
     if (this.currentSettings.isTwoHandles) {
       if (pos < this.handleFrom.getPos()) return this.handleFrom;
       if (pos > this.handleTo.getPos()) return this.handleTo;
@@ -316,26 +323,27 @@ class TRSView {
   }
 
   moveHandle(currentHandle: Handle, pxX: number): HandleMovingResult {
-    const {
-      IsHaveItems,
-      items: { values },
-      getValueFrom,
-      getValueTo,
-      setValueFrom,
-      setValueTo,
-    } = this.currentSettings;
+    const { valueFrom, valueTo } = this.currentSettings;
+
+    const values = this.currentSettings.items?.values;
+    const isUsingItemsCurrent = values!?.length > 1;
 
     currentHandle.setPos(pxX);
     let restoreIndex = -1;
-    if (IsHaveItems()) {
+    if (isUsingItemsCurrent) {
       const lw = this.line.getSize() - this.offsetFrom - this.offsetTo;
       const pxStep = lw / (values!.length - 1);
       restoreIndex = Math.round(pxX / pxStep);
-      if (currentHandle.is(this.handleFrom)) this.currentSettings.items.indexFrom = restoreIndex;
-      else this.currentSettings.items.indexTo = restoreIndex;
+      if (currentHandle.is(this.handleFrom)) {
+        this.currentSettings.items!.indexFrom = restoreIndex;
+        this.currentSettings.valueFrom = values![restoreIndex];
+      } else {
+        this.currentSettings.items!.indexTo = restoreIndex;
+        this.currentSettings.valueTo = values![restoreIndex];
+      }
     } else if (currentHandle.is(this.handleFrom)) {
-      setValueFrom(this.convertPixelValueToRelativeValue(pxX));
-    } else setValueTo(this.convertPixelValueToRelativeValue(pxX));
+      this.currentSettings.valueFrom = this.convertPixelValueToRelativeValue(pxX);
+    } else this.currentSettings.valueTo = this.convertPixelValueToRelativeValue(pxX);
 
     if (currentHandle.is(this.handleFrom)) {
       this.handleFrom.incZIndex();
@@ -350,8 +358,8 @@ class TRSView {
     const isHandleFrom = currentHandle.is(this.handleFrom);
     return {
       isFromHandle: isHandleFrom,
-      value: isHandleFrom ? getValueFrom() : getValueTo(),
-      isUsingItems: IsHaveItems(),
+      value: isHandleFrom ? valueFrom! : valueTo!,
+      isUsingItems: isUsingItemsCurrent,
       index: restoreIndex,
     };
   }
@@ -375,17 +383,14 @@ class TRSView {
   }
 
   private drawTips() {
-    const {
-      isTwoHandles,
-      isTip,
-      IsHaveItems,
-      items: { indexFrom, indexTo },
-      getValueFrom,
-      getValueTo,
-    } = this.currentSettings;
+    const { isTwoHandles, isTip, items, valueFrom, valueTo } = this.currentSettings;
+    const indexFrom = items?.indexFrom;
+    const indexTo = items?.indexTo;
+    const values = items?.values;
+    const isUsingItems = values!?.length > 1;
 
-    this.tipFrom.setText(getValueFrom());
-    this.tipTo.setText(getValueTo());
+    this.tipFrom.setText(valueFrom!);
+    this.tipTo.setText(valueTo!);
 
     this.tipFrom.setPos(this.handleFrom.getPos() + (this.handleFrom.getSize() - this.tipFrom.getSize()) / 2);
     this.tipTo.setPos(this.handleTo.getPos() + (this.handleTo.getSize() - this.tipTo.getSize()) / 2);
@@ -400,8 +405,8 @@ class TRSView {
             (this.handleTo.getPos() - this.handleFrom.getPos() + this.handleTo.getSize() - this.tipFrom.getSize()) / 2,
         );
       } else if (isTip) this.tipTo.show();
-      if ((!IsHaveItems() && getValueFrom() === getValueTo()) || (IsHaveItems() && indexFrom === indexTo)) {
-        this.tipFrom.setText(getValueFrom());
+      if ((!isUsingItems && valueFrom === valueTo) || (isUsingItems && indexFrom === indexTo)) {
+        this.tipFrom.setText(valueFrom!);
         this.tipFrom.setPos(this.handleFrom.getPos() + (this.handleFrom.getSize() - this.tipFrom.getSize()) / 2);
       }
     }
@@ -426,13 +431,9 @@ class TRSView {
     }
   }
 
-  private convertRelativeValueToPixelValue(val: number): number {
-    const {
-      items,
-      items: { values },
-      getMaxValue,
-      getMinValue,
-    } = this.currentSettings;
+  convertRelativeValueToPixelValue(val: number): number {
+    const { items, minValue, maxValue } = this.currentSettings;
+    const values = items?.values;
     const lw = this.line.getSize() - this.offsetFrom - this.offsetTo;
     const isHasValues = items && values && values.length > 1;
     let result;
@@ -440,44 +441,39 @@ class TRSView {
       const pxStep = lw / (values!.length - 1);
       result = val * pxStep;
     } else {
-      const relLength = Number(getMaxValue()) - Number(getMinValue());
-      const relPercent = (val - Number(getMinValue())) / relLength;
+      const relLength = Number(maxValue!) - Number(minValue!);
+      const relPercent = (val - Number(minValue!)) / relLength;
       result = lw * relPercent;
     }
     return result;
   }
 
-  private convertPixelValueToRelativeValue(val: number): number {
-    const { getMaxValue, getMinValue } = this.currentSettings;
+  convertPixelValueToRelativeValue(val: number): number {
+    const { maxValue, minValue } = this.currentSettings;
     const lw = this.line.getSize() - this.offsetFrom - this.offsetTo;
     const percent = val / lw;
-    const result = Math.round(Number(getMinValue()) + percent * (Number(getMaxValue()) - Number(getMinValue())));
+    const result = Math.round(Number(minValue!) + percent * Number(maxValue!) - Number(minValue!));
     return result;
   }
 
-  private getSteppedPos(pxValue: number): number | null {
-    const {
-      stepValue,
-      items,
-      items: { values },
-      getMaxValue,
-      getMinValue,
-    } = this.currentSettings;
+  getSteppedPos(pxValue: number): number | null {
+    const { stepValue, items, maxValue, minValue } = this.currentSettings;
+    const values = items?.values;
     const pxLength = this.line.getSize() - this.offsetFrom - this.offsetTo;
     const isDefinedStep = stepValue! > 0;
     const isDefinedSetOfValues = items && values && values.length > 1;
-    const isTooLongLine = pxLength > Number(getMaxValue()) - Number(getMinValue());
+    const isTooLongLine = pxLength > Number(maxValue!) - Number(minValue!);
     const isHaveStep = isDefinedStep || isTooLongLine || isDefinedSetOfValues;
 
     if (isHaveStep) {
       let pxStep: number;
 
       if (isDefinedStep) {
-        pxStep = this.convertRelativeValueToPixelValue(Number(getMinValue()) + stepValue!);
+        pxStep = this.convertRelativeValueToPixelValue(Number(minValue!) + Number(stepValue!));
       }
 
       if (isTooLongLine) {
-        const relativeLength = Number(getMaxValue()) - Number(getMinValue());
+        const relativeLength = Number(maxValue!) - Number(minValue!);
         pxStep = pxLength / relativeLength;
         if (isDefinedStep) pxStep *= stepValue!;
       }

@@ -1,50 +1,54 @@
 import TRSView from './view';
 import TRSModel from './model';
 import Handle from './entities/handle';
-import CRangeSliderOptions from './entities/crangeslideroptions';
 
 class TRSPresenter {
   view: TRSView;
 
   model: TRSModel;
 
-  data: CRangeSliderOptions;
+  data: RangeSliderOptions;
 
   constructor(model: TRSModel, view: TRSView) {
     this.view = view;
     this.model = model;
-    this.data = new CRangeSliderOptions();
+    this.data = {};
     this.view.onHandlePositionUpdate = this.onHandlePositionUpdate.bind(this);
     this.init();
   }
 
   init() {
-    this.model.settings.extend(this.view.data);
+    $.extend(true, this.model.settings, this.view.data);
     this.model.validate();
     this.data = this.model.settings;
-    this.view.drawSlider(CRangeSliderOptions.emptySettings, this.model.settings);
+    this.view.drawSlider({}, this.model.settings);
+  }
+
+  updateSettings({ isFromHandle, isUsingItems, index, value }: HandleMovingResult) {
+    if (isFromHandle) {
+      if (isUsingItems) {
+        this.model.settings.items!.indexFrom = index;
+        this.model.settings.valueFrom = this.model.settings.items!.values![index];
+      } else this.model.settings.valueFrom = value;
+    } else if (isUsingItems) {
+      this.model.settings.items!.indexTo = index;
+      this.model.settings.valueTo = this.model.settings.items!.values![index];
+    } else this.model.settings.valueTo = value;
   }
 
   onHandlePositionUpdate(handle: Handle, pxNewPos: number) {
-    const { setValueFrom, setValueTo, onHandlePositionChange } = this.model.settings;
-    const { isFromHandle, isUsingItems, index, value } = this.view.moveHandle(handle, pxNewPos);
+    const { onHandlePositionChange } = this.model.settings;
+    const handleMovingResult = this.view.moveHandle(handle, pxNewPos);
 
-    if (isFromHandle) {
-      if (isUsingItems) this.model.settings.items.indexFrom = index;
-      setValueFrom(value);
-    } else {
-      if (isUsingItems) this.model.settings.items.indexTo = index;
-      setValueTo(value);
-    }
-    onHandlePositionChange!.call({ isFromHandle, isUsingItems, index, value });
+    this.updateSettings(handleMovingResult);
+    onHandlePositionChange!.call(handleMovingResult);
   }
 
   update(opt: RangeSliderOptions) {
-    const oldSettings = new CRangeSliderOptions(this.model.settings);
+    const oldSettings = { ...this.model.settings };
 
-    this.model.settings.extend(opt);
+    $.extend(true, this.model.settings, opt);
     this.model.validate();
-
     this.data = this.model.settings;
 
     this.view.drawSlider(oldSettings, this.model.settings);
