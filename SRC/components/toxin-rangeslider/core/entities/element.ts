@@ -1,5 +1,5 @@
 class TRSElement {
-  el: JQuery<HTMLElement>;
+  $el: JQuery<HTMLElement>;
 
   protected _isVertical = false;
 
@@ -9,7 +9,7 @@ class TRSElement {
 
   setVertical(value: boolean) {
     this._isVertical = value;
-    this.el.removeAttr('style');
+    this.$el.removeAttr('style');
   }
 
   protected _x = 0;
@@ -20,7 +20,7 @@ class TRSElement {
 
   setX(value: number) {
     this._x = value;
-    this.el.css('left', value);
+    this.$el.css('left', value);
   }
 
   protected _right = 0;
@@ -31,7 +31,7 @@ class TRSElement {
 
   setRight(value: number) {
     this._right = value;
-    this.el.css('right', value);
+    this.$el.css('right', value);
   }
 
   protected _bottom = 0;
@@ -42,7 +42,7 @@ class TRSElement {
 
   setBottom(value: number) {
     this._bottom = value;
-    this.el.css('bottom', value);
+    this.$el.css('bottom', value);
   }
 
   private _y = 0;
@@ -53,15 +53,15 @@ class TRSElement {
 
   setY(value: number) {
     this._y = value;
-    this.el.css('top', value);
+    this.$el.css('top', value);
   }
 
   getOffsetTop(): number {
-    return this.el.offset()!.top;
+    return this.$el.offset()!.top;
   }
 
   getOffsetLeft(): number {
-    return this.el.offset()!.left;
+    return this.$el.offset()!.left;
   }
 
   getOffset(): number {
@@ -85,7 +85,7 @@ class TRSElement {
 
   setWidth(value: number) {
     this._width = value;
-    this.el.css('width', value);
+    this.$el.css('width', value);
   }
 
   protected _height = 0;
@@ -96,7 +96,7 @@ class TRSElement {
 
   setHeight(value: number) {
     this._height = value;
-    this.el.css('height', value);
+    this.$el.css('height', value);
   }
 
   getSize(): number {
@@ -109,25 +109,25 @@ class TRSElement {
   }
 
   constructor(el: JQuery<HTMLElement>) {
-    this.el = el;
+    this.$el = el;
     this.refresh();
   }
 
   refresh() {
-    this._x = parseFloat(this.el.css('left'));
-    this._y = parseFloat(this.el.css('top'));
-    this._width = parseFloat(this.el.css('width'));
-    this._height = parseFloat(this.el.css('height'));
-    this._right = parseFloat(this.el.css('right'));
-    this._bottom = parseFloat(this.el.css('bottom'));
+    this._x = parseFloat(this.$el.css('left'));
+    this._y = parseFloat(this.$el.css('top'));
+    this._width = parseFloat(this.$el.css('width'));
+    this._height = parseFloat(this.$el.css('height'));
+    this._right = parseFloat(this.$el.css('right'));
+    this._bottom = parseFloat(this.$el.css('bottom'));
   }
 
-  show() {
-    this.el.show();
+  appendToDomTree(childElement: TRSElement) {
+    this.$el.append(childElement.$el);
   }
 
-  hide() {
-    this.el.hide();
+  removeFromDomTree() {
+    this.$el.remove();
   }
 }
 

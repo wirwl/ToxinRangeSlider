@@ -11,7 +11,7 @@ class TRSView {
   private offsetTo: number;
 
   private htmlTemplate = `<div class='rangeslider'>
-        <div class='rangeslider__tip-min'>00</div>                
+        <div class='rangeslider__tip-min'>00</div>
         <div class='rangeslider__tip-max'>99</div>
         <div class='rangeslider__line'></div>
         <div class='rangeslider__line-selected'></div>
@@ -55,7 +55,7 @@ class TRSView {
 
     this.line = new Line(el.find('.rangeslider__line'));
 
-    this.lineSelected = new Line(this.rangeslider.el.find('.rangeslider__line-selected'));
+    this.lineSelected = new Line(this.rangeslider.$el.find('.rangeslider__line-selected'));
 
     this.data = el.data('options');
     this.tipFrom = new Tip(el.find('.rangeslider__tip-from'));
@@ -63,11 +63,11 @@ class TRSView {
     this.tipMin = new Tip(el.find('.rangeslider__tip-min'));
     this.tipMax = new Tip(el.find('.rangeslider__tip-max'));
 
-    this.handleFrom = new Handle(this.rangeslider.el.find('.rangeslider__handle-from'));
+    this.handleFrom = new Handle(this.rangeslider.$el.find('.rangeslider__handle-from'));
 
     this.offsetFrom = this.handleFrom.getWidth() / 2;
 
-    this.handleTo = new Handle(this.rangeslider.el.find('.rangeslider__handle-to'));
+    this.handleTo = new Handle(this.rangeslider.$el.find('.rangeslider__handle-to'));
 
     this.offsetTo = this.handleTo.getWidth() / 2;
 
@@ -93,10 +93,10 @@ class TRSView {
   }
 
   private addEventListeners() {
-    this.line.el.on('mousedown.line', this.onMouseDownByLine);
+    this.line.$el.on('mousedown.line', this.onMouseDownByLine);
 
-    this.handleFrom.el.on('mousedown.handleFrom', this.onMouseDownByHandle);
-    this.handleTo.el.on('mousedown.handleTo', this.onMouseDownByHandle);
+    this.handleFrom.$el.on('mousedown.handleFrom', this.onMouseDownByHandle);
+    this.handleTo.$el.on('mousedown.handleTo', this.onMouseDownByHandle);
   }
 
   drawSlider(oldSettings: RangeSliderOptions, newSettings: RangeSliderOptions) {
@@ -151,20 +151,26 @@ class TRSView {
 
     if (isNeedRedraw || isTwoHandlesChanged) {
       setTwoHandles(currentIsTwoHandles!);
+
+      if (currentIsTwoHandles) {
+        this.rangeslider.appendToDomTree(this.handleFrom);
+        this.handleFrom.$el.on('mousedown.handleFrom', this.onMouseDownByHandle);
+      } else this.handleFrom.removeFromDomTree();
+
       isNeedRedraw = true;
     }
 
     if (isNeedRedraw || isTipChanged) {
       if (currentIsTip) {
-        if (currentIsTwoHandles) this.tipFrom.show();
-        this.tipTo.show();
-        this.tipMin.show();
-        this.tipMax.show();
+        if (currentIsTwoHandles) this.handleFrom.appendToDomTree(this.tipFrom);
+        this.handleTo.appendToDomTree(this.tipTo);
+        this.rangeslider.appendToDomTree(this.tipMin);
+        this.rangeslider.appendToDomTree(this.tipMax);
       } else {
-        if (currentIsTwoHandles) this.tipFrom.hide();
-        this.tipTo.hide();
-        this.tipMin.hide();
-        this.tipMax.hide();
+        if (currentIsTwoHandles) this.tipFrom.removeFromDomTree();
+        this.tipTo.removeFromDomTree();
+        this.tipMin.removeFromDomTree();
+        this.tipMax.removeFromDomTree();
       }
     }
 
@@ -228,16 +234,16 @@ class TRSView {
   private onMouseDownByHandle(e: JQuery.TriggeredEvent) {
     const $el = $(e.target);
     let currentHandle: Handle = this.handleFrom;
-    if ($el.is(this.handleTo.el) || $el.is(this.tipTo.el)) currentHandle = this.handleTo;
+    if ($el.is(this.handleTo.$el) || $el.is(this.tipTo.$el)) currentHandle = this.handleTo;
 
     currentHandle.setMoving(true);
     const clientPos = this.currentSettings.isVertical ? e.clientY : e.clientX;
     const shiftPos = clientPos! - currentHandle.getOffset();
 
-    this.rangeslider.el.on('mousemove.rangeslider', e => this.onMouseMoveRangeSlider(e, currentHandle, shiftPos));
+    this.rangeslider.$el.on('mousemove.rangeslider', e => this.onMouseMoveRangeSlider(e, currentHandle, shiftPos));
     const $document = $(document);
     $document.on('mousemove.document', e => this.onMouseMoveRangeSlider(e, currentHandle, shiftPos));
-    currentHandle.el.on('mouseup.handle', e => this.onMouseUp(e, currentHandle));
+    currentHandle.$el.on('mouseup.handle', e => this.onMouseUp(e, currentHandle));
 
     $document.on('mouseup.document', e => this.onMouseUp(e, currentHandle));
   }
@@ -279,8 +285,8 @@ class TRSView {
 
   private onMouseUp(e: JQuery.TriggeredEvent, currentHandle: Handle) {
     currentHandle.setMoving(false);
-    this.rangeslider.el.off('mousemove.rangeslider');
-    currentHandle.el.off('mouseup.handle');
+    this.rangeslider.$el.off('mousemove.rangeslider');
+    currentHandle.$el.off('mouseup.handle');
     $(document).off('mousemove.document');
     $(document).off('mouseup.document');
   }
@@ -303,8 +309,8 @@ class TRSView {
     this.onHandlePositionUpdate(nearHandle, newPos);
 
     const newEvent = e;
-    newEvent.target = nearHandle.el;
-    nearHandle.el.trigger(newEvent, 'mousedown.handle');
+    newEvent.target = nearHandle.$el;
+    nearHandle.$el.trigger(newEvent, 'mousedown.handle');
   }
 
   getNearestHandle(pos: number): Handle {
