@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import TRSView from '../core/view';
-// import TRSModel from '../core/model';
+import TRSModel from '../core/model';
 
 const path = require('path');
 const less = require('less');
@@ -31,7 +31,7 @@ function ConfigureJSDOM() {
 beforeAll(async () => {
   ConfigureJSDOM();
   view = new TRSView($('.test-in-jest'));
-  // view.currentSettings.extend(TRSModel.defaults);
+  $.extend(true, view.currentSettings, TRSModel.defaults);
   view.currentSettings = {
     isVertical: false,
     isTwoHandles: true,
@@ -124,10 +124,16 @@ describe('Check result of moveHandle() function', () => {
     expect(result.isUsingItems).toBe(view.currentSettings.items?.values!?.length > 1);
   });
   test('If rangeslider has collection of items', () => {
-    view.currentSettings = { items: { values: [1, 2, 3, 4, 5], indexFrom: 0, indexTo: 4 } };
-    const result: HandleMovingResult = view.moveHandle(view.handleTo, 20);
+    view.currentSettings = {
+      minValue: 1,
+      maxValue: 5,
+      valueFrom: 1,
+      valueTo: 5,
+      items: { values: [1, 2, 3, 4, 5], indexFrom: 0, indexTo: 4 },
+    };
+    const result: HandleMovingResult = view.moveHandle(view.handleFrom, 20);
     const relValue = view.convertPixelValueToRelativeValue(20);
-    expect(result.isFromHandle).toBe(false);
+    expect(result.isFromHandle).toBe(true);
     expect(result.value).toBe(relValue);
     expect(result.isUsingItems).toBe(view.currentSettings.items?.values!?.length > 1);
   });
@@ -175,7 +181,7 @@ describe('Check result of validate() function', () => {
       expect(view.validate(444, view.handleTo)).toBe(view.line.getSize() - view.handleTo.getSize());
     });
     test('if to handle position is less than from handle position', () => {
-      expect(view.validate(100, view.handleTo)).toBe(view.handleFrom.getPos());
+      expect(view.validate(10, view.handleTo)).toBe(view.handleFrom.getPos());
     });
   });
   describe('If only one handle', () => {

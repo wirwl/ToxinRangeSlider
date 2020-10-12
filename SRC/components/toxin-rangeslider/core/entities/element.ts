@@ -1,7 +1,17 @@
 class TRSElement {
+  $parentElement: JQuery<HTMLElement>;
+
   $el: JQuery<HTMLElement>;
 
   protected _isVertical = false;
+
+  getParentElementWidth(): number {
+    return parseFloat(this.$parentElement.css('width'));
+  }
+
+  getParentElementHeight(): number {
+    return parseFloat(this.$parentElement.css('height'));
+  }
 
   isVertical(): boolean {
     return this._isVertical;
@@ -12,48 +22,26 @@ class TRSElement {
     this.$el.removeAttr('style');
   }
 
-  protected _x = 0;
-
   getX(): number {
-    return this._x;
+    return parseFloat(this.$el.css('left'));
   }
 
   setX(value: number) {
-    this._x = value;
-    this.$el.css('left', value);
+    const valueInPercent = (value / this.getParentElementWidth()) * 100;
+    this.$el.css('left', `${valueInPercent}%`);
   }
 
-  protected _right = 0;
-
-  getRight(): number {
-    return this._right;
+  setWidth(value: number) {
+    const valueInPercent = (value / this.getParentElementWidth()) * 100;
+    this.$el.css('width', `${valueInPercent}%`);
   }
-
-  setRight(value: number) {
-    this._right = value;
-    this.$el.css('right', value);
-  }
-
-  protected _bottom = 0;
-
-  getBottom(): number {
-    return this._bottom;
-  }
-
-  setBottom(value: number) {
-    this._bottom = value;
-    this.$el.css('bottom', value);
-  }
-
-  private _y = 0;
 
   getY(): number {
-    return this._y;
+    return parseFloat(this.$el.css('top'));
   }
 
   setY(value: number) {
-    this._y = value;
-    this.$el.css('top', value);
+    this.$el.css('top', `${(value / this.getParentElementHeight()) * 100}%`);
   }
 
   getOffsetTop(): number {
@@ -77,26 +65,16 @@ class TRSElement {
     else this.setX(value);
   }
 
-  protected _width = 0;
-
   getWidth(): number {
-    return this._width;
+    return parseFloat(this.$el.css('width'));
   }
-
-  setWidth(value: number) {
-    this._width = value;
-    this.$el.css('width', value);
-  }
-
-  protected _height = 0;
 
   getHeight(): number {
-    return this._height;
+    return parseFloat(this.$el.css('height'));
   }
 
   setHeight(value: number) {
-    this._height = value;
-    this.$el.css('height', value);
+    this.$el.css('height', `${(value / this.getParentElementHeight()) * 100}%`);
   }
 
   getSize(): number {
@@ -110,16 +88,7 @@ class TRSElement {
 
   constructor(el: JQuery<HTMLElement>) {
     this.$el = el;
-    this.refresh();
-  }
-
-  refresh() {
-    this._x = parseFloat(this.$el.css('left'));
-    this._y = parseFloat(this.$el.css('top'));
-    this._width = parseFloat(this.$el.css('width'));
-    this._height = parseFloat(this.$el.css('height'));
-    this._right = parseFloat(this.$el.css('right'));
-    this._bottom = parseFloat(this.$el.css('bottom'));
+    this.$parentElement = this.$el.parent();
   }
 
   appendToDomTree(childElement: TRSElement) {
@@ -127,6 +96,7 @@ class TRSElement {
   }
 
   removeFromDomTree() {
+    this.$el.off();
     this.$el.remove();
   }
 }

@@ -114,7 +114,7 @@ class TRSView {
     const oldIndexTo = oldSettings.items?.indexTo;
     const oldValues = oldSettings.items?.values;
 
-    $.extend(this.currentSettings, newSettings);
+    $.extend(true, this.currentSettings, newSettings);
 
     const {
       minValue: currentMinValue,
@@ -132,7 +132,6 @@ class TRSView {
 
     const { setVertical, setTwoHandles } = this.rangeslider;
     const isUsingItemsCurrent = currentValues!?.length > 1;
-
     const isVerticalChanged = currentIsVertical !== oldIsVertical;
     const isTwoHandlesChanged = currentIsTwoHandles !== oldIsTwoHandles;
     const isTipChanged = currentIsTip !== oldIsTip;
@@ -153,10 +152,12 @@ class TRSView {
       setTwoHandles(currentIsTwoHandles!);
 
       if (currentIsTwoHandles) {
-        this.rangeslider.appendToDomTree(this.handleFrom);
-        this.handleFrom.$el.on('mousedown.handleFrom', this.onMouseDownByHandle);
+        if (!this.rangeslider.$el.find('.rangeslider__handle-from').length) {
+          this.rangeslider.appendToDomTree(this.handleFrom);
+          this.handleFrom.$el.on('mousedown.handleFrom', this.onMouseDownByHandle);
+          this.tipFrom.setText(currentValueFrom!);
+        }
       } else this.handleFrom.removeFromDomTree();
-
       isNeedRedraw = true;
     }
 
@@ -259,7 +260,6 @@ class TRSView {
     const clientPos = isVertical ? e.clientY : e.clientX;
     if (newPos == null) newPos = clientPos! - this.line.getOffset() - shiftPos;
     newPos = this.validate(newPos, currentHandle);
-
     this.onHandlePositionUpdate(currentHandle, newPos);
 
     return false;
@@ -274,7 +274,9 @@ class TRSView {
       if (ch.is(this.handleFrom) && pos < 0) result = 0;
       if (ch.is(this.handleFrom) && pos > this.handleTo.getPos()) result = this.handleTo.getPos();
       if (ch.is(this.handleTo) && pos > lw - ch.getSize()) result = lw - ch.getSize();
-      if (ch.is(this.handleTo) && pos < this.handleFrom.getPos()) result = this.handleFrom.getPos();
+      if (ch.is(this.handleTo) && pos < this.handleFrom.getPos()) {
+        result = this.handleFrom.getPos();
+      }
     } else {
       if (pos < 0) result = 0;
       if (pos > lw - ch.getSize()) result = lw - ch.getSize();
@@ -359,6 +361,7 @@ class TRSView {
       this.handleTo.incZIndex();
       this.handleFrom.decZIndex();
     }
+
     this.drawLineSelected(currentHandle);
 
     this.tipFrom.setText(valueFrom!);

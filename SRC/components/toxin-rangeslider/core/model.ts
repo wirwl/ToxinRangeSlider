@@ -14,13 +14,10 @@ class TRSModel {
     onHandlePositionChange(this: HandleMovingResult): void {},
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   constructor(options?: RangeSliderOptions) {
     this.settings = {};
-    $.extend(this.settings, TRSModel.defaults);
-    $.extend(this.settings, options);
-    // this.settings.extend(TRSModel.defaults);
-    // this.settings.extend(options!);
+    $.extend(true, this.settings, TRSModel.defaults);
+    $.extend(true, this.settings, options);
   }
 
   validate() {
@@ -85,7 +82,6 @@ class TRSModel {
       }
 
       const size = maxValue - minValue!;
-
       if (stepValue! < 1) this.settings.stepValue = 1;
       if (this.settings.stepValue! > size) this.settings.stepValue = size;
 

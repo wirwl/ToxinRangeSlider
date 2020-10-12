@@ -71,6 +71,7 @@
     top: @xpos-lineselected;
     width: 84px;
     height: @size-lineselected;
+    pointer-events: none;
   }
 
   &__handle-from {
@@ -172,11 +173,6 @@
       border-bottom-left-radius: 5px;
       left: 0;
     }
-
-    // .rangeslider__tip-from,
-    // .rangeslider__handle-from {
-    //   display: none;
-    // }
   }
 
   &.rangeslider_is-vertical {
@@ -222,7 +218,6 @@
     .rangeslider__line-selected {
       left: 6px;
       width: 4px;
-
       height: 84px;
     }
   }

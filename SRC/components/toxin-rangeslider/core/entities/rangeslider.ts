@@ -31,7 +31,6 @@ class Rangeslider extends TRSElement {
     else this.$el.removeClass('rangeslider_is-vertical');
     this.controls.forEach(val => {
       val.setVertical(value);
-      val.refresh();
     });
   };
 
