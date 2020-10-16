@@ -9,14 +9,6 @@ class Handle extends TRSElement {
   is(h: Handle): boolean {
     return this.$el.is(h.$el);
   }
-
-  incZIndex(value = 99) {
-    this.$el.css('z-index', value);
-  }
-
-  decZIndex(value = 11) {
-    this.$el.css('z-index', value);
-  }
 }
 
 export default Handle;

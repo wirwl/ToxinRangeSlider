@@ -354,14 +354,6 @@ class TRSView {
       valueTo = this.currentSettings.valueTo;
     }
 
-    if (currentHandle.is(this.handleFrom)) {
-      this.handleFrom.incZIndex();
-      this.handleTo.decZIndex();
-    } else {
-      this.handleTo.incZIndex();
-      this.handleFrom.decZIndex();
-    }
-
     this.drawLineSelected(currentHandle);
 
     this.tipFrom.setText(valueFrom!);

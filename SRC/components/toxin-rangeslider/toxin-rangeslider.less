@@ -84,13 +84,13 @@
     height: 16px;
     left: 123px;
     top: @xpos-handles;
-    z-index: 11;    
+    z-index: 11;
   }
 
-  &__tip-from {    
+  &__tip-from {
     position: absolute;
-    top: -21px;   
-    left: 50%;    
+    top: -21px;
+    left: 50%;
     color: white;
     padding: 0px 3px;
     border-radius: 3px;
@@ -114,8 +114,8 @@
 
   &__tip-to {
     position: absolute;
-    top: -21px;    
-    left: 50%;    
+    top: -21px;
+    left: 50%;
     color: white;
     padding: 0px 3px;
     border-radius: 3px;
@@ -135,6 +135,7 @@
   &__handle_isMoving {
     background: @color-main;
     border-color: white;
+    z-index: 99;
   }
 
   &__thinline {
@@ -191,7 +192,7 @@
     }
 
     .rangeslider__tip-from,
-    .rangeslider__tip-to {       
+    .rangeslider__tip-to {
       left: 18px;
       top: 50%;
       transform: translateY(-50%);
