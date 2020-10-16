@@ -34,6 +34,7 @@ module.exports = {
     'no-shadow': ['error', { allow: ['e'] }],
     'import/no-unresolved': 0,
     'no-new': 0,
+    'no-alert': 0,
   },
   settings: {
     'import/resolver': 'webpack',
