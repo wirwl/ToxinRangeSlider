@@ -62,7 +62,7 @@ class Panel {
     this.updatePanelValues();
   }
 
-  private bindThis() {
+  private bindThis(): void {
     this.handleIsVerticalChange = this.handleIsVerticalChange.bind(this);
     this.handleIsTwoHandlesChange = this.handleIsTwoHandlesChange.bind(this);
     this.handleIsShowTipsChange = this.handleIsShowTipsChange.bind(this);
@@ -78,7 +78,7 @@ class Panel {
     this.handleButtonRemoveClick = this.handleButtonRemoveClick.bind(this);
   }
 
-  private addEventListeners() {
+  private addEventListeners(): void {
     const valueFrom = this.$valueFrom;
     const valueTo = this.$valueTo;
     const indexFrom = this.$indexFrom;
@@ -115,8 +115,8 @@ class Panel {
     this.$buttonRemove.on('click.buttonRemove', this.handleButtonRemoveClick);
   }
 
-  private handleInputsFocusout(event: JQuery.TriggeredEvent) {
-    const isUsingItems = this.rangeslider.data.items!?.values!?.length > 1;
+  private handleInputsFocusout(event: JQuery.TriggeredEvent): void {
+    const isUsingItems = this.rangeslider.data.items.values.length > 1;
     const $element = $(event.target);
     if (
       $element
@@ -124,7 +124,7 @@ class Panel {
         .parent()
         .hasClass('js-panel__input-min-value')
     ) {
-      $element.val(isUsingItems ? this.rangeslider.data.items!.values![0]! : this.rangeslider.data.minValue!);
+      $element.val(isUsingItems ? this.rangeslider.data.items.values[0] : this.rangeslider.data.minValue);
     }
     if (
       $element
@@ -134,8 +134,8 @@ class Panel {
     ) {
       $element.val(
         isUsingItems
-          ? this.rangeslider.data.items!.values![this.rangeslider.data.items!.values!?.length - 1]!
-          : this.rangeslider.data.maxValue!,
+          ? this.rangeslider.data.items.values[this.rangeslider.data.items.values?.length - 1]
+          : this.rangeslider.data.maxValue,
       );
     }
     if (
@@ -144,7 +144,7 @@ class Panel {
         .parent()
         .hasClass('js-panel__input-step-value')
     ) {
-      $element.val(this.rangeslider.data.stepValue!);
+      $element.val(this.rangeslider.data.stepValue);
     }
     if (
       $element
@@ -152,7 +152,7 @@ class Panel {
         .parent()
         .hasClass('js-panel__input-value-from')
     ) {
-      $element.val(this.rangeslider.data.valueFrom!);
+      $element.val(this.rangeslider.data.valueFrom);
     }
     if (
       $element
@@ -160,7 +160,7 @@ class Panel {
         .parent()
         .hasClass('js-panel__input-value-to')
     ) {
-      $element.val(this.rangeslider.data.valueTo!);
+      $element.val(this.rangeslider.data.valueTo);
     }
     if (
       $element
@@ -168,7 +168,7 @@ class Panel {
         .parent()
         .hasClass('js-panel__input-index-from')
     ) {
-      $element.val(this.rangeslider.data.items!.indexFrom!);
+      $element.val(this.rangeslider.data.items.indexFrom);
     }
     if (
       $element
@@ -176,11 +176,11 @@ class Panel {
         .parent()
         .hasClass('js-panel__input-index-to')
     ) {
-      $element.val(this.rangeslider.data.items!.indexTo!);
+      $element.val(this.rangeslider.data.items.indexTo);
     }
   }
 
-  private handleStepValueInput(event: JQuery.TriggeredEvent) {
+  private handleStepValueInput(event: JQuery.TriggeredEvent): void {
     const el = event.target as HTMLInputElement;
     if (el.value.length) {
       const value = parseInt(el.value, 10);
@@ -190,9 +190,9 @@ class Panel {
     }
   }
 
-  private handleButtonRemoveClick() {
+  private handleButtonRemoveClick(): void {
     const $selectOptions = this.$select.find('option');
-    const isUsingItems = this.select!.length > 1;
+    const isUsingItems = this.select ? this.select.length > 1 : false;
     this.$minValue.prop('disabled', isUsingItems);
     this.$maxValue.prop('disabled', isUsingItems);
     this.$stepValue.prop('disabled', isUsingItems);
@@ -205,9 +205,9 @@ class Panel {
     this.updatePanelValues();
   }
 
-  private handleButtonAddClick() {
+  private handleButtonAddClick(): void {
     const $selectOptions = this.$select.find('option');
-    const isUsingItems = this.select!.length > 1;
+    const isUsingItems = this.select ? this.select.length > 1 : false;
     this.$minValue.prop('disabled', isUsingItems);
     this.$maxValue.prop('disabled', isUsingItems);
     this.$stepValue.prop('disabled', isUsingItems);
@@ -220,39 +220,39 @@ class Panel {
     this.updatePanelValues();
   }
 
-  private handleIndexFromInput(event: JQuery.TriggeredEvent) {
+  private handleIndexFromInput(event: JQuery.TriggeredEvent): void {
     const el = event.target as HTMLInputElement;
     if (el.value.length) {
       const indexFrom = parseInt(el.value, 10);
       const indexTo = parseInt(String(this.$indexTo.val()), 10);
       if (indexFrom > indexTo) el.value = indexTo.toString();
       this.rangeslider.update({ items: { indexFrom: parseInt(el.value, 10) } });
-      this.$valueFrom.val(this.rangeslider.data.valueFrom!);
+      this.$valueFrom.val(this.rangeslider.data.valueFrom);
     }
   }
 
-  private handleIndexToInput(event: JQuery.TriggeredEvent) {
+  private handleIndexToInput(event: JQuery.TriggeredEvent): void {
     const el = event.target as HTMLInputElement;
     if (el.value.length) {
-      const maxIndex = this.rangeslider.data.items!.values!.length - 1;
+      const maxIndex = this.rangeslider.data.items.values.length - 1;
       const indexFrom = parseInt(String(this.$indexFrom.val()), 10);
       const indexTo = parseInt(el.value, 10);
       if (indexTo < indexFrom) el.value = indexFrom.toString();
       if (indexTo > maxIndex) el.value = maxIndex.toString();
       this.rangeslider.update({ items: { indexTo: parseInt(el.value, 10) } });
-      this.$valueTo.val(this.rangeslider.data.valueTo!);
+      this.$valueTo.val(this.rangeslider.data.valueTo);
     }
   }
 
   private findIndexByItem(values: (number | string)[], item: number | string): number {
-    return values!.findIndex(value => value.toString() === item.toString());
+    return values.findIndex(value => value.toString() === item.toString());
   }
 
-  private handleValueFromInput(event: JQuery.TriggeredEvent) {
+  private handleValueFromInput(event: JQuery.TriggeredEvent): void {
     const el = event.target as HTMLInputElement;
 
-    if (this.rangeslider.data.items?.values!?.length > 1) {
-      const indexFrom = this.findIndexByItem(this.rangeslider.data.items!.values!, el.value);
+    if (this.rangeslider.data.items.values.length > 1) {
+      const indexFrom = this.findIndexByItem(this.rangeslider.data.items.values, el.value);
 
       if (indexFrom === -1) return;
 
@@ -265,11 +265,11 @@ class Panel {
     this.updatePanelValues();
   }
 
-  private handleValueToInput(event: JQuery.TriggeredEvent) {
+  private handleValueToInput(event: JQuery.TriggeredEvent): void {
     const el = event.target as HTMLInputElement;
 
-    if (this.rangeslider.data.items?.values!?.length > 1) {
-      const indexTo = this.findIndexByItem(this.rangeslider.data.items!.values!, el.value);
+    if (this.rangeslider.data.items.values.length > 1) {
+      const indexTo = this.findIndexByItem(this.rangeslider.data.items.values, el.value);
 
       if (indexTo === -1) return;
 
@@ -287,7 +287,7 @@ class Panel {
     this.updatePanelValues();
   }
 
-  private handleMinValueInput(event: JQuery.TriggeredEvent) {
+  private handleMinValueInput(event: JQuery.TriggeredEvent): void {
     const el = event.target as HTMLInputElement;
     let minValue = parseInt(el.value, 10);
     if (!Number.isNaN(minValue)) {
@@ -312,7 +312,7 @@ class Panel {
     }
   }
 
-  private handleMaxValueInput(event: JQuery.TriggeredEvent) {
+  private handleMaxValueInput(event: JQuery.TriggeredEvent): void {
     const el = event.target as HTMLInputElement;
     let maxValue = parseInt(el.value, 10);
     if (!Number.isNaN(maxValue)) {
@@ -340,36 +340,36 @@ class Panel {
     }
   }
 
-  private handleIsShowTipsChange(event: JQuery.TriggeredEvent) {
+  private handleIsShowTipsChange(event: JQuery.TriggeredEvent): void {
     const el = event.target as HTMLInputElement;
     this.rangeslider.update({ isTip: el.checked });
   }
 
-  private updatePanelValues() {
-    const isUsingItems = this.rangeslider.data.items?.values!?.length > 1;
+  private updatePanelValues(): void {
+    const isUsingItems = this.rangeslider.data.items.values.length > 1;
     this.$isVertical.prop('checked', this.rangeslider.data.isVertical);
     this.$isTwoHandles.prop('checked', this.rangeslider.data.isTwoHandles);
     this.$isShowTips.prop('checked', this.rangeslider.data.isTip);
-    this.$minValue.val(isUsingItems ? this.rangeslider.data.items!.values![0]! : this.rangeslider.data.minValue!);
+    this.$minValue.val(isUsingItems ? this.rangeslider.data.items.values[0] : this.rangeslider.data.minValue);
     this.$maxValue.val(
       isUsingItems
-        ? this.rangeslider.data.items!.values![this.rangeslider.data.items!.values!?.length - 1]!
-        : this.rangeslider.data.maxValue!,
+        ? this.rangeslider.data.items.values[this.rangeslider.data.items.values.length - 1]
+        : this.rangeslider.data.maxValue,
     );
-    if (this.rangeslider.data.isTwoHandles) this.$valueFrom.val(this.rangeslider.data.valueFrom!);
-    this.$valueTo.val(this.rangeslider.data.valueTo!);
-    if (this.select!.length > 1) {
+    if (this.rangeslider.data.isTwoHandles) this.$valueFrom.val(this.rangeslider.data.valueFrom);
+    this.$valueTo.val(this.rangeslider.data.valueTo);
+    if (this.select && this.select.length > 1) {
       if (this.rangeslider.data.isTwoHandles) {
         this.$indexFrom.prop('disabled', false);
-        this.$indexFrom.val(this.rangeslider.data.items!?.indexFrom!);
+        this.$indexFrom.val(this.rangeslider.data.items.indexFrom);
       }
       this.$indexTo.prop('disabled', false);
-      this.$indexTo.val(this.rangeslider.data.items!?.indexTo!);
+      this.$indexTo.val(this.rangeslider.data.items.indexTo);
     } else {
       this.$indexFrom.prop('disabled', true);
       this.$indexTo.prop('disabled', true);
     }
-    this.$stepValue.val(this.rangeslider.data.stepValue!);
+    this.$stepValue.val(this.rangeslider.data.stepValue);
   }
 
   private getRangeLength(): number {
@@ -380,21 +380,21 @@ class Panel {
     return Number(this.$stepValue.val()) < this.getRangeLength();
   }
 
-  private preventMinusTyping(event: JQuery.TriggeredEvent) {
+  private preventMinusTyping(event: JQuery.TriggeredEvent): void {
     if (event.key === '-') event.preventDefault();
   }
 
-  private handleIsVerticalChange(event: JQuery.TriggeredEvent) {
+  private handleIsVerticalChange(event: JQuery.TriggeredEvent): void {
     const checkbox = event.target as HTMLInputElement;
     if (checkbox.checked) this.$panel.addClass('panel_is-vertical');
     else this.$panel.removeClass('panel_is-vertical');
     this.rangeslider.update({ isVertical: checkbox.checked });
   }
 
-  private handleIsTwoHandlesChange(event: JQuery.TriggeredEvent) {
+  private handleIsTwoHandlesChange(event: JQuery.TriggeredEvent): void {
     const checkbox = event.target as HTMLInputElement;
     this.rangeslider.update({ isTwoHandles: checkbox.checked });
-    const isUsingItems = this.rangeslider.data.items?.values!?.length > 1;
+    const isUsingItems = this.rangeslider.data.items.values.length > 1;
     if (!checkbox.checked) {
       this.$valueFrom.prop('disabled', true);
       if (isUsingItems) this.$indexFrom.prop('disabled', true);

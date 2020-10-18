@@ -2,23 +2,22 @@
  * Options for the rangeslider plugin.
  */
 interface RangeSliderOptions {
-  isVertical?: boolean;
-  isTwoHandles?: boolean;
-  isTip?: boolean;
-  isScale?: boolean;
-  minValue?: number | string;
-  maxValue?: number | string;
-  stepValue?: number;
-  valueFrom?: number | string;
-  valueTo?: number | string;
-  items?: RangeSliderItems;
+  isVertical: boolean;
+  isTwoHandles: boolean;
+  isTip: boolean;
+  minValue: number | string;
+  maxValue: number | string;
+  stepValue: number;
+  valueFrom: number | string;
+  valueTo: number | string;
+  items: RangeSliderItems;
   onHandlePositionChange?(this: HandleMovingResult): void;
 }
 
 interface RangeSliderItems {
-  values?: (number | string)[];
-  indexFrom?: number;
-  indexTo?: number;
+  values: (number | string)[];
+  indexFrom: number;
+  indexTo: number;
 }
 
 interface HandleMovingResult {

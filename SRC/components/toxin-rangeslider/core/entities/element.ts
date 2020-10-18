@@ -17,7 +17,7 @@ class TRSElement {
     return this._isVertical;
   }
 
-  setVertical(value: boolean) {
+  setVertical(value: boolean): void {
     this._isVertical = value;
     this.$el.removeAttr('style');
   }
@@ -26,12 +26,12 @@ class TRSElement {
     return parseFloat(this.$el.css('left'));
   }
 
-  setX(value: number) {
+  setX(value: number): void {
     const valueInPercent = (value / this.getParentElementWidth()) * 100;
     this.$el.css('left', `${valueInPercent}%`);
   }
 
-  setWidth(value: number) {
+  setWidth(value: number): void {
     const valueInPercent = (value / this.getParentElementWidth()) * 100;
     this.$el.css('width', `${valueInPercent}%`);
   }
@@ -40,16 +40,34 @@ class TRSElement {
     return parseFloat(this.$el.css('top'));
   }
 
-  setY(value: number) {
+  setY(value: number): void {
     this.$el.css('top', `${(value / this.getParentElementHeight()) * 100}%`);
   }
 
   getOffsetTop(): number {
-    return this.$el.offset()!.top;
+    let result: number;
+    try {
+      const offset = this.$el.offset();
+      if (!offset)
+        throw new Error('Offset method return undefined value. Can not get top property value from offset method!');
+      result = offset.top;
+    } catch (e) {
+      throw e;
+    }
+    return result;
   }
 
   getOffsetLeft(): number {
-    return this.$el.offset()!.left;
+    let result: number;
+    try {
+      const offset = this.$el.offset();
+      if (!offset)
+        throw new Error('Offset method return undefined value. Can not get left property value from offset method!');
+      result = offset.left;
+    } catch (e) {
+      throw e;
+    }
+    return result;
   }
 
   getOffset(): number {
@@ -60,7 +78,7 @@ class TRSElement {
     return this.isVertical() ? this.getY() : this.getX();
   }
 
-  setPos(value: number) {
+  setPos(value: number): void {
     if (this.isVertical()) this.setY(value);
     else this.setX(value);
   }
@@ -73,7 +91,7 @@ class TRSElement {
     return parseFloat(this.$el.css('height'));
   }
 
-  setHeight(value: number) {
+  setHeight(value: number): void {
     this.$el.css('height', `${(value / this.getParentElementHeight()) * 100}%`);
   }
 
@@ -81,7 +99,7 @@ class TRSElement {
     return this.isVertical() ? this.getHeight() : this.getWidth();
   }
 
-  setSize(value: number) {
+  setSize(value: number): void {
     if (this.isVertical()) this.setHeight(value);
     else this.setWidth(value);
   }
@@ -91,11 +109,11 @@ class TRSElement {
     this.$parentElement = this.$el.parent();
   }
 
-  appendToDomTree(childElement: TRSElement) {
+  appendToDomTree(childElement: TRSElement): void {
     this.$el.append(childElement.$el);
   }
 
-  removeFromDomTree() {
+  removeFromDomTree(): void {
     this.$el.off();
     this.$el.remove();
   }

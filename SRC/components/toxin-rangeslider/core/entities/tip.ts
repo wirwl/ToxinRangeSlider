@@ -1,7 +1,7 @@
 import TRSElement from './element';
 
 class Tip extends TRSElement {
-  setText(value: string | number) {
+  setText(value: string | number): void {
     this.$el.text(value);
   }
 

@@ -3,7 +3,7 @@ import TRSModel from '../core/model';
 let model: TRSModel;
 
 beforeAll(async () => {
-  model = new TRSModel({});
+  model = new TRSModel();
 });
 
 describe('Check correctness of validate() function, that correct invalid values', () => {
@@ -11,30 +11,30 @@ describe('Check correctness of validate() function, that correct invalid values'
     test('Check if indexTo field value out of range (is greater than numbers of values)', () => {
       $.extend(true, model.settings, { items: { values: [1, 2, 3, 4, 5], indexTo: 10 } });
       model.validate();
-      expect(model.settings.items!.indexTo).toBe(4);
+      expect(model.settings.items.indexTo).toBe(4);
     });
     describe('If rangeslider has two handles', () => {
       test('Check if indexFrom field value is bigger than indexTo field value', () => {
         $.extend(true, model.settings, { items: { values: [1, 2, 3, 4, 5], indexFrom: 12, indexTo: 3 } });
         model.validate();
-        expect(model.settings.items!.indexFrom).toBe(3);
+        expect(model.settings.items.indexFrom).toBe(3);
       });
       test('Check if indexFrom field value is less than zero', () => {
         $.extend(true, model.settings, { items: { values: [1, 2, 3, 4, 5], indexFrom: -1 } });
         model.validate();
-        expect(model.settings.items!.indexFrom).toBe(0);
+        expect(model.settings.items.indexFrom).toBe(0);
       });
     });
   });
   describe('If rangeslider has range of values from one(min.) to another(max.)', () => {
     test('Check if stepValue field value is less than zero', () => {
-      model = new TRSModel({});
+      model = new TRSModel();
       $.extend(true, model.settings, { items: { values: [] }, stepValue: -5 });
       model.validate();
       expect(model.settings.stepValue).toBe(1);
     });
     test('Check if stepValue field value is greater than length of rangeslider', () => {
-      model = new TRSModel({});
+      model = new TRSModel();
       $.extend(true, model.settings, {
         items: { values: [] },
         minValue: 100,

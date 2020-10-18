@@ -12,7 +12,7 @@ class Rangeslider extends TRSElement {
     return this._isTwoHandles;
   };
 
-  setTwoHandles = (value: boolean) => {
+  setTwoHandles = (value: boolean): void => {
     this._isTwoHandles = value;
     this.$el.find('.rangeslider__line-selected').removeAttr('style');
     if (this._isTwoHandles) this.$el.removeClass('rangeslider_one-handle');
@@ -25,7 +25,7 @@ class Rangeslider extends TRSElement {
     return this._isVertical;
   };
 
-  setVertical = (value: boolean) => {
+  setVertical = (value: boolean): void => {
     this._isVertical = value;
     if (value) this.$el.addClass('rangeslider_is-vertical');
     else this.$el.removeClass('rangeslider_is-vertical');
@@ -39,7 +39,7 @@ class Rangeslider extends TRSElement {
     el.on('dragstart', e => e.preventDefault());
   }
 
-  addControls(controls: (Tip | Handle | Line)[]) {
+  addControls(controls: (Tip | Handle | Line)[]): void {
     this.controls = controls;
   }
 }

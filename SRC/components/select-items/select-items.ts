@@ -19,34 +19,36 @@ class SelectItems {
     this.addEventListeners();
   }
 
-  private bindThis() {
+  private bindThis(): void {
     this.handleButtonAddClick = this.handleButtonAddClick.bind(this);
     this.handleButtonRemoveClick = this.handleButtonRemoveClick.bind(this);
   }
 
-  private addEventListeners() {
+  private addEventListeners(): void {
     this.$buttonAdd.on('click.buttonAdd', this.handleButtonAddClick);
     this.$buttonRemove.on('click.buttonRemove', this.handleButtonRemoveClick);
   }
 
-  private handleButtonAddClick() {
+  private handleButtonAddClick(): void {
     const randomValue = Math.random();
     const newValue = parseInt((randomValue * 1000).toString(), 10).toString();
     const item = prompt('Введите новый объект', newValue);
     if (item) this.$select.append(new Option(item));
-    if (this.select!.length > 1) this.$selectItems.removeClass('select-items_not-using');
+    const lengthSelect = this.select?.length || -1;
+    if (lengthSelect > 1) this.$selectItems.removeClass('select-items_not-using');
     else this.$selectItems.addClass('select-items_not-using');
-    if (this.select!.length > 0) {
+    if (lengthSelect > 0) {
       this.$buttonRemove.prop('disabled', false);
       this.$buttonRemove.removeClass('select-items__button-remove_disabled');
     }
   }
 
-  private handleButtonRemoveClick() {
+  private handleButtonRemoveClick(): void {
     this.$select.find('option:selected').remove();
-    if (this.select!.length > 1) this.$selectItems.removeClass('select-items_not-using');
+    const lengthSelect = this.select?.length || -1;
+    if (lengthSelect > 1) this.$selectItems.removeClass('select-items_not-using');
     else this.$selectItems.addClass('select-items_not-using');
-    if (this.select!.length === 0) {
+    if (lengthSelect === 0) {
       this.$buttonRemove.prop('disabled', true);
       this.$buttonRemove.addClass('select-items__button-remove_disabled');
     }

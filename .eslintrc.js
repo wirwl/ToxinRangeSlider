@@ -35,9 +35,10 @@ module.exports = {
     'import/no-unresolved': 0,
     'no-new': 0,
     'no-alert': 0,
+    'no-non-null-assertion': 0,
+    'no-useless-catch': 0,
   },
   settings: {
-    'import/resolver': 'webpack',
     'import/extensions': ['.js', '.jsx', '.ts', '.tsx'],
     'import/parsers': {
       '@typescript-eslint/parser': ['.ts', '.tsx'],
