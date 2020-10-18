@@ -4,6 +4,11 @@ import Handle from './handle';
 import Line from './line';
 
 class Rangeslider extends TRSElement {
+  readonly CLASSES = {
+    modOneHandle: 'rangeslider_one-handle',
+    modIsVertical: 'rangeslider_is-vertical',
+  };
+
   public controls: (Tip | Handle | Line)[] = [];
 
   private _isTwoHandles = false;
@@ -15,8 +20,8 @@ class Rangeslider extends TRSElement {
   setTwoHandles = (value: boolean): void => {
     this._isTwoHandles = value;
     this.$el.find('.rangeslider__line-selected').removeAttr('style');
-    if (this._isTwoHandles) this.$el.removeClass('rangeslider_one-handle');
-    else this.$el.addClass('rangeslider_one-handle');
+    if (this._isTwoHandles) this.$el.removeClass(this.CLASSES.modOneHandle);
+    else this.$el.addClass(this.CLASSES.modOneHandle);
   };
 
   protected _isVertical = false;
@@ -27,8 +32,8 @@ class Rangeslider extends TRSElement {
 
   setVertical = (value: boolean): void => {
     this._isVertical = value;
-    if (value) this.$el.addClass('rangeslider_is-vertical');
-    else this.$el.removeClass('rangeslider_is-vertical');
+    if (value) this.$el.addClass(this.CLASSES.modIsVertical);
+    else this.$el.removeClass(this.CLASSES.modIsVertical);
     this.controls.forEach(val => {
       val.setVertical(value);
     });

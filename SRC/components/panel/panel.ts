@@ -1,6 +1,10 @@
 import TRSPresenter from '../toxin-rangeslider/core/presenter';
 
 class Panel {
+  readonly CLASSES = {
+    modIsVertical: 'panel_is-vertical',
+  };
+
   private $panel: JQuery<HTMLElement>;
 
   private $inputs: JQuery<HTMLElement>;
@@ -386,8 +390,8 @@ class Panel {
 
   private handleIsVerticalChange(event: JQuery.TriggeredEvent): void {
     const checkbox = event.target as HTMLInputElement;
-    if (checkbox.checked) this.$panel.addClass('panel_is-vertical');
-    else this.$panel.removeClass('panel_is-vertical');
+    if (checkbox.checked) this.$panel.addClass(this.CLASSES.modIsVertical);
+    else this.$panel.removeClass(this.CLASSES.modIsVertical);
     this.rangeslider.update({ isVertical: checkbox.checked });
   }
 

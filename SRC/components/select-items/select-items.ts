@@ -1,4 +1,9 @@
 class SelectItems {
+  readonly CLASSES = {
+    modNotUsing: 'select-items_not-using',
+    modRemoveDisabled: 'select-items__button-remove_disabled',
+  };
+
   private $selectItems: JQuery<HTMLElement>;
 
   private $buttonAdd: JQuery<HTMLElement>;
@@ -35,22 +40,22 @@ class SelectItems {
     const item = prompt('Введите новый объект', newValue);
     if (item) this.$select.append(new Option(item));
     const lengthSelect = this.select?.length || -1;
-    if (lengthSelect > 1) this.$selectItems.removeClass('select-items_not-using');
-    else this.$selectItems.addClass('select-items_not-using');
+    if (lengthSelect > 1) this.$selectItems.removeClass(this.CLASSES.modNotUsing);
+    else this.$selectItems.addClass(this.CLASSES.modNotUsing);
     if (lengthSelect > 0) {
       this.$buttonRemove.prop('disabled', false);
-      this.$buttonRemove.removeClass('select-items__button-remove_disabled');
+      this.$buttonRemove.removeClass(this.CLASSES.modRemoveDisabled);
     }
   }
 
   private handleButtonRemoveClick(): void {
     this.$select.find('option:selected').remove();
     const lengthSelect = this.select?.length || -1;
-    if (lengthSelect > 1) this.$selectItems.removeClass('select-items_not-using');
-    else this.$selectItems.addClass('select-items_not-using');
+    if (lengthSelect > 1) this.$selectItems.removeClass(this.CLASSES.modNotUsing);
+    else this.$selectItems.addClass(this.CLASSES.modNotUsing);
     if (lengthSelect === 0) {
       this.$buttonRemove.prop('disabled', true);
-      this.$buttonRemove.addClass('select-items__button-remove_disabled');
+      this.$buttonRemove.addClass(this.CLASSES.modRemoveDisabled);
     }
   }
 }
