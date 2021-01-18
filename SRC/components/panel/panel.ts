@@ -1,6 +1,6 @@
 import TRSPresenter from '../toxin-rangeslider/core/presenter';
 
-class Panel {
+export default class Panel {
   readonly CLASSES = {
     modIsVertical: 'panel_is-vertical',
   };
@@ -450,8 +450,3 @@ class Panel {
     this.updatePanelValues();
   }
 }
-
-const $panels = $('.panel');
-$panels.each((_, element) => {
-  new Panel(element);
-});

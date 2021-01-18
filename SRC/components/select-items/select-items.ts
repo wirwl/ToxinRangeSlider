@@ -1,4 +1,4 @@
-class SelectItems {
+export default class SelectItems {
   readonly CLASSES = {
     modNotUsing: 'select-items_not-using',
     modRemoveDisabled: 'select-items__button-remove_disabled',
@@ -59,8 +59,3 @@ class SelectItems {
     }
   }
 }
-
-const $selectItems = $('.js-select-items');
-$selectItems.each((index, element) => {
-  new SelectItems(element);
-});
