@@ -7,60 +7,43 @@ export default class Panel {
 
   private $panel: JQuery<HTMLElement>;
 
-  private $inputs: JQuery<HTMLElement>;
+  private $inputs!: JQuery<HTMLElement>;
 
-  private $minValue: JQuery<HTMLElement>;
+  private $minValue!: JQuery<HTMLElement>;
 
-  private $maxValue: JQuery<HTMLElement>;
+  private $maxValue!: JQuery<HTMLElement>;
 
-  private $stepValue: JQuery<HTMLElement>;
+  private $stepValue!: JQuery<HTMLElement>;
 
-  private $valueFrom: JQuery<HTMLElement>;
+  private $valueFrom!: JQuery<HTMLElement>;
 
-  private $valueTo: JQuery<HTMLElement>;
+  private $valueTo!: JQuery<HTMLElement>;
 
-  private $indexFrom: JQuery<HTMLElement>;
+  private $indexFrom!: JQuery<HTMLElement>;
 
-  private $indexTo: JQuery<HTMLElement>;
+  private $indexTo!: JQuery<HTMLElement>;
 
-  private $buttonAdd: JQuery<HTMLElement>;
+  private $buttonAdd!: JQuery<HTMLElement>;
 
-  private $buttonRemove: JQuery<HTMLElement>;
+  private $buttonRemove!: JQuery<HTMLElement>;
 
-  private $select: JQuery<HTMLElement>;
+  private $select!: JQuery<HTMLElement>;
 
-  private select: HTMLSelectElement | null;
+  private select!: HTMLSelectElement | null;
 
-  private $rangesliderRootElement: JQuery<HTMLElement>;
+  private $rangesliderRootElement!: JQuery<HTMLElement>;
 
-  private rangeslider: TRSPresenter;
+  private rangeslider!: TRSPresenter;
 
-  private $isVertical: JQuery<HTMLElement>;
+  private $isVertical!: JQuery<HTMLElement>;
 
-  private $isTwoHandles: JQuery<HTMLElement>;
+  private $isTwoHandles!: JQuery<HTMLElement>;
 
-  private $isShowTips: JQuery<HTMLElement>;
+  private $isShowTips!: JQuery<HTMLElement>;
 
   constructor(element: HTMLElement) {
     this.$panel = $(element);
-    this.$inputs = this.$panel.find('input');
-    this.$minValue = this.$panel.find('.js-panel__input-min-value').find('.js-input__field');
-    this.$maxValue = this.$panel.find('.js-panel__input-max-value').find('.js-input__field');
-    this.$stepValue = this.$panel.find('.js-panel__input-step-value').find('.js-input__field');
-    this.$valueFrom = this.$panel.find('.js-panel__input-value-from').find('.js-input__field');
-    this.$valueTo = this.$panel.find('.js-panel__input-value-to').find('.js-input__field');
-    this.$indexFrom = this.$panel.find('.js-panel__input-index-from').find('.js-input__field');
-    this.$indexTo = this.$panel.find('.js-panel__input-index-to').find('.js-input__field');
-    this.$buttonAdd = this.$panel.find('.js-select-items').find('.js-select-items__button-add');
-    this.$buttonRemove = this.$panel.find('.js-select-items').find('.js-select-items__button-remove');
-    this.$select = this.$panel.find('.js-select-items').find('.js-select-items__options');
-    this.select = this.$select[0] as HTMLSelectElement;
-    this.$rangesliderRootElement = this.$panel.find('.toxin-rangeslider-here');
-    this.rangeslider = this.$rangesliderRootElement.data('toxinRangeSlider');
-    this.$isVertical = this.$panel.find('.js-panel__checkbox-is-vertical').find('.checkbox__input');
-    this.$isTwoHandles = this.$panel.find('.js-panel__checkbox-is-two-handles').find('.checkbox__input');
-    this.$isShowTips = this.$panel.find('.js-panel__checkbox-is-tip').find('.checkbox__input');
-
+    this.initMembers();
     this.bindThis();
     this.addEventListeners();
     this.updatePanelValues();
@@ -80,6 +63,26 @@ export default class Panel {
     this.handleInputsFocusout = this.handleInputsFocusout.bind(this);
     this.handleButtonAddClick = this.handleButtonAddClick.bind(this);
     this.handleButtonRemoveClick = this.handleButtonRemoveClick.bind(this);
+  }
+
+  private initMembers() {
+    this.$inputs = this.$panel.find('input');
+    this.$minValue = this.$panel.find('.js-panel__input-min-value').find('.js-input__field');
+    this.$maxValue = this.$panel.find('.js-panel__input-max-value').find('.js-input__field');
+    this.$stepValue = this.$panel.find('.js-panel__input-step-value').find('.js-input__field');
+    this.$valueFrom = this.$panel.find('.js-panel__input-value-from').find('.js-input__field');
+    this.$valueTo = this.$panel.find('.js-panel__input-value-to').find('.js-input__field');
+    this.$indexFrom = this.$panel.find('.js-panel__input-index-from').find('.js-input__field');
+    this.$indexTo = this.$panel.find('.js-panel__input-index-to').find('.js-input__field');
+    this.$buttonAdd = this.$panel.find('.js-select-items').find('.js-select-items__button-add');
+    this.$buttonRemove = this.$panel.find('.js-select-items').find('.js-select-items__button-remove');
+    this.$select = this.$panel.find('.js-select-items').find('.js-select-items__options');
+    this.select = this.$select[0] as HTMLSelectElement;
+    this.$rangesliderRootElement = this.$panel.find('.toxin-rangeslider-here');
+    this.rangeslider = this.$rangesliderRootElement.data('toxinRangeSlider');
+    this.$isVertical = this.$panel.find('.js-panel__checkbox-is-vertical').find('.checkbox__input');
+    this.$isTwoHandles = this.$panel.find('.js-panel__checkbox-is-two-handles').find('.checkbox__input');
+    this.$isShowTips = this.$panel.find('.js-panel__checkbox-is-tip').find('.checkbox__input');
   }
 
   private addEventListeners(): void {
