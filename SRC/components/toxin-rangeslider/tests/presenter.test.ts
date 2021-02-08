@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import TRSView from '../core/view';
+import TRSView from '../core/MainView';
 import TRSModel from '../core/model';
 import TRSPresenter from '../core/presenter';
 

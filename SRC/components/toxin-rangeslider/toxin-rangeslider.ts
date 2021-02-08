@@ -1,5 +1,5 @@
 import TRSPresenter from './core/presenter';
-import TRSView from './core/view';
+import TRSView from './core/MainView';
 import TRSModel from './core/model';
 
 $.fn.toxinRangeSlider = function toxinRangeSlider(this: JQuery<HTMLElement>, options?: RangeSliderOptions): JQuery {

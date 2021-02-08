@@ -1,4 +1,4 @@
-import TRSView from './view';
+import TRSView from './MainView';
 import TRSModel from './model';
 import Handle from './entities/handle';
 

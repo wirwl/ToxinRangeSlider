@@ -75,6 +75,7 @@
     "webpack-merge": "^4.2.2"
   },
   "dependencies": {
+    "bem-cn": "^3.0.1",
     "gh-pages": "^3.0.0",
     "jquery": "^3.5.1",
     "less": "^3.10.3"
