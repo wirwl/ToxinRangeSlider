@@ -7,14 +7,16 @@ export default class TipView {
 
   $parentElement: JQuery<HTMLElement>;
 
+  protected _isVertical = false;
+
   constructor(data: any) {
     this.$parentElement = data.$parentElement;
     this.$el = $(data.domEntity);
   }
 
-  setVertical() {
-    console.log('setVertical from TipView.ts file, 15 line');
-    return null;
+  setVertical(value: boolean) {
+    this._isVertical = value;
+    this.$el.removeAttr('style');
   }
 
   setText(value: string | number): void {

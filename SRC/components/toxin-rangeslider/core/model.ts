@@ -1,5 +1,5 @@
 class TRSModel {
-  settings: RangeSliderOptions;
+  private settings: RangeSliderOptions;
 
   static readonly defaults: RangeSliderOptions = {
     isVertical: false,
@@ -16,9 +16,35 @@ class TRSModel {
   constructor(options?: RangeSliderOptions) {
     this.settings = $.extend(true, {}, TRSModel.defaults);
     $.extend(true, this.settings, options);
+    this.validate();
   }
 
-  validate(): void {
+  updateHandleState({ isFromHandle, isUsingItems, index, value }: HandleMovingResult): void {
+    if (isFromHandle) {
+      if (isUsingItems) {
+        this.settings.items.indexFrom = index;
+        this.settings.valueFrom = this.settings.items.values[index];
+      } else this.settings.valueFrom = value;
+    } else if (isUsingItems) {
+      this.settings.items.indexTo = index;
+      this.settings.valueTo = this.settings.items.values[index];
+    } else this.settings.valueTo = value;
+  }
+
+  updateState(data = {}): void {
+    $.extend(true, this.settings, data);
+    this.validate();
+  }
+
+  getState(): RangeSliderOptions {
+    return this.settings;
+  }
+
+  onHandlePositionChange(data: HandleMovingResult): void {
+    this.settings.onHandlePositionChange?.call(data);
+  }
+
+  private validate(): void {
     const { items, stepValue, isTwoHandles, isVertical, isTip } = this.settings;
 
     const indexFrom = items?.indexFrom;

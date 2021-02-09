@@ -65,7 +65,7 @@ export default class Panel {
     this.handleButtonRemoveClick = this.handleButtonRemoveClick.bind(this);
   }
 
-  private initMembers() {
+  private initMembers(): void {
     this.$inputs = this.$panel.find('input');
     this.$minValue = this.$panel.find('.js-panel__input-min-value').find('.js-input__field');
     this.$maxValue = this.$panel.find('.js-panel__input-max-value').find('.js-input__field');

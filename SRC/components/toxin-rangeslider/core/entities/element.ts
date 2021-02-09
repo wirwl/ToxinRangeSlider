@@ -1,3 +1,6 @@
+/* eslint-disable import/no-cycle */
+import HandleView from '../View/HandleView';
+
 class TRSElement {
   $parentElement: JQuery<HTMLElement>;
 
@@ -109,7 +112,7 @@ class TRSElement {
     this.$parentElement = this.$el.parent();
   }
 
-  appendToDomTree(childElement: TRSElement): void {
+  appendToDomTree(childElement: TRSElement | HandleView): void {
     this.$el.append(childElement.$el);
   }
 

@@ -1,3 +1,4 @@
+import HandleView from '../View/HandleView';
 import TRSElement from './element';
 
 class Handle extends TRSElement {
@@ -6,7 +7,7 @@ class Handle extends TRSElement {
     else this.$el.removeClass('rangeslider__handle_isMoving');
   }
 
-  is(h: Handle): boolean {
+  is(h: Handle | HandleView): boolean {
     return this.$el.is(h.$el);
   }
 }

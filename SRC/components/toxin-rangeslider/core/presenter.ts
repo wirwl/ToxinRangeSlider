@@ -1,11 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import TRSView from './MainView';
 import TRSModel from './model';
-import Handle from './entities/handle';
 
 class TRSPresenter {
-  view: TRSView;
+  private view: TRSView;
 
-  model: TRSModel;
+  private model: TRSModel;
 
   data: RangeSliderOptions;
 
@@ -13,42 +13,25 @@ class TRSPresenter {
     this.view = view;
     this.model = model;
 
-    this.view.onHandlePositionUpdate = this.onHandlePositionUpdate.bind(this);
-
-    $.extend(true, this.model.settings, this.view.data);
-    this.model.validate();
-    this.data = { ...this.model.settings };
-    this.view.drawSlider({ ...TRSModel.defaults }, this.model.settings, true);
+    this.view.publisher.addObserver(this);
+    this.model.updateState(this.view.getDataOptions());
+    this.data = { ...this.getState() };
+    this.view.drawSlider(this.getState(), true);
   }
 
-  updateSettings({ isFromHandle, isUsingItems, index, value }: HandleMovingResult): void {
-    if (isFromHandle) {
-      if (isUsingItems) {
-        this.model.settings.items.indexFrom = index;
-        this.model.settings.valueFrom = this.model.settings.items.values[index];
-      } else this.model.settings.valueFrom = value;
-    } else if (isUsingItems) {
-      this.model.settings.items.indexTo = index;
-      this.model.settings.valueTo = this.model.settings.items.values[index];
-    } else this.model.settings.valueTo = value;
+  updateInObserver(data: any): void {
+    this.model.updateHandleState(data);
+    this.model.onHandlePositionChange(data);
   }
 
-  onHandlePositionUpdate(handle: Handle, pxNewPos: number): void {
-    const { onHandlePositionChange } = this.model.settings;
-    const handleMovingResult = this.view.moveHandle(handle, pxNewPos);
-
-    this.updateSettings(handleMovingResult);
-    if (onHandlePositionChange) onHandlePositionChange.call(handleMovingResult);
+  getState(): RangeSliderOptions {
+    return this.model.getState();
   }
 
   update(data = {}): void {
-    const oldSettings = { ...this.model.settings };
-
-    $.extend(true, this.model.settings, data);
-    this.model.validate();
-    this.data = this.model.settings;
-
-    this.view.drawSlider(oldSettings, this.model.settings);
+    this.model.updateState(data);
+    this.data = this.getState();
+    this.view.drawSlider(this.getState());
   }
 }
 
