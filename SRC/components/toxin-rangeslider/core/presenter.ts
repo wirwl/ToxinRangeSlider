@@ -7,15 +7,12 @@ class TRSPresenter {
 
   private model: TRSModel;
 
-  data: RangeSliderOptions;
-
   constructor(model: TRSModel, view: TRSView) {
     this.view = view;
     this.model = model;
 
-    this.view.publisher.addObserver(this);
+    this.view.addObservers(this);
     this.model.updateState(this.view.getDataOptions());
-    this.data = { ...this.getState() };
     this.view.drawSlider(this.getState(), true);
   }
 
@@ -30,7 +27,6 @@ class TRSPresenter {
 
   update(data = {}): void {
     this.model.updateState(data);
-    this.data = this.getState();
     this.view.drawSlider(this.getState());
   }
 }

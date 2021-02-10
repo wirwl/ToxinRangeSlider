@@ -131,7 +131,7 @@ export default class Panel {
       valueFrom,
       valueTo,
       stepValue,
-    } = this.rangeslider.data;
+    } = this.rangeslider.getState();
     const isUsingItems = values.length > 1;
     const $element = $(event.target);
     if (
@@ -233,7 +233,7 @@ export default class Panel {
   }
 
   private handleIndexFromInput(event: JQuery.TriggeredEvent): void {
-    const { valueFrom } = this.rangeslider.data;
+    const { valueFrom } = this.rangeslider.getState();
     const el = event.target as HTMLInputElement;
     if (el.value.length) {
       const indexFrom = parseInt(el.value, 10);
@@ -248,7 +248,7 @@ export default class Panel {
     const {
       items: { values },
       valueTo,
-    } = this.rangeslider.data;
+    } = this.rangeslider.getState();
     const el = event.target as HTMLInputElement;
     if (el.value.length) {
       const maxIndex = values.length - 1;
@@ -268,7 +268,7 @@ export default class Panel {
   private handleValueFromInput(event: JQuery.TriggeredEvent): void {
     const {
       items: { values },
-    } = this.rangeslider.data;
+    } = this.rangeslider.getState();
     const el = event.target as HTMLInputElement;
 
     if (values.length > 1) {
@@ -289,7 +289,7 @@ export default class Panel {
     const {
       isTwoHandles,
       items: { values },
-    } = this.rangeslider.data;
+    } = this.rangeslider.getState();
     const el = event.target as HTMLInputElement;
 
     if (values.length > 1) {
@@ -312,7 +312,7 @@ export default class Panel {
   }
 
   private handleMinValueInput(event: JQuery.TriggeredEvent): void {
-    const { isTwoHandles } = this.rangeslider.data;
+    const { isTwoHandles } = this.rangeslider.getState();
     const el = event.target as HTMLInputElement;
     let minValue = parseInt(el.value, 10);
 
@@ -339,7 +339,7 @@ export default class Panel {
   }
 
   private handleMaxValueInput(event: JQuery.TriggeredEvent): void {
-    const { isTwoHandles } = this.rangeslider.data;
+    const { isTwoHandles } = this.rangeslider.getState();
     const el = event.target as HTMLInputElement;
     let maxValue = parseInt(el.value, 10);
 
@@ -385,7 +385,7 @@ export default class Panel {
       valueFrom,
       valueTo,
       stepValue,
-    } = this.rangeslider.data;
+    } = this.rangeslider.getState();
     const isUsingItems = values.length > 1;
     this.$isVertical.prop('checked', isVertical);
     this.$isTwoHandles.prop('checked', isTwoHandles);
@@ -430,7 +430,7 @@ export default class Panel {
   private handleIsTwoHandlesChange(event: JQuery.TriggeredEvent): void {
     const {
       items: { values },
-    } = this.rangeslider.data;
+    } = this.rangeslider.getState();
     const checkbox = event.target as HTMLInputElement;
     this.rangeslider.update({ isTwoHandles: checkbox.checked });
     const isUsingItems = values.length > 1;

@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-interface Observer {
+export interface Observer {
   updateInObserver(data: any): void;
 }
 

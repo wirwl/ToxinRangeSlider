@@ -1,18 +1,27 @@
+/* eslint-disable import/no-cycle */
 /* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-export default class LineView {
-  $el: JQuery<HTMLElement>;
+import ObservableSubject from '../ObservableSubject';
+import DOMOperations from './DOMOperations';
+import HandleView from './HandleView';
 
-  $parentElement: JQuery<HTMLElement>;
+export default class LineView extends DOMOperations {
+  private currentSettings: RangeSliderOptions;
 
-  protected _isVertical = false;
+  private offsetFrom = 8;
 
-  constructor(data: any) {
-    this.$parentElement = data.$parentElement;
-    this.$el = $(data.domEntity);
-    this.appendToDomTree();
+  private offsetTo = 8;
+
+  publisher: ObservableSubject;
+
+  constructor(data: any, public handleFromView: HandleView, public handleToView: HandleView) {
+    super(data);
+    this.currentSettings = data.currentSettings;
+    this.publisher = new ObservableSubject();
+    this.onMouseDownByLine = this.onMouseDownByLine.bind(this);
+    // this.getNearestHandle = this.getNearestHandle.bind(this);
   }
 
   public draw(pos: number | false, size: number): void {
@@ -20,107 +29,120 @@ export default class LineView {
     if (size) this.setSize(size);
   }
 
-  setVertical(value: boolean) {
-    this._isVertical = value;
-    this.$el.removeAttr('style');
-  }
+  // private redrawLineSelected(currentHandle: HandleView): void {
+  //   const { isTwoHandles } = this.currentSettings;
+  //   const isHandleFromMoving = currentHandle.is(this.handleFromView);
 
-  isVertical(): boolean {
-    return this._isVertical;
-  }
+  //   const pos = isHandleFromMoving && this.handleFromView.getPos() + this.offsetFrom;
+  //   const size = isTwoHandles
+  //     ? this.handleToView.getPos() -
+  //       this.handleFromView.getPos() +
+  //       this.handleToView.getSize() -
+  //       this.offsetFrom -
+  //       this.offsetTo +
+  //       1
+  //     : currentHandle.getPos() + currentHandle.getSize() - this.offsetTo + 1;
 
-  getWidth(): number {
-    return parseFloat(this.$el.css('width'));
-  }
+  //   this.lineSelectedView.draw(pos, size);
+  // }
 
-  getHeight(): number {
-    return parseFloat(this.$el.css('height'));
-  }
-
-  getSize(): number {
-    return this.isVertical() ? this.getHeight() : this.getWidth();
-  }
-
-  getOffset(): number {
-    return this.isVertical() ? this.getOffsetTop() : this.getOffsetLeft();
-  }
-
-  getOffsetTop(): number {
-    let result: number;
+  public onMouseDownByLine(e: JQuery.TriggeredEvent): void {
+    e.preventDefault();
+    const eOffset = this.currentSettings.isVertical ? e.offsetY : e.offsetX;
+    let offsetPos: number;
     try {
-      const offset = this.$el.offset();
-      if (!offset)
-        throw new Error('Offset method return undefined value. Can not get top property value from offset method!');
-      result = offset.top;
+      if (eOffset) offsetPos = eOffset;
+      else throw Error('Value is undefined. This is not valid value!');
     } catch (e) {
       throw e;
     }
-    return result;
+
+    if (offsetPos < 8) offsetPos = 8;
+    if (offsetPos > this.getSize() - 8) {
+      offsetPos = this.getSize() - 8;
+    }
+
+    const nearHandle: HandleView = this.getNearestHandle(offsetPos);
+
+    let newPos = this.getSteppedPos(offsetPos - this.offsetFrom);
+    if (newPos == null) {
+      const offset = nearHandle.is(this.handleFromView) ? this.offsetFrom : this.handleToView.getSize() - this.offsetTo;
+      newPos = offsetPos - offset;
+    }
+
+    nearHandle.moveHandle(newPos, this);
+    // this.publisher.notify(handleMovingResult);
+    const newEvent = e;
+    newEvent.target = nearHandle.$el;
+    nearHandle.$el.trigger(newEvent, 'mousedown.handle');
   }
 
-  getOffsetLeft(): number {
-    let result: number;
-    try {
-      const offset = this.$el.offset();
-      if (!offset)
-        throw new Error('Offset method return undefined value. Can not get left property value from offset method!');
-      result = offset.left;
-    } catch (e) {
-      throw e;
+  private getNearestHandle(pos: number): HandleView {
+    if (this.currentSettings.isTwoHandles) {
+      if (pos < this.handleFromView.getPos()) return this.handleFromView;
+      if (pos > this.handleToView.getPos()) return this.handleToView;
+      const distanceBetweenHandles =
+        this.handleToView.getPos() - this.handleFromView.getPos() - this.handleFromView.getSize();
+      const half = this.handleFromView.getPos() + this.handleFromView.getSize() + distanceBetweenHandles / 2;
+      if (pos < half) return this.handleFromView;
+      return this.handleToView;
+    }
+    return this.handleToView;
+  }
+
+  private getSteppedPos(pxValue: number): number | null {
+    const { stepValue, items, maxValue, minValue } = this.currentSettings;
+    const values = items?.values;
+    const pxLength = this.getSize() - this.offsetFrom - this.offsetTo;
+    const isDefinedStep = stepValue > 1;
+    const isDefinedSetOfValues = items && values && values.length > 1;
+    const isTooLongLine = pxLength > Number(maxValue) - Number(minValue);
+    const isHaveStep = isDefinedStep || isTooLongLine || isDefinedSetOfValues;
+
+    if (isHaveStep) {
+      let pxStep = 0;
+
+      if (isDefinedStep) {
+        pxStep = this.convertRelativeValueToPixelValue(Number(minValue) + Number(stepValue));
+      }
+
+      if (isTooLongLine) {
+        const relativeLength = Number(maxValue) - Number(minValue);
+        pxStep = pxLength / relativeLength;
+        if (isDefinedStep) pxStep *= stepValue;
+      }
+
+      if (isDefinedSetOfValues) {
+        pxStep = pxLength / (values.length - 1);
+      }
+
+      const nStep = Math.round(pxValue / pxStep);
+      let newPos = nStep * pxStep;
+
+      if (pxValue / pxStep > Math.trunc(pxLength / pxStep)) {
+        const remainder = pxLength - newPos;
+        if (pxValue > newPos + remainder / 2) newPos += remainder;
+      }
+      if (newPos > pxLength) newPos = pxLength;
+      return newPos;
+    }
+    return null;
+  }
+
+  private convertRelativeValueToPixelValue(val: number): number {
+    const { items, minValue, maxValue } = this.currentSettings;
+    const values = items?.values;
+    const lw = this.getSize() - this.offsetFrom - this.offsetTo;
+    const isHasValues = items && values && values.length > 1;
+    let result;
+    if (isHasValues) {
+      const pxStep = lw / (values.length - 1);
+      result = val * pxStep;
+    } else {
+      const relLength = Number(maxValue) - Number(minValue);
+      const relPercent = (val - Number(minValue)) / relLength;
+      result = lw * relPercent;
     }
     return result;
-  }
-
-  appendToDomTree(): void {
-    this.$parentElement.append(this.$el);
-  }
-
-  removeFromDomTree(): void {
-    this.$el.off();
-    this.$el.remove();
-  }
-
-  getParentElementWidth(): number {
-    return parseFloat(this.$parentElement.css('width'));
-  }
-
-  getParentElementHeight(): number {
-    return parseFloat(this.$parentElement.css('height'));
-  }
-
-  getX(): number {
-    return parseFloat(this.$el.css('left'));
-  }
-
-  setX(value: number): void {
-    const valueInPercent = (value / this.getParentElementWidth()) * 100;
-    this.$el.css('left', `${valueInPercent}%`);
-  }
-
-  setWidth(value: number): void {
-    const valueInPercent = (value / this.getParentElementWidth()) * 100;
-    this.$el.css('width', `${valueInPercent}%`);
-  }
-
-  setHeight(value: number): void {
-    this.$el.css('height', `${(value / this.getParentElementHeight()) * 100}%`);
-  }
-
-  getY(): number {
-    return parseFloat(this.$el.css('top'));
-  }
-
-  setY(value: number): void {
-    this.$el.css('top', `${(value / this.getParentElementHeight()) * 100}%`);
-  }
-
-  setPos(value: number): void {
-    if (this.isVertical()) this.setY(value);
-    else this.setX(value);
-  }
-
-  setSize(value: number): void {
-    if (this.isVertical()) this.setHeight(value);
-    else this.setWidth(value);
   }
 }

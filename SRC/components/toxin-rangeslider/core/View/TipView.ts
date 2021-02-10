@@ -2,23 +2,9 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-export default class TipView {
-  $el: JQuery<HTMLElement>;
+import DOMOperations from './DOMOperations';
 
-  $parentElement: JQuery<HTMLElement>;
-
-  protected _isVertical = false;
-
-  constructor(data: any) {
-    this.$parentElement = data.$parentElement;
-    this.$el = $(data.domEntity);
-  }
-
-  setVertical(value: boolean) {
-    this._isVertical = value;
-    this.$el.removeAttr('style');
-  }
-
+export default class TipView extends DOMOperations {
   setText(value: string | number): void {
     this.$el.text(value);
   }
@@ -27,12 +13,8 @@ export default class TipView {
     return this.$el.text();
   }
 
-  appendToDomTree(): void {
-    this.$parentElement.append(this.$el);
-  }
-
-  removeFromDomTree(): void {
-    this.$el.off();
-    this.$el.remove();
+  updateInObserver(data: any) {
+    const { value } = data;
+    this.setText(value);
   }
 }
