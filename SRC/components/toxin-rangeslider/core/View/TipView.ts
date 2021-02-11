@@ -12,9 +12,4 @@ export default class TipView extends DOMOperations {
   getText(): string | number {
     return this.$el.text();
   }
-
-  updateInObserver(data: any) {
-    const { value } = data;
-    this.setText(value);
-  }
 }

@@ -3,6 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-this-alias */
 /* eslint-disable import/no-cycle */
+import { isFunction } from 'jquery';
 import { ERRORS } from '../const';
 import ObservableSubject from '../ObservableSubject';
 import DOMOperations from './DOMOperations';
@@ -14,10 +15,13 @@ export default class HandleView extends DOMOperations {
 
   notifier: ObservableSubject;
 
+  notifierForLineSelected: ObservableSubject;
+
   constructor(data: any, private isHandleFrom = false, lineView: LineView) {
     super(data);
     this.currentSettings = data.currentSettings;
     this.notifier = new ObservableSubject();
+    this.notifierForLineSelected = new ObservableSubject();
     this.onMouseDownByHandle = this.onMouseDownByHandle.bind(this);
     this.$el.on('mousedown.handle', e => this.onMouseDownByHandle(e, lineView));
   }
@@ -41,7 +45,7 @@ export default class HandleView extends DOMOperations {
     } catch (e) {
       throw e;
     }
-    console.log('onMouseDownByHandle');
+
     this.$parentElement.on('mousemove.rangeslider', e => this.onMouseMoveRangeSlider(e, this, shiftPos, line));
 
     const $document = $(document);
@@ -84,9 +88,25 @@ export default class HandleView extends DOMOperations {
     const clientPos = eClient || 0;
 
     if (newPos == null) newPos = clientPos - line.getOffset() - shiftPos;
-    // newPos = this.validate(newPos, currentHandle);
-    const handleMovingResult = this.moveHandle(newPos, line);
-    // this.publisher.notify(handleMovingResult);
+
+    const isUsingItemsCurrent = this.currentSettings.items.values.length > 1;
+    let restoreIndex = -1;
+    if (isUsingItemsCurrent) {
+      const lw = line.getSize() - 8 - 8;
+      const pxStep = lw / (this.currentSettings.items.values.length - 1);
+      restoreIndex = Math.round(newPos / pxStep);
+    }
+
+    const relValue = this.convertPixelValueToRelativeValue(newPos, line);
+
+    this.notifier.notify({
+      isFromHandle: this.isHandleFrom,
+      value: relValue,
+      isUsingItems: isUsingItemsCurrent,
+      index: restoreIndex,
+    });
+
+    // this.moveHandle(newPos, line);
 
     return false;
   }
@@ -139,44 +159,48 @@ export default class HandleView extends DOMOperations {
       index: restoreIndex,
     };
 
-    this.notifier.notify(handleMovingResult);
+    // this.notifier.notify(handleMovingResult);
+    this.notifierForLineSelected.notify(this);
+
     return handleMovingResult;
   }
 
-  private getSteppedPos(pxValue: number, line: LineView): number | null {
+  public getSteppedPos(pxValue: number, line: LineView): number | null {
     const { stepValue, items, maxValue, minValue } = this.currentSettings;
     const values = items?.values;
-    const pxLength = line.getSize() - 8 - 8;
+    const pxLineLength = line.getSize() - 8 - 8;
     const isDefinedStep = stepValue > 1;
     const isDefinedSetOfValues = items && values && values.length > 1;
-    const isTooLongLine = pxLength > Number(maxValue) - Number(minValue);
+    const isTooLongLine = pxLineLength > Number(maxValue) - Number(minValue);
     const isHaveStep = isDefinedStep || isTooLongLine || isDefinedSetOfValues;
 
     if (isHaveStep) {
       let pxStep = 0;
 
       if (isDefinedStep) {
-        pxStep = this.convertRelativeValueToPixelValue(Number(minValue) + Number(stepValue), line);
+        const relLineLength = Number(maxValue) - Number(minValue);
+        pxStep = (pxLineLength / relLineLength) * stepValue;
+        // pxStep = this.convertRelativeValueToPixelValue(Number(minValue) + Number(stepValue), line);
       }
 
       if (isTooLongLine) {
         const relativeLength = Number(maxValue) - Number(minValue);
-        pxStep = pxLength / relativeLength;
+        pxStep = pxLineLength / relativeLength;
         if (isDefinedStep) pxStep *= stepValue;
       }
 
       if (isDefinedSetOfValues) {
-        pxStep = pxLength / (values.length - 1);
+        pxStep = pxLineLength / (values.length - 1);
       }
 
       const nStep = Math.round(pxValue / pxStep);
       let newPos = nStep * pxStep;
 
-      if (pxValue / pxStep > Math.trunc(pxLength / pxStep)) {
-        const remainder = pxLength - newPos;
+      if (pxValue / pxStep > Math.trunc(pxLineLength / pxStep)) {
+        const remainder = pxLineLength - newPos;
         if (pxValue > newPos + remainder / 2) newPos += remainder;
       }
-      if (newPos > pxLength) newPos = pxLength;
+      if (newPos > pxLineLength) newPos = pxLineLength;
       return newPos;
     }
     return null;

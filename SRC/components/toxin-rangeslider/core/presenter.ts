@@ -11,7 +11,9 @@ class TRSPresenter {
     this.view = view;
     this.model = model;
 
-    this.view.addObservers(this);
+    this.updateInObserver = this.updateInObserver.bind(this);
+
+    this.view.addObservers(this.updateInObserver);
     this.model.updateState(this.view.getDataOptions());
     this.view.drawSlider(this.getState(), true);
   }
@@ -19,6 +21,7 @@ class TRSPresenter {
   updateInObserver(data: any): void {
     this.model.updateHandleState(data);
     this.model.onHandlePositionChange(data);
+    this.update(data);
   }
 
   getState(): RangeSliderOptions {

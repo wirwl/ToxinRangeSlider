@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * Options for the rangeslider plugin.
  */
@@ -64,3 +65,6 @@ interface JQuery {
    */
   toxinRangeSlider: RangeSlider;
 }
+
+type anyFunction = (data?: any) => void;
+type anyFunctionArray = { (data?: any): void }[];

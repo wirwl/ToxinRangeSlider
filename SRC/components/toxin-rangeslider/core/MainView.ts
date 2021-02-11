@@ -1,9 +1,11 @@
+/* eslint-disable no-console */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import block from 'bem-cn';
 import Rangeslider from './entities/rangeslider';
 import TipView from './View/TipView';
 import LineView from './View/LineView';
 import HandleView from './View/HandleView';
-import { Observer } from './ObservableSubject';
+import ObservableSubject from './ObservableSubject';
 
 const b = block('rangeslider');
 
@@ -46,6 +48,8 @@ class TRSView {
 
   private lineSelectedView!: LineView;
 
+  public notifier!: ObservableSubject;
+
   constructor(el: JQuery<HTMLElement>) {
     this.init(el);
     this.bindThis();
@@ -55,6 +59,8 @@ class TRSView {
   private init(el: JQuery<HTMLElement>): void {
     this.el = el;
     this.el.html(SliderDomEntities.rootElement);
+
+    this.notifier = new ObservableSubject();
 
     this.currentSettings = {
       isVertical: false,
@@ -149,11 +155,22 @@ class TRSView {
 
   private bindThis(): void {
     this.onMouseDownByLine = this.onMouseDownByLine.bind(this);
-    // this.onMouseDownByHandle = this.onMouseDownByHandle.bind(this);
+    this.notifyNearestHandle = this.notifyNearestHandle.bind(this);
+    this.notifyByHandles = this.notifyByHandles.bind(this);
   }
 
   private addEventListeners(): void {
     this.lineView.$el.on('mousedown.line', this.onMouseDownByLine);
+  }
+
+  addObservers(observerModel: (data?: any) => void): void {
+    this.handleFromView.notifier.addObserver(observerModel);
+    this.handleToView.notifier.addObserver(observerModel);
+
+    this.lineView.notifier.addObserver(this.notifyNearestHandle);
+
+    this.handleFromView.notifierForLineSelected.addObserver(this.notifyByHandles);
+    this.handleToView.notifierForLineSelected.addObserver(this.notifyByHandles);
   }
 
   private onMouseDownByLine(e: JQuery.TriggeredEvent): void {
@@ -190,11 +207,20 @@ class TRSView {
     return this.handleToView;
   }
 
-  addObservers(observer: Observer): void {
-    this.handleFromView.notifier.addObserver(observer);
-    this.handleToView.notifier.addObserver(observer);
-    this.handleFromView.notifier.addObserver(this.tipFromView);
-    this.handleToView.notifier.addObserver(this.tipToView);
+  notifyNearestHandle(data: any): void {
+    const { offsetPos } = data;
+    const nearHandle: HandleView = this.getNearestHandle(offsetPos);
+
+    let newPos = nearHandle.getSteppedPos(offsetPos - this.offsetFrom, this.lineView);
+    if (newPos == null) {
+      const offset = nearHandle.is(this.handleFromView) ? this.offsetFrom : this.handleToView.getSize() - this.offsetTo;
+      newPos = offsetPos - offset;
+    }
+    nearHandle.moveHandle(newPos, this.lineView);
+  }
+
+  notifyByHandles(handle?: any): void {
+    this.redrawLineSelected(handle);
   }
 
   getDataOptions(): RangeSliderOptions {
@@ -261,6 +287,7 @@ class TRSView {
             this.handleFromView.onMouseDownByHandle(e, this.lineView),
           );
           this.tipFromView.setText(currentValueFrom);
+          console.log(currentValueFrom);
         }
       } else this.handleFromView.removeFromDomTree();
       isNeedRedraw = true;
@@ -303,12 +330,14 @@ class TRSView {
       if (isNeedRedraw || valueFromChanged || minValueChanged || maxValueChanged || isItemValuesChanged) {
         const val = isUsingItemsCurrent ? currentIndexFrom : Number(currentValueFrom);
         this.handleFromView.normalizedMoveHandle(val, this.lineView);
+        this.tipFromView.setText(currentValueFrom);
       }
     }
 
     if (isNeedRedraw || valueToChanged || minValueChanged || maxValueChanged || isItemValuesChanged) {
       const val = isUsingItemsCurrent ? currentIndexTo : Number(currentValueTo);
       this.handleToView.normalizedMoveHandle(val, this.lineView);
+      this.tipToView.setText(currentValueTo);
     }
 
     if (isUsingItemsCurrent) {
@@ -318,11 +347,13 @@ class TRSView {
       if (currentIsTwoHandles && (isNeedRedraw || indexFromChanged)) {
         const newPos = currentIndexFrom * pxStep;
         this.handleFromView.moveHandle(newPos, this.lineView);
+        this.tipFromView.setText(currentValueFrom);
       }
 
       if (isNeedRedraw || indexToChanged) {
         const newPos = currentIndexTo * pxStep;
         this.handleToView.moveHandle(newPos, this.lineView);
+        this.tipToView.setText(currentValueTo);
       }
     }
   }
