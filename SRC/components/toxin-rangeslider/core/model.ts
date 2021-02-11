@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 class TRSModel {
   private settings: RangeSliderOptions;
 
@@ -20,6 +21,7 @@ class TRSModel {
   }
 
   updateHandleState({ isFromHandle, isUsingItems, index, value }: HandleMovingResult): void {
+    console.log(isUsingItems);
     if (isFromHandle) {
       if (isUsingItems) {
         this.settings.items.indexFrom = index;

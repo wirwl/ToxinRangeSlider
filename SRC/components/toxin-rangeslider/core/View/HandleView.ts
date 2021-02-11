@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-this-alias */
 /* eslint-disable import/no-cycle */
-import { isFunction } from 'jquery';
+
 import { ERRORS } from '../const';
 import ObservableSubject from '../ObservableSubject';
 import DOMOperations from './DOMOperations';
@@ -206,7 +206,7 @@ export default class HandleView extends DOMOperations {
     return null;
   }
 
-  private convertPixelValueToRelativeValue(val: number, line: LineView): number {
+  public convertPixelValueToRelativeValue(val: number, line: LineView): number {
     const { maxValue, minValue } = this.currentSettings;
     const lw = line.getSize() - 8 - 8;
     const percent = val / lw;

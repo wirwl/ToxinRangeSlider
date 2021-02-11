@@ -167,7 +167,7 @@ class TRSView {
     this.handleFromView.notifier.addObserver(observerModel);
     this.handleToView.notifier.addObserver(observerModel);
 
-    this.lineView.notifier.addObserver(this.notifyNearestHandle);
+    this.lineView.notifierNearestHandle.addObserver(this.notifyNearestHandle);
 
     this.handleFromView.notifierForLineSelected.addObserver(this.notifyByHandles);
     this.handleToView.notifierForLineSelected.addObserver(this.notifyByHandles);
@@ -216,7 +216,21 @@ class TRSView {
       const offset = nearHandle.is(this.handleFromView) ? this.offsetFrom : this.handleToView.getSize() - this.offsetTo;
       newPos = offsetPos - offset;
     }
+
     nearHandle.moveHandle(newPos, this.lineView);
+
+    const isFromHandle = nearHandle.is(this.handleFromView);
+    const relValue = nearHandle.convertPixelValueToRelativeValue(newPos, this.lineView);
+
+    if (isFromHandle) this.tipFromView.setText(relValue);
+    else this.tipToView.setText(relValue);
+
+    nearHandle.notifier.notify({
+      isFromHandle,
+      value: relValue,
+      isUsingItems: this.currentSettings.items.values.length > 1,
+      index: -1,
+    });
   }
 
   notifyByHandles(handle?: any): void {

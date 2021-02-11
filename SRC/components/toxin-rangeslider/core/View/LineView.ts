@@ -14,14 +14,19 @@ export default class LineView extends DOMOperations {
 
   private offsetTo = 8;
 
-  notifier: ObservableSubject;
+  notifierNearestHandle: ObservableSubject;
+
+  notifierModel: ObservableSubject;
 
   constructor(data: any, public handleFromView: HandleView, public handleToView: HandleView) {
     super(data);
+
     this.currentSettings = data.currentSettings;
-    this.notifier = new ObservableSubject();
+
+    this.notifierNearestHandle = new ObservableSubject();
+    this.notifierModel = new ObservableSubject();
+
     this.onMouseDownByLine = this.onMouseDownByLine.bind(this);
-    // this.getNearestHandle = this.getNearestHandle.bind(this);
   }
 
   public draw(pos: number | false, size: number): void {
@@ -53,7 +58,7 @@ export default class LineView extends DOMOperations {
     //   newPos = offsetPos - offset;
     // }
 
-    this.notifier.notify({ offsetPos });
+    this.notifierNearestHandle.notify({ offsetPos });
     // nearHandle.moveHandle(newPos, this);
     // const newEvent = e;
     // newEvent.target = nearHandle.$el;
