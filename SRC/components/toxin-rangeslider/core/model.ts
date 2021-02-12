@@ -20,17 +20,34 @@ class TRSModel {
     this.validate();
   }
 
-  updateHandleState({ isFromHandle, isUsingItems, index, value }: HandleMovingResult): void {
-    console.log(isUsingItems);
+  updateHandleState({ isFromHandle, relValue }: HandleMovingResult): void {
+    // const {
+    //   valueFrom,
+    //   valueTo,
+    //   items: { indexFrom, indexTo, values },
+    // } = this.settings;
+
+    let index = -1;
+    for (let i = 0; i < this.settings.items.values.length; i += 1) {
+      if (relValue.toString() === this.settings.items.values[i].toString()) {
+        index = i;
+        break;
+      }
+    }
     if (isFromHandle) {
-      if (isUsingItems) {
+      if (this.isUsingItems()) {
         this.settings.items.indexFrom = index;
         this.settings.valueFrom = this.settings.items.values[index];
-      } else this.settings.valueFrom = value;
-    } else if (isUsingItems) {
+      } else this.settings.valueFrom = relValue;
+    } else if (this.isUsingItems()) {
       this.settings.items.indexTo = index;
       this.settings.valueTo = this.settings.items.values[index];
-    } else this.settings.valueTo = value;
+    } else this.settings.valueTo = relValue;
+    this.validate();
+  }
+
+  isUsingItems(): boolean {
+    return this.settings.items.values.length > 1;
   }
 
   updateState(data = {}): void {
@@ -43,7 +60,7 @@ class TRSModel {
   }
 
   onHandlePositionChange(data: HandleMovingResult): void {
-    this.settings.onHandlePositionChange?.call(data);
+    this.settings.onHandlePositionChange?.call({ ...this.settings }, data);
   }
 
   private validate(): void {

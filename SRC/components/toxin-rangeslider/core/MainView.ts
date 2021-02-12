@@ -155,86 +155,73 @@ class TRSView {
 
   private bindThis(): void {
     this.onMouseDownByLine = this.onMouseDownByLine.bind(this);
-    this.notifyNearestHandle = this.notifyNearestHandle.bind(this);
-    this.notifyByHandles = this.notifyByHandles.bind(this);
+    this.receiveDataAfterUserInput = this.receiveDataAfterUserInput.bind(this);
   }
 
   private addEventListeners(): void {
     this.lineView.$el.on('mousedown.line', this.onMouseDownByLine);
   }
 
-  addObservers(observerModel: (data?: any) => void): void {
-    this.handleFromView.notifier.addObserver(observerModel);
-    this.handleToView.notifier.addObserver(observerModel);
+  addObservers(observerModel: anyFunction): void {
+    this.notifier.addObserver(observerModel);
+    this.handleFromView.notifier.addObserver(this.receiveDataAfterUserInput);
+    this.handleToView.notifier.addObserver(this.receiveDataAfterUserInput);
+    this.lineView.notifierUserInput.addObserver(this.receiveDataAfterUserInput);
+  }
 
-    this.lineView.notifierNearestHandle.addObserver(this.notifyNearestHandle);
+  private receiveDataAfterUserInput({ value, handle, event }: any): void {
+    if (value < 0) value = 0;
+    const lineWidth = this.lineView.getSize() - this.offsetFrom - this.offsetTo;
+    if (value > lineWidth) value = lineWidth;
 
-    this.handleFromView.notifierForLineSelected.addObserver(this.notifyByHandles);
-    this.handleToView.notifierForLineSelected.addObserver(this.notifyByHandles);
+    const currentHandle: HandleView = handle || this.getNearestHandle(value);
+    const isFromHandle = currentHandle.is(this.handleFromView);
+    const isClickOnLine = handle === undefined;
+
+    const isUsingItemsCurrent = this.currentSettings.items.values.length > 1;
+    let restoreIndex = -1;
+    if (isUsingItemsCurrent) {
+      const lw = this.lineView.getSize() - 8 - 8;
+      const pxStep = lw / (this.currentSettings.items.values.length - 1);
+      restoreIndex = Math.round(value / pxStep);
+    }
+
+    let offset = 0;
+    if (isClickOnLine) {
+      const newPos = currentHandle.getSteppedPos(value - this.offsetFrom, this.lineView);
+      if (newPos == null) {
+        offset = currentHandle.is(this.handleFromView) ? this.offsetFrom : this.handleToView.getSize() - this.offsetTo;
+      }
+    }
+
+    const relValue = isUsingItemsCurrent
+      ? this.currentSettings.items.values[restoreIndex]
+      : currentHandle.convertPixelValueToRelativeValue(value - offset, this.lineView);
+
+    this.notifier.notify({ isFromHandle, relValue });
+
+    if (event) {
+      const newEvent: JQuery.TriggeredEvent = event;
+      newEvent.target = currentHandle.$el;
+      currentHandle.$el.trigger(newEvent, 'mousedown.handle');
+    }
   }
 
   private onMouseDownByLine(e: JQuery.TriggeredEvent): void {
     this.lineView.onMouseDownByLine(e);
   }
 
-  private redrawLineSelected(currentHandle: HandleView): void {
-    const { isTwoHandles } = this.currentSettings;
-    const isHandleFromMoving = currentHandle.is(this.handleFromView);
-
-    const pos = isHandleFromMoving && this.handleFromView.getPos() + this.offsetFrom;
-    const size = isTwoHandles
-      ? this.handleToView.getPos() -
-        this.handleFromView.getPos() +
-        this.handleToView.getSize() -
-        this.offsetFrom -
-        this.offsetTo +
-        1
-      : currentHandle.getPos() + currentHandle.getSize() - this.offsetTo + 1;
-
-    this.lineSelectedView.draw(pos, size);
-  }
-
-  private getNearestHandle(pos: number): HandleView {
+  private getNearestHandle(pxPosOnLine: number): HandleView {
     if (this.currentSettings.isTwoHandles) {
-      if (pos < this.handleFromView.getPos()) return this.handleFromView;
-      if (pos > this.handleToView.getPos()) return this.handleToView;
+      if (pxPosOnLine < this.handleFromView.getPos()) return this.handleFromView;
+      if (pxPosOnLine > this.handleToView.getPos()) return this.handleToView;
       const distanceBetweenHandles =
         this.handleToView.getPos() - this.handleFromView.getPos() - this.handleFromView.getSize();
       const half = this.handleFromView.getPos() + this.handleFromView.getSize() + distanceBetweenHandles / 2;
-      if (pos < half) return this.handleFromView;
+      if (pxPosOnLine < half) return this.handleFromView;
       return this.handleToView;
     }
     return this.handleToView;
-  }
-
-  notifyNearestHandle(data: any): void {
-    const { offsetPos } = data;
-    const nearHandle: HandleView = this.getNearestHandle(offsetPos);
-
-    let newPos = nearHandle.getSteppedPos(offsetPos - this.offsetFrom, this.lineView);
-    if (newPos == null) {
-      const offset = nearHandle.is(this.handleFromView) ? this.offsetFrom : this.handleToView.getSize() - this.offsetTo;
-      newPos = offsetPos - offset;
-    }
-
-    nearHandle.moveHandle(newPos, this.lineView);
-
-    const isFromHandle = nearHandle.is(this.handleFromView);
-    const relValue = nearHandle.convertPixelValueToRelativeValue(newPos, this.lineView);
-
-    if (isFromHandle) this.tipFromView.setText(relValue);
-    else this.tipToView.setText(relValue);
-
-    nearHandle.notifier.notify({
-      isFromHandle,
-      value: relValue,
-      isUsingItems: this.currentSettings.items.values.length > 1,
-      index: -1,
-    });
-  }
-
-  notifyByHandles(handle?: any): void {
-    this.redrawLineSelected(handle);
   }
 
   getDataOptions(): RangeSliderOptions {
@@ -343,14 +330,14 @@ class TRSView {
     if (currentIsTwoHandles) {
       if (isNeedRedraw || valueFromChanged || minValueChanged || maxValueChanged || isItemValuesChanged) {
         const val = isUsingItemsCurrent ? currentIndexFrom : Number(currentValueFrom);
-        this.handleFromView.normalizedMoveHandle(val, this.lineView);
+        this.handleFromView.steppedMoveHandle(val, this.lineView);
         this.tipFromView.setText(currentValueFrom);
       }
     }
 
     if (isNeedRedraw || valueToChanged || minValueChanged || maxValueChanged || isItemValuesChanged) {
       const val = isUsingItemsCurrent ? currentIndexTo : Number(currentValueTo);
-      this.handleToView.normalizedMoveHandle(val, this.lineView);
+      this.handleToView.steppedMoveHandle(val, this.lineView);
       this.tipToView.setText(currentValueTo);
     }
 
@@ -360,16 +347,27 @@ class TRSView {
 
       if (currentIsTwoHandles && (isNeedRedraw || indexFromChanged)) {
         const newPos = currentIndexFrom * pxStep;
-        this.handleFromView.moveHandle(newPos, this.lineView);
+        this.handleFromView.moveHandle(newPos);
         this.tipFromView.setText(currentValueFrom);
       }
 
       if (isNeedRedraw || indexToChanged) {
         const newPos = currentIndexTo * pxStep;
-        this.handleToView.moveHandle(newPos, this.lineView);
+        this.handleToView.moveHandle(newPos);
         this.tipToView.setText(currentValueTo);
       }
     }
+
+    const pos = currentIsTwoHandles ? this.handleFromView.getPos() + this.offsetFrom : 0;
+    const size = currentIsTwoHandles
+      ? this.handleToView.getPos() -
+        this.handleFromView.getPos() +
+        this.handleToView.getSize() -
+        this.offsetFrom -
+        this.offsetTo +
+        1
+      : this.handleToView.getPos() + this.handleToView.getSize() - this.offsetTo + 1;
+    this.lineSelectedView.draw(pos, size);
   }
 
   private isEqualArrays(ar1: (string | number)[] | null, ar2: (string | number)[] | null): boolean {

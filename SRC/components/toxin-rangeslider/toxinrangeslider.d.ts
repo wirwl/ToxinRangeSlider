@@ -12,7 +12,7 @@ interface RangeSliderOptions {
   valueFrom: number | string;
   valueTo: number | string;
   items: RangeSliderItems;
-  onHandlePositionChange?(this: HandleMovingResult): void;
+  onHandlePositionChange?(this: Readonly<RangeSliderOptions>, data: HandleMovingResult): void;
 }
 
 interface RangeSliderItems {
@@ -23,9 +23,7 @@ interface RangeSliderItems {
 
 interface HandleMovingResult {
   isFromHandle: boolean;
-  value: number | string;
-  isUsingItems: boolean;
-  index: number;
+  relValue: number | string;
 }
 
 /**
@@ -67,4 +65,3 @@ interface JQuery {
 }
 
 type anyFunction = (data?: any) => void;
-type anyFunctionArray = { (data?: any): void }[];

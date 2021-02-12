@@ -15,13 +15,10 @@ export default class HandleView extends DOMOperations {
 
   notifier: ObservableSubject;
 
-  notifierForLineSelected: ObservableSubject;
-
   constructor(data: any, private isHandleFrom = false, lineView: LineView) {
     super(data);
     this.currentSettings = data.currentSettings;
     this.notifier = new ObservableSubject();
-    this.notifierForLineSelected = new ObservableSubject();
     this.onMouseDownByHandle = this.onMouseDownByHandle.bind(this);
     this.$el.on('mousedown.handle', e => this.onMouseDownByHandle(e, lineView));
   }
@@ -46,10 +43,10 @@ export default class HandleView extends DOMOperations {
       throw e;
     }
 
-    this.$parentElement.on('mousemove.rangeslider', e => this.onMouseMoveRangeSlider(e, this, shiftPos, line));
+    this.$parentElement.on('mousemove.rangeslider', e => this.onMouseMoveHandle(e, shiftPos, line));
 
     const $document = $(document);
-    $document.on('mousemove.document', e => this.onMouseMoveRangeSlider(e, this, shiftPos, line));
+    $document.on('mousemove.document', e => this.onMouseMoveHandle(e, shiftPos, line));
 
     this.$parentElement.on('mouseup.handle', e => this.onMouseUp(e, this));
     $document.on('mouseup.document', e => this.onMouseUp(e, this));
@@ -63,12 +60,7 @@ export default class HandleView extends DOMOperations {
     $(document).off('mouseup.document');
   }
 
-  private onMouseMoveRangeSlider(
-    e: JQuery.TriggeredEvent,
-    currentHandle: HandleView,
-    shiftPos: number,
-    line: LineView,
-  ): boolean {
+  private onMouseMoveHandle(e: JQuery.TriggeredEvent, shiftPos: number, line: LineView): boolean {
     const $target = $(e.target);
     const eOffset = this.isVertical() ? e.offsetY : e.offsetX;
     const offsetPos = eOffset || 0;
@@ -89,80 +81,21 @@ export default class HandleView extends DOMOperations {
 
     if (newPos == null) newPos = clientPos - line.getOffset() - shiftPos;
 
-    const isUsingItemsCurrent = this.currentSettings.items.values.length > 1;
-    let restoreIndex = -1;
-    if (isUsingItemsCurrent) {
-      const lw = line.getSize() - 8 - 8;
-      const pxStep = lw / (this.currentSettings.items.values.length - 1);
-      restoreIndex = Math.round(newPos / pxStep);
-    }
-
-    const relValue = this.convertPixelValueToRelativeValue(newPos, line);
-
     this.notifier.notify({
-      isFromHandle: this.isHandleFrom,
-      value: relValue,
-      isUsingItems: isUsingItemsCurrent,
-      index: restoreIndex,
+      value: newPos,
+      handle: this,
     });
-
-    // this.moveHandle(newPos, line);
-
     return false;
   }
 
-  public normalizedMoveHandle(val: number, lineView: LineView): void {
+  public steppedMoveHandle(val: number, lineView: LineView): void {
     const posXWithOutStep = this.convertRelativeValueToPixelValue(val, lineView);
     const posXWithStep = this.getSteppedPos(posXWithOutStep, lineView);
-    this.moveHandle(posXWithStep == null ? posXWithOutStep : posXWithStep, lineView);
+    this.moveHandle(posXWithStep == null ? posXWithOutStep : posXWithStep);
   }
 
-  public moveHandle(pxPos: number, lineView: LineView): HandleMovingResult {
-    let { valueFrom, valueTo } = this.currentSettings;
-
-    const values = this.currentSettings.items?.values;
-    const isUsingItemsCurrent = values?.length > 1;
-    const { isHandleFrom } = this;
-
+  public moveHandle(pxPos: number): void {
     this.setPos(pxPos);
-
-    let restoreIndex = -1;
-    if (isUsingItemsCurrent) {
-      const lw = lineView.getSize() - 8 - 8;
-      const pxStep = lw / (values.length - 1);
-      restoreIndex = Math.round(pxPos / pxStep);
-      if (restoreIndex < 0) restoreIndex = 0;
-      if (isHandleFrom) {
-        this.currentSettings.items.indexFrom = restoreIndex;
-        this.currentSettings.valueFrom = values[restoreIndex];
-      } else {
-        this.currentSettings.items.indexTo = restoreIndex;
-        this.currentSettings.valueTo = values[restoreIndex];
-      }
-    } else {
-      if (isHandleFrom) {
-        this.currentSettings.valueFrom = this.convertPixelValueToRelativeValue(pxPos, lineView);
-      } else this.currentSettings.valueTo = this.convertPixelValueToRelativeValue(pxPos, lineView);
-      valueFrom = this.currentSettings.valueFrom;
-      valueTo = this.currentSettings.valueTo;
-    }
-
-    // this.redrawLineSelected(currentHandle);
-
-    // if (isHandleFrom) this.tipFromView.setText(valueFrom);
-    // else this.tipToView.setText(valueTo);
-
-    const handleMovingResult = {
-      isFromHandle: isHandleFrom,
-      value: isHandleFrom ? valueFrom : valueTo,
-      isUsingItems: isUsingItemsCurrent,
-      index: restoreIndex,
-    };
-
-    // this.notifier.notify(handleMovingResult);
-    this.notifierForLineSelected.notify(this);
-
-    return handleMovingResult;
   }
 
   public getSteppedPos(pxValue: number, line: LineView): number | null {
@@ -208,8 +141,8 @@ export default class HandleView extends DOMOperations {
 
   public convertPixelValueToRelativeValue(val: number, line: LineView): number {
     const { maxValue, minValue } = this.currentSettings;
-    const lw = line.getSize() - 8 - 8;
-    const percent = val / lw;
+    const lineWidth = line.getSize() - 8 - 8;
+    const percent = val / lineWidth;
     const result = Math.round(Number(minValue) + percent * (Number(maxValue) - Number(minValue)));
     return result;
   }

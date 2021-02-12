@@ -92,14 +92,15 @@ export default class Panel {
     const indexTo = this.$indexTo;
 
     this.rangeslider.update({
-      onHandlePositionChange(this: HandleMovingResult) {
-        const { isFromHandle, isUsingItems, index, value } = this;
+      onHandlePositionChange(this: RangeSliderOptions, data: HandleMovingResult) {
+        const { isFromHandle, relValue } = data;
+        const isUsingItems = this.items.values.length > 1;
         if (isFromHandle) {
-          valueFrom.val(value);
-          if (isUsingItems) indexFrom.val(index);
+          valueFrom.val(relValue);
+          if (isUsingItems) indexFrom.val(this.items.indexFrom);
         } else {
-          valueTo.val(value);
-          if (isUsingItems) indexTo.val(index);
+          valueTo.val(relValue);
+          if (isUsingItems) indexTo.val(this.items.indexTo);
         }
       },
     });

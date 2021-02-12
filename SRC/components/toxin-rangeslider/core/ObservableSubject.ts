@@ -31,7 +31,7 @@
 // }
 
 class ObservableSubject {
-  private observers: anyFunctionArray = [];
+  private observers: anyFunction[] = [];
 
   public addObserver(func: anyFunction): void {
     this.observers.push(func);

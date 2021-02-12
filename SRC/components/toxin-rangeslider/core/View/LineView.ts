@@ -14,18 +14,19 @@ export default class LineView extends DOMOperations {
 
   private offsetTo = 8;
 
-  notifierNearestHandle: ObservableSubject;
+  // notifierNearestHandle: ObservableSubject;
 
-  notifierModel: ObservableSubject;
+  // notifierModel: ObservableSubject;
+  notifierUserInput: ObservableSubject;
 
   constructor(data: any, public handleFromView: HandleView, public handleToView: HandleView) {
     super(data);
 
     this.currentSettings = data.currentSettings;
 
-    this.notifierNearestHandle = new ObservableSubject();
-    this.notifierModel = new ObservableSubject();
-
+    // this.notifierNearestHandle = new ObservableSubject();
+    // this.notifierModel = new ObservableSubject();
+    this.notifierUserInput = new ObservableSubject();
     this.onMouseDownByLine = this.onMouseDownByLine.bind(this);
   }
 
@@ -34,9 +35,9 @@ export default class LineView extends DOMOperations {
     if (size) this.setSize(size);
   }
 
-  public onMouseDownByLine(e: JQuery.TriggeredEvent): void {
-    e.preventDefault();
-    const eOffset = this.currentSettings.isVertical ? e.offsetY : e.offsetX;
+  public onMouseDownByLine(event: JQuery.TriggeredEvent): void {
+    event.preventDefault();
+    const eOffset = this.currentSettings.isVertical ? event.offsetY : event.offsetX;
     let offsetPos: number;
     try {
       if (eOffset) offsetPos = eOffset;
@@ -58,7 +59,7 @@ export default class LineView extends DOMOperations {
     //   newPos = offsetPos - offset;
     // }
 
-    this.notifierNearestHandle.notify({ offsetPos });
+    this.notifierUserInput.notify({ value: offsetPos, event });
     // nearHandle.moveHandle(newPos, this);
     // const newEvent = e;
     // newEvent.target = nearHandle.$el;

@@ -3,25 +3,25 @@ import TRSView from './MainView';
 import TRSModel from './model';
 
 class TRSPresenter {
-  private view: TRSView;
+  constructor(private model: TRSModel, private view: TRSView) {
+    this.bindThis();
+    this.init();
+  }
 
-  private model: TRSModel;
+  private bindThis(): void {
+    this.notifyModel = this.notifyModel.bind(this);
+  }
 
-  constructor(model: TRSModel, view: TRSView) {
-    this.view = view;
-    this.model = model;
-
-    this.updateInObserver = this.updateInObserver.bind(this);
-
-    this.view.addObservers(this.updateInObserver);
+  private init(): void {
     this.model.updateState(this.view.getDataOptions());
+    this.view.addObservers(this.notifyModel);
     this.view.drawSlider(this.getState(), true);
   }
 
-  updateInObserver(data: any): void {
+  private notifyModel(data: HandleMovingResult): void {
     this.model.updateHandleState(data);
     this.model.onHandlePositionChange(data);
-    this.update(data);
+    this.view.drawSlider(this.getState());
   }
 
   getState(): RangeSliderOptions {
