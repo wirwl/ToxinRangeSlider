@@ -65,3 +65,22 @@ interface JQuery {
 }
 
 type anyFunction = (data?: any) => void;
+
+interface DomEntities {
+  domEntity: string;
+  $parentElement: JQuery<HTMLElement>;
+}
+
+interface SubViewData {
+  domEntities: DomEntities;
+  state: RangeSliderOptions;
+}
+
+interface ParentSubViewData {
+  domEntities: DomEntities;
+  state: AnySubViewState;
+}
+
+interface AnySubViewState {
+  [key: string]: boolean | (number | string) | RangeSliderItems | any;
+}

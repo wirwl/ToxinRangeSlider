@@ -1,15 +1,31 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export default class DOMOperations {
-  $parentElement: JQuery<HTMLElement>;
+  $el!: JQuery<HTMLElement>;
 
-  $el: JQuery<HTMLElement>;
+  $parentElement!: JQuery<HTMLElement>;
+
+  state!: AnySubViewState;
 
   protected _isVertical = false;
 
-  constructor(data: any) {
-    this.$parentElement = data.$parentElement;
-    this.$el = $(data.domEntity);
+  constructor(data: ParentSubViewData) {
+    this.initSubView(data);
+  }
+
+  private initSubView({ domEntities: { domEntity, $parentElement }, state }: ParentSubViewData): void {
+    this.$el = $(domEntity);
+    this.$parentElement = $parentElement;
+    this.initState(state);
+
     this.appendToDomTree();
+  }
+
+  private initState(state: AnySubViewState): void {
+    this.state = { ...state };
+  }
+
+  updateState(state: AnySubViewState): void {
+    this.state = { ...this.state, ...state };
   }
 
   getParentElementWidth(): number {
@@ -52,29 +68,11 @@ export default class DOMOperations {
   }
 
   getOffsetTop(): number {
-    let result: number;
-    try {
-      const offset = this.$el.offset();
-      if (!offset)
-        throw new Error('Offset method return undefined value. Can not get top property value from offset method!');
-      result = offset.top;
-    } catch (e) {
-      throw e;
-    }
-    return result;
+    return this.$el.offset()?.top || 0;
   }
 
   getOffsetLeft(): number {
-    let result: number;
-    try {
-      const offset = this.$el.offset();
-      if (!offset)
-        throw new Error('Offset method return undefined value. Can not get left property value from offset method!');
-      result = offset.left;
-    } catch (e) {
-      throw e;
-    }
-    return result;
+    return this.$el.offset()?.left || 0;
   }
 
   getOffset(): number {

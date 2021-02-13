@@ -51,8 +51,8 @@ class TRSView {
   public notifier!: ObservableSubject;
 
   constructor(el: JQuery<HTMLElement>) {
-    this.init(el);
     this.bindThis();
+    this.init(el);
     this.addEventListeners();
   }
 
@@ -75,71 +75,7 @@ class TRSView {
     };
 
     this.rangeslider = new Rangeslider(el.find('.rangeslider'));
-
-    this.lineView = new LineView(
-      {
-        domEntity: SliderDomEntities.lineMain,
-        $parentElement: this.rangeslider.$el,
-        currentSettings: this.currentSettings,
-      },
-      this.handleFromView,
-      this.handleToView,
-    );
-
-    this.lineSelectedView = new LineView(
-      {
-        domEntity: SliderDomEntities.lineSelected,
-        $parentElement: this.rangeslider.$el,
-      },
-      this.handleFromView,
-      this.handleToView,
-    );
-
-    this.tipMinView = new TipView({
-      domEntity: SliderDomEntities.tipMin,
-      $parentElement: this.rangeslider.$el,
-    });
-
-    this.tipMaxView = new TipView({
-      domEntity: SliderDomEntities.tipMax,
-      $parentElement: this.rangeslider.$el,
-    });
-
-    this.handleFromView = new HandleView(
-      {
-        domEntity: SliderDomEntities.handleFrom,
-        $parentElement: this.rangeslider.$el,
-        currentSettings: this.currentSettings,
-      },
-      true,
-      this.lineView,
-    );
-    this.lineView.handleFromView = this.handleFromView;
-
-    this.offsetFrom = this.handleFromView.getWidth() / 2;
-
-    this.tipFromView = new TipView({
-      domEntity: SliderDomEntities.tipFrom,
-      $parentElement: this.rangeslider.$el.find('.rangeslider__handle-from'),
-    });
-
-    this.handleToView = new HandleView(
-      {
-        domEntity: SliderDomEntities.handleTo,
-        $parentElement: this.rangeslider.$el,
-        currentSettings: this.currentSettings,
-      },
-      false,
-      this.lineView,
-    );
-    this.lineView.handleToView = this.handleToView;
-
-    this.offsetTo = this.handleToView.getWidth() / 2;
-
-    this.tipToView = new TipView({
-      domEntity: SliderDomEntities.tipTo,
-      $parentElement: this.rangeslider.$el.find('.rangeslider__handle-to'),
-    });
+    this.initSubViews();
 
     this.rangeslider.addControls([
       this.tipMinView,
@@ -153,13 +89,45 @@ class TRSView {
     ]);
   }
 
+  private initSubView<T>(
+    SubView: new (...args: any[]) => T,
+    domEntity: string,
+    $parentElement = this.rangeslider.$el,
+  ): T {
+    return new SubView({
+      domEntities: {
+        domEntity,
+        $parentElement,
+      },
+      state: this.currentSettings,
+    });
+  }
+
+  private initSubViews(): void {
+    const { lineMain, lineSelected, tipMin, tipMax, tipFrom, tipTo, handleFrom, handleTo } = SliderDomEntities;
+    const { initSubView } = this;
+
+    this.lineView = initSubView(LineView, lineMain);
+    this.lineSelectedView = initSubView(LineView, lineSelected);
+    this.tipMinView = initSubView(TipView, tipMin);
+    this.tipMaxView = initSubView(TipView, tipMax);
+    this.handleFromView = initSubView(HandleView, handleFrom);
+    this.offsetFrom = this.handleFromView.getWidth() / 2;
+    this.tipFromView = initSubView(TipView, tipFrom, this.handleFromView.$el);
+    this.handleToView = initSubView(HandleView, handleTo);
+    this.offsetTo = this.handleToView.getWidth() / 2;
+    this.tipToView = initSubView(TipView, tipTo, this.handleToView.$el);
+  }
+
   private bindThis(): void {
-    this.onMouseDownByLine = this.onMouseDownByLine.bind(this);
     this.receiveDataAfterUserInput = this.receiveDataAfterUserInput.bind(this);
+    this.initSubView = this.initSubView.bind(this);
   }
 
   private addEventListeners(): void {
-    this.lineView.$el.on('mousedown.line', this.onMouseDownByLine);
+    this.lineView.$el.on('mousedown.line', this.lineView.onMouseDownByLine);
+    this.handleFromView.$el.on('mousedown.handle', e => this.handleFromView.onMouseDownByHandle(e, this.lineView));
+    this.handleToView.$el.on('mousedown.handle', e => this.handleToView.onMouseDownByHandle(e, this.lineView));
   }
 
   addObservers(observerModel: anyFunction): void {
@@ -170,13 +138,21 @@ class TRSView {
   }
 
   private receiveDataAfterUserInput({ value, handle, event }: any): void {
-    if (value < 0) value = 0;
-    const lineWidth = this.lineView.getSize() - this.offsetFrom - this.offsetTo;
-    if (value > lineWidth) value = lineWidth;
+    const isClickOnLine = handle === undefined;
+
+    if (!isClickOnLine) {
+      if (value < 0) value = 0;
+      const lineWidth = this.lineView.getSize() - this.offsetFrom - this.offsetTo;
+      if (value > lineWidth) value = lineWidth;
+    } else {
+      if (value < this.offsetFrom) value = this.offsetFrom;
+      if (value > this.lineView.getSize() - 8) {
+        value = this.lineView.getSize() - 8;
+      }
+    }
 
     const currentHandle: HandleView = handle || this.getNearestHandle(value);
     const isFromHandle = currentHandle.is(this.handleFromView);
-    const isClickOnLine = handle === undefined;
 
     const isUsingItemsCurrent = this.currentSettings.items.values.length > 1;
     let restoreIndex = -1;
@@ -198,6 +174,7 @@ class TRSView {
       ? this.currentSettings.items.values[restoreIndex]
       : currentHandle.convertPixelValueToRelativeValue(value - offset, this.lineView);
 
+    // Notify model about user input
     this.notifier.notify({ isFromHandle, relValue });
 
     if (event) {
@@ -205,10 +182,6 @@ class TRSView {
       newEvent.target = currentHandle.$el;
       currentHandle.$el.trigger(newEvent, 'mousedown.handle');
     }
-  }
-
-  private onMouseDownByLine(e: JQuery.TriggeredEvent): void {
-    this.lineView.onMouseDownByLine(e);
   }
 
   private getNearestHandle(pxPosOnLine: number): HandleView {

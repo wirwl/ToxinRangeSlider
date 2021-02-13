@@ -37,6 +37,7 @@ module.exports = {
     'no-alert': 0,
     'no-non-null-assertion': 0,
     'no-useless-catch': 0,
+    '@typescript-eslint/interface-name-prefix': 0,
   },
   settings: {
     'import/extensions': ['.js', '.jsx', '.ts', '.tsx'],

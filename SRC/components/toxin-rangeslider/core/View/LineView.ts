@@ -1,32 +1,22 @@
-/* eslint-disable import/no-cycle */
-/* eslint-disable no-console */
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import ObservableSubject from '../ObservableSubject';
 import DOMOperations from './DOMOperations';
-import HandleView from './HandleView';
+
+// interface StateLineView {
+//   isVertical: boolean;
+// }
 
 export default class LineView extends DOMOperations {
-  private currentSettings: RangeSliderOptions;
+  notifierUserInput: ObservableSubject = new ObservableSubject();
 
-  private offsetFrom = 8;
+  constructor({ domEntities, state: { isVertical } }: SubViewData) {
+    super({
+      domEntities,
+      state: { isVertical },
+    });
+    this.bindThis();
+  }
 
-  private offsetTo = 8;
-
-  // notifierNearestHandle: ObservableSubject;
-
-  // notifierModel: ObservableSubject;
-  notifierUserInput: ObservableSubject;
-
-  constructor(data: any, public handleFromView: HandleView, public handleToView: HandleView) {
-    super(data);
-
-    this.currentSettings = data.currentSettings;
-
-    // this.notifierNearestHandle = new ObservableSubject();
-    // this.notifierModel = new ObservableSubject();
-    this.notifierUserInput = new ObservableSubject();
+  private bindThis(): void {
     this.onMouseDownByLine = this.onMouseDownByLine.bind(this);
   }
 
@@ -36,33 +26,7 @@ export default class LineView extends DOMOperations {
   }
 
   public onMouseDownByLine(event: JQuery.TriggeredEvent): void {
-    event.preventDefault();
-    const eOffset = this.currentSettings.isVertical ? event.offsetY : event.offsetX;
-    let offsetPos: number;
-    try {
-      if (eOffset) offsetPos = eOffset;
-      else throw Error('Value is undefined. This is not valid value!');
-    } catch (e) {
-      throw e;
-    }
-
-    if (offsetPos < 8) offsetPos = 8;
-    if (offsetPos > this.getSize() - 8) {
-      offsetPos = this.getSize() - 8;
-    }
-
-    // const nearHandle: HandleView = this.getNearestHandle(offsetPos);
-
-    // let newPos = this.getSteppedPos(offsetPos - this.offsetFrom);
-    // if (newPos == null) {
-    //   const offset = nearHandle.is(this.handleFromView) ? this.offsetFrom : this.handleToView.getSize() - this.offsetTo;
-    //   newPos = offsetPos - offset;
-    // }
-
-    this.notifierUserInput.notify({ value: offsetPos, event });
-    // nearHandle.moveHandle(newPos, this);
-    // const newEvent = e;
-    // newEvent.target = nearHandle.$el;
-    // nearHandle.$el.trigger(newEvent, 'mousedown.handle');
+    const eOffset = this.isVertical() ? event.offsetY : event.offsetX;
+    if (eOffset) this.notifierUserInput.notify({ value: eOffset, event });
   }
 }
