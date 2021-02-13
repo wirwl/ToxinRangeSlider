@@ -164,20 +164,23 @@ class TRSView {
 
     let offset = 0;
     if (isClickOnLine) {
-      const newPos = currentHandle.getSteppedPos(value - this.offsetFrom, this.lineView);
+      const pxLineLength = this.lineView.getSize() - this.offsetFrom - this.offsetTo;
+      const newPos = currentHandle.getSteppedPos(value - this.offsetFrom, pxLineLength);
       if (newPos == null) {
         offset = currentHandle.is(this.handleFromView) ? this.offsetFrom : this.handleToView.getSize() - this.offsetTo;
       }
     }
 
+    const lineWidth = this.lineView.getSize() - 8 - 8;
     const relValue = isUsingItemsCurrent
       ? this.currentSettings.items.values[restoreIndex]
-      : currentHandle.convertPixelValueToRelativeValue(value - offset, this.lineView);
+      : currentHandle.convertPixelValueToRelativeValue(value - offset, lineWidth);
 
     // Notify model about user input
     this.notifier.notify({ isFromHandle, relValue });
 
-    if (event) {
+    // Immediately moving handles after LMB pressed on line
+    if (isClickOnLine) {
       const newEvent: JQuery.TriggeredEvent = event;
       newEvent.target = currentHandle.$el;
       currentHandle.$el.trigger(newEvent, 'mousedown.handle');
@@ -303,14 +306,16 @@ class TRSView {
     if (currentIsTwoHandles) {
       if (isNeedRedraw || valueFromChanged || minValueChanged || maxValueChanged || isItemValuesChanged) {
         const val = isUsingItemsCurrent ? currentIndexFrom : Number(currentValueFrom);
-        this.handleFromView.steppedMoveHandle(val, this.lineView);
+        const lineWidth = this.lineView.getSize() - this.offsetFrom - this.offsetTo;
+        this.handleFromView.steppedMoveHandle(val, lineWidth);
         this.tipFromView.setText(currentValueFrom);
       }
     }
 
     if (isNeedRedraw || valueToChanged || minValueChanged || maxValueChanged || isItemValuesChanged) {
       const val = isUsingItemsCurrent ? currentIndexTo : Number(currentValueTo);
-      this.handleToView.steppedMoveHandle(val, this.lineView);
+      const lineWidth = this.lineView.getSize() - this.offsetFrom - this.offsetTo;
+      this.handleToView.steppedMoveHandle(val, lineWidth);
       this.tipToView.setText(currentValueTo);
     }
 

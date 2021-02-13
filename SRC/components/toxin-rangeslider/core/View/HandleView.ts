@@ -63,7 +63,8 @@ export default class HandleView extends DOMOperations {
     const targetOffsetCoord = $target.offset();
     if (!targetOffsetCoord) return;
     const targetOffset: number = this.isVertical() ? targetOffsetCoord.top : targetOffsetCoord.left;
-    let newPos = this.getSteppedPos(offsetPos + targetOffset - line.getOffset() - 8, line);
+    const pxLineLength = line.getSize() - 8 - 8;
+    let newPos = this.getSteppedPos(offsetPos + targetOffset - line.getOffset() - 8, pxLineLength);
 
     const eClient = this.isVertical() ? e.clientY : e.clientX;
     const clientPos = eClient || 0;
@@ -79,20 +80,19 @@ export default class HandleView extends DOMOperations {
     });
   }
 
-  public steppedMoveHandle(val: number, lineView: LineView): void {
-    const posXWithOutStep = this.convertRelativeValueToPixelValue(val, lineView);
-    const posXWithStep = this.getSteppedPos(posXWithOutStep, lineView);
-    this.moveHandle(posXWithStep == null ? posXWithOutStep : posXWithStep);
+  public steppedMoveHandle(val: number, lineWidth: number): void {
+    const posXWithOutStep = this.convertRelativeValueToPixelValue(val, lineWidth);
+    const posXWithStep = this.getSteppedPos(posXWithOutStep, lineWidth);
+    this.moveHandle(posXWithStep === null ? posXWithOutStep : posXWithStep);
   }
 
   public moveHandle(pxPos: number): void {
     this.setPos(pxPos);
   }
 
-  public getSteppedPos(pxValue: number, line: LineView): number | null {
+  public getSteppedPos(pxValue: number, pxLineLength: number): number | null {
     const { stepValue, items, maxValue, minValue } = this.currentSettings;
     const values = items?.values;
-    const pxLineLength = line.getSize() - 8 - 8;
     const isDefinedStep = stepValue > 1;
     const isDefinedSetOfValues = items && values && values.length > 1;
     const isTooLongLine = pxLineLength > Number(maxValue) - Number(minValue);
@@ -129,27 +129,25 @@ export default class HandleView extends DOMOperations {
     return null;
   }
 
-  public convertPixelValueToRelativeValue(val: number, line: LineView): number {
+  public convertPixelValueToRelativeValue(val: number, lineWidth: number): number {
     const { maxValue, minValue } = this.currentSettings;
-    const lineWidth = line.getSize() - 8 - 8;
     const percent = val / lineWidth;
     const result = Math.round(Number(minValue) + percent * (Number(maxValue) - Number(minValue)));
     return result;
   }
 
-  private convertRelativeValueToPixelValue(val: number, line: LineView): number {
+  private convertRelativeValueToPixelValue(val: number, lineWidth: number): number {
     const { items, minValue, maxValue } = this.currentSettings;
     const values = items?.values;
-    const lw = line.getSize() - 8 - 8;
     const isHasValues = items && values && values.length > 1;
     let result;
     if (isHasValues) {
-      const pxStep = lw / (values.length - 1);
+      const pxStep = lineWidth / (values.length - 1);
       result = val * pxStep;
     } else {
       const relLength = Number(maxValue) - Number(minValue);
       const relPercent = (val - Number(minValue)) / relLength;
-      result = lw * relPercent;
+      result = lineWidth * relPercent;
     }
     return result;
   }
