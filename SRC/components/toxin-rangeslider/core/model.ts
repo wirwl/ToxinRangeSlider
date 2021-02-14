@@ -1,18 +1,10 @@
+import defaultRangeSliderState from './defaults';
+
 /* eslint-disable no-console */
 class TRSModel {
   private settings: RangeSliderOptions;
 
-  static readonly defaults: RangeSliderOptions = {
-    isVertical: false,
-    isTwoHandles: true,
-    isTip: true,
-    minValue: 0,
-    maxValue: 1234,
-    stepValue: 1,
-    valueFrom: 0,
-    valueTo: 1234,
-    items: { indexFrom: 0, indexTo: 0, values: [] },
-  };
+  static readonly defaults: RangeSliderOptions = $.extend(true, {}, defaultRangeSliderState);
 
   constructor(options?: RangeSliderOptions) {
     this.settings = $.extend(true, {}, TRSModel.defaults);

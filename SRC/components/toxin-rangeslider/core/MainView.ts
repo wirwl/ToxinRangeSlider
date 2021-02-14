@@ -6,6 +6,7 @@ import TipView from './View/TipView';
 import LineView from './View/LineView';
 import HandleView from './View/HandleView';
 import ObservableSubject from './ObservableSubject';
+import defaultRangeSliderState from './defaults';
 
 const b = block('rangeslider');
 
@@ -62,17 +63,7 @@ class TRSView {
 
     this.notifier = new ObservableSubject();
 
-    this.currentSettings = {
-      isVertical: false,
-      isTwoHandles: true,
-      isTip: true,
-      minValue: 0,
-      maxValue: 4321,
-      stepValue: 1,
-      valueFrom: 0,
-      valueTo: 4321,
-      items: { indexFrom: 0, indexTo: 0, values: [] },
-    };
+    this.currentSettings = $.extend(true, {}, defaultRangeSliderState);
 
     this.rangeslider = new Rangeslider(el.find('.rangeslider'));
     this.initSubViews();
@@ -202,6 +193,10 @@ class TRSView {
 
   getDataOptions(): RangeSliderOptions {
     return this.el.data('options');
+  }
+
+  firstDrawSlider(state: RangeSliderOptions): void {
+    this.drawSlider(state, true);
   }
 
   drawSlider(newSettings = {}, forceRedraw = false): void {

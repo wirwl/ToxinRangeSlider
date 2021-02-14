@@ -21,7 +21,7 @@ class TRSPresenter {
   private notifyModel(data: HandleMovingResult): void {
     this.model.updateHandleState(data);
     this.model.onHandlePositionChange(data);
-    this.view.drawSlider(this.getState());
+    this.view.drawSlider(this.getState(), true);
   }
 
   getState(): RangeSliderOptions {
