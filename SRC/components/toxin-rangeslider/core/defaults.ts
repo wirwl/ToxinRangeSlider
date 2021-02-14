@@ -1,4 +1,18 @@
-/* eslint-disable */
+import block from 'bem-cn';
+
+const b = block('rangeslider');
+
+export const SliderDomEntities = {
+  rootElement: `<div class='${b()}'></div>`,
+  tipMin: `<div class='${b('tip-min')}'>00</div>`,
+  tipMax: `<div class='${b('tip-max')}'>99</div>`,
+  tipFrom: `<div class='${b('tip')} ${b('tip-from')}'>23</div>`,
+  tipTo: `<div class='${b('tip')} ${b('tip-to')}'>456</div>`,
+  lineMain: `<div class='${b('line')}'></div>`,
+  lineSelected: `<div class='${b('line-selected')}'></div>`,
+  handleFrom: `<div class='${b('handle')} ${b('handle-from')}'>`,
+  handleTo: `<div class='${b('handle')} ${b('handle-to')}'>`,
+};
 
 const defaultRangeSliderState = {
   isVertical: false,
@@ -13,23 +27,3 @@ const defaultRangeSliderState = {
 };
 
 export default defaultRangeSliderState;
-
-// export function deepCopy(o: { [x: string]: any; hasOwnProperty: (arg0: string) => any }) {
-//   // "string", number, boolean
-//   if (typeof o != 'object') {
-//     return o;
-//   }
-
-//   // null
-//   if (!o) {
-//     return o; //null
-//   }
-
-//   var r = o instanceof Array ? [] : {};
-//   for (var i in o) {
-//     if (o.hasOwnProperty(i)) {
-//       r[i] = deepCopy(o[i]);
-//     }
-//   }
-//   return r;
-// }

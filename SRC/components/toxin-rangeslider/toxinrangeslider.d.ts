@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
 /**
  * Options for the rangeslider plugin.
  */

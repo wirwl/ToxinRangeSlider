@@ -1,29 +1,12 @@
-/* eslint-disable no-console */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import block from 'bem-cn';
 import Rangeslider from './entities/rangeslider';
 import TipView from './View/TipView';
 import LineView from './View/LineView';
 import HandleView from './View/HandleView';
 import ObservableSubject from './ObservableSubject';
-import defaultRangeSliderState from './defaults';
-
-const b = block('rangeslider');
-
-const SliderDomEntities = {
-  rootElement: `<div class='${b()}'></div>`,
-  tipMin: `<div class='${b('tip-min')}'>00</div>`,
-  tipMax: `<div class='${b('tip-max')}'>99</div>`,
-  tipFrom: `<div class='${b('tip')} ${b('tip-from')}'>23</div>`,
-  tipTo: `<div class='${b('tip')} ${b('tip-to')}'>456</div>`,
-  lineMain: `<div class='${b('line')}'></div>`,
-  lineSelected: `<div class='${b('line-selected')}'></div>`,
-  handleFrom: `<div class='${b('handle')} ${b('handle-from')}'>`,
-  handleTo: `<div class='${b('handle')} ${b('handle-to')}'>`,
-};
+import defaultRangeSliderState, { SliderDomEntities } from './defaults';
 
 class TRSView {
-  private currentSettings!: RangeSliderOptions;
+  private state!: RangeSliderOptions;
 
   private offsetFrom!: number;
 
@@ -63,7 +46,7 @@ class TRSView {
 
     this.notifier = new ObservableSubject();
 
-    this.currentSettings = $.extend(true, {}, defaultRangeSliderState);
+    this.state = $.extend(true, {}, defaultRangeSliderState);
 
     this.rangeslider = new Rangeslider(el.find('.rangeslider'));
     this.initSubViews();
@@ -81,6 +64,7 @@ class TRSView {
   }
 
   private initSubView<T>(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     SubView: new (...args: any[]) => T,
     domEntity: string,
     $parentElement = this.rangeslider.$el,
@@ -90,7 +74,7 @@ class TRSView {
         domEntity,
         $parentElement,
       },
-      state: this.currentSettings,
+      state: this.state,
     });
   }
 
@@ -128,10 +112,12 @@ class TRSView {
     this.lineView.notifierUserInput.addObserver(this.receiveDataAfterUserInput);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private receiveDataAfterUserInput({ value, handle, event }: any): void {
     const isClickOnLine = handle === undefined;
+    const isHandleMoving = event === undefined;
 
-    if (!isClickOnLine) {
+    if (isHandleMoving) {
       if (value < 0) value = 0;
       const lineWidth = this.lineView.getSize() - this.offsetFrom - this.offsetTo;
       if (value > lineWidth) value = lineWidth;
@@ -145,11 +131,11 @@ class TRSView {
     const currentHandle: HandleView = handle || this.getNearestHandle(value);
     const isFromHandle = currentHandle.is(this.handleFromView);
 
-    const isUsingItemsCurrent = this.currentSettings.items.values.length > 1;
+    const isUsingItemsCurrent = this.state.items.values.length > 1;
     let restoreIndex = -1;
     if (isUsingItemsCurrent) {
       const lw = this.lineView.getSize() - 8 - 8;
-      const pxStep = lw / (this.currentSettings.items.values.length - 1);
+      const pxStep = lw / (this.state.items.values.length - 1);
       restoreIndex = Math.round(value / pxStep);
     }
 
@@ -164,7 +150,7 @@ class TRSView {
 
     const lineWidth = this.lineView.getSize() - 8 - 8;
     const relValue = isUsingItemsCurrent
-      ? this.currentSettings.items.values[restoreIndex]
+      ? this.state.items.values[restoreIndex]
       : currentHandle.convertPixelValueToRelativeValue(value - offset, lineWidth);
 
     // Notify model about user input
@@ -179,7 +165,7 @@ class TRSView {
   }
 
   private getNearestHandle(pxPosOnLine: number): HandleView {
-    if (this.currentSettings.isTwoHandles) {
+    if (this.state.isTwoHandles) {
       if (pxPosOnLine < this.handleFromView.getPos()) return this.handleFromView;
       if (pxPosOnLine > this.handleToView.getPos()) return this.handleToView;
       const distanceBetweenHandles =
@@ -200,7 +186,7 @@ class TRSView {
   }
 
   drawSlider(newSettings = {}, forceRedraw = false): void {
-    const oldSettings = this.currentSettings;
+    const oldSettings = this.state;
     const {
       minValue: oldMinValue,
       maxValue: oldMaxValue,
@@ -215,7 +201,7 @@ class TRSView {
     const oldIndexTo = oldSettings.items?.indexTo;
     const oldValues = oldSettings.items?.values;
 
-    $.extend(true, this.currentSettings, newSettings);
+    $.extend(true, this.state, newSettings);
 
     const {
       minValue: currentMinValue,
@@ -225,11 +211,11 @@ class TRSView {
       isVertical: currentIsVertical,
       isTip: currentIsTip,
       isTwoHandles: currentIsTwoHandles,
-    } = this.currentSettings;
+    } = this.state;
 
-    const currentIndexFrom = this.currentSettings.items?.indexFrom;
-    const currentIndexTo = this.currentSettings.items?.indexTo;
-    const currentValues = this.currentSettings.items?.values;
+    const currentIndexFrom = this.state.items?.indexFrom;
+    const currentIndexTo = this.state.items?.indexTo;
+    const currentValues = this.state.items?.values;
 
     const { setVertical, setTwoHandles } = this.rangeslider;
     const isUsingItemsCurrent = currentValues?.length > 1;
@@ -259,7 +245,6 @@ class TRSView {
             this.handleFromView.onMouseDownByHandle(e, this.lineView),
           );
           this.tipFromView.setText(currentValueFrom);
-          console.log(currentValueFrom);
         }
       } else this.handleFromView.removeFromDomTree();
       isNeedRedraw = true;

@@ -56,23 +56,23 @@ export default class HandleView extends DOMOperations {
 
   private onMouseMoveHandle(e: JQuery.TriggeredEvent, shiftPos: number, line: LineView): void {
     e.preventDefault();
-    const $target = $(e.target);
-    const eOffset = this.isVertical() ? e.offsetY : e.offsetX;
-    const offsetPos = eOffset || 0;
+    // const $target = $(e.target);
+    // const eOffset = this.isVertical() ? e.offsetY : e.offsetX;
+    // const offsetPos = eOffset || 0;
 
-    const targetOffsetCoord = $target.offset();
-    if (!targetOffsetCoord) return;
-    const targetOffset: number = this.isVertical() ? targetOffsetCoord.top : targetOffsetCoord.left;
-    const pxLineLength = line.getSize() - 8 - 8;
-    let newPos = this.getSteppedPos(offsetPos + targetOffset - line.getOffset() - 8, pxLineLength);
-
-    const eClient = this.isVertical() ? e.clientY : e.clientX;
-    const clientPos = eClient || 0;
-    if (newPos == null) newPos = clientPos - line.getOffset() - shiftPos;
+    // const targetOffsetCoord = $target.offset();
+    // if (!targetOffsetCoord) return;
+    // const targetOffset: number = this.isVertical() ? targetOffsetCoord.top : targetOffsetCoord.left;
+    // const pxLineLength = line.getSize() - 8 - 8;
+    // let newPos = this.getSteppedPos(offsetPos + targetOffset - line.getOffset() - 8, pxLineLength);
 
     // const eClient = this.isVertical() ? e.clientY : e.clientX;
-    // if (!eClient) return;
-    // const newPos = eClient - line.getOffset() - shiftPos;
+    // const clientPos = eClient || 0;
+    // if (newPos == null) newPos = clientPos - line.getOffset() - shiftPos;
+
+    const eClient = this.isVertical() ? e.clientY : e.clientX;
+    if (!eClient) return;
+    const newPos = eClient - line.getOffset() - shiftPos;
 
     this.notifier.notify({
       value: newPos,
