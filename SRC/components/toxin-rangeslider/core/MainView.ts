@@ -123,8 +123,8 @@ class TRSView {
       if (value > lineWidth) value = lineWidth;
     } else {
       if (value < this.offsetFrom) value = this.offsetFrom;
-      if (value > this.lineView.getSize() - 8) {
-        value = this.lineView.getSize() - 8;
+      if (value > this.lineView.getSize() - this.offsetTo) {
+        value = this.lineView.getSize() - this.offsetTo;
       }
     }
 
@@ -134,7 +134,7 @@ class TRSView {
     const isUsingItemsCurrent = this.state.items.values.length > 1;
     let restoreIndex = -1;
     if (isUsingItemsCurrent) {
-      const lw = this.lineView.getSize() - 8 - 8;
+      const lw = this.lineView.getSize() - this.offsetFrom - this.offsetTo;
       const pxStep = lw / (this.state.items.values.length - 1);
       restoreIndex = Math.round(value / pxStep);
     }
@@ -148,7 +148,7 @@ class TRSView {
       }
     }
 
-    const lineWidth = this.lineView.getSize() - 8 - 8;
+    const lineWidth = this.lineView.getSize() - this.offsetFrom - this.offsetTo;
     const relValue = isUsingItemsCurrent
       ? this.state.items.values[restoreIndex]
       : currentHandle.convertPixelValueToRelativeValue(value - offset, lineWidth);
