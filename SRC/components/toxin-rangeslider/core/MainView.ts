@@ -1,3 +1,5 @@
+/* eslint-disable prefer-const */
+/* eslint-disable no-console */
 import Rangeslider from './entities/rangeslider';
 import TipView from './View/TipView';
 import LineView from './View/LineView';
@@ -115,18 +117,21 @@ class TRSView {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private receiveDataAfterUserInput({ value, handle, event }: any): void {
     const isClickOnLine = handle === undefined;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const isHandleMoving = event === undefined;
 
-    if (isHandleMoving) {
-      if (value < 0) value = 0;
-      const lineWidth = this.lineView.getSize() - this.offsetFrom - this.offsetTo;
-      if (value > lineWidth) value = lineWidth;
-    } else {
-      if (value < this.offsetFrom) value = this.offsetFrom;
-      if (value > this.lineView.getSize() - this.offsetTo) {
-        value = this.lineView.getSize() - this.offsetTo;
-      }
-    }
+    if (isHandleMoving) value -= this.lineView.getOffset();
+
+    // if (isHandleMoving) {
+    //   if (value < 0) value = 0;
+    //   const lineWidth = this.lineView.getSize() - this.offsetFrom - this.offsetTo;
+    //   if (value > lineWidth) value = lineWidth;
+    // } else {
+    //   if (value < this.offsetFrom) value = this.offsetFrom;
+    //   if (value > this.lineView.getSize() - this.offsetTo) {
+    //     value = this.lineView.getSize() - this.offsetTo;
+    //   }
+    // }
 
     const currentHandle: HandleView = handle || this.getNearestHandle(value);
     const isFromHandle = currentHandle.is(this.handleFromView);
@@ -134,21 +139,25 @@ class TRSView {
     const isUsingItemsCurrent = this.state.items.values.length > 1;
     let restoreIndex = -1;
     if (isUsingItemsCurrent) {
-      const lw = this.lineView.getSize() - this.offsetFrom - this.offsetTo;
-      const pxStep = lw / (this.state.items.values.length - 1);
+      const pxLineLength = this.lineView.getSize() - this.offsetFrom - this.offsetTo;
+      const pxStep = pxLineLength / (this.state.items.values.length - 1);
       restoreIndex = Math.round(value / pxStep);
     }
 
-    let offset = 0;
-    if (isClickOnLine) {
-      const pxLineLength = this.lineView.getSize() - this.offsetFrom - this.offsetTo;
-      const newPos = currentHandle.getSteppedPos(value - this.offsetFrom, pxLineLength);
-      if (newPos == null) {
-        offset = currentHandle.is(this.handleFromView) ? this.offsetFrom : this.handleToView.getSize() - this.offsetTo;
-      }
-    }
+    // let offset = 0;
+    // if (isClickOnLine) {
+    //   const pxLineLength = this.lineView.getSize() - this.offsetFrom - this.offsetTo;
+    //   const newPos = currentHandle.getSteppedPos(value - this.offsetFrom, pxLineLength);
+    //   if (newPos == null) {
+    //     offset = currentHandle.is(this.handleFromView) ? this.offsetFrom : this.handleToView.getSize() - this.offsetTo;
+    //   }
+    // }
 
     const lineWidth = this.lineView.getSize() - this.offsetFrom - this.offsetTo;
+    let offset = 0;
+    if (isClickOnLine)
+      offset = currentHandle.is(this.handleFromView) ? this.offsetFrom : this.handleToView.getSize() - this.offsetTo;
+
     const relValue = isUsingItemsCurrent
       ? this.state.items.values[restoreIndex]
       : currentHandle.convertPixelValueToRelativeValue(value - offset, lineWidth);

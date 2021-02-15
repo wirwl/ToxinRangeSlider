@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import defaultRangeSliderState from './defaults';
 
 /* eslint-disable no-console */
@@ -18,12 +20,13 @@ class TRSModel {
     //   valueTo,
     //   items: { indexFrom, indexTo, values },
     // } = this.settings;
-
     let index = -1;
-    for (let i = 0; i < this.settings.items.values.length; i += 1) {
-      if (relValue.toString() === this.settings.items.values[i].toString()) {
-        index = i;
-        break;
+    if (this.isUsingItems()) {
+      for (let i = 0; i < this.settings.items.values.length; i += 1) {
+        if (relValue.toString() === this.settings.items.values[i].toString()) {
+          index = i;
+          break;
+        }
       }
     }
     if (isFromHandle) {
@@ -35,6 +38,7 @@ class TRSModel {
       this.settings.items.indexTo = index;
       this.settings.valueTo = this.settings.items.values[index];
     } else this.settings.valueTo = relValue;
+
     this.validate();
   }
 
@@ -51,8 +55,42 @@ class TRSModel {
     return this.settings;
   }
 
+  isStepValueDefined(): void {
+    const { stepValue } = this.settings;
+
+    const isHasStepValue = stepValue > 1;
+
+    if (isHasStepValue) {
+      const { valueFrom, valueTo, minValue, maxValue } = this.settings;
+      const relLengthTotal = Number(maxValue) - Number(minValue);
+      const stepCountTotal = Math.ceil(relLengthTotal / stepValue);
+      const remainderValue = relLengthTotal % stepValue;
+      const isHasRemainder = remainderValue > 0;
+
+      const roundHandleValue = (value: number) => {
+        const relLengthValue = Number(value) - Number(minValue);
+        //Index started from 0
+        const stepIndexValue = Math.trunc(relLengthValue / stepValue);
+        const stepValueDynamic = isHasRemainder && stepIndexValue >= stepCountTotal - 1 ? remainderValue : stepValue;
+        const halfStepValueDynamic = stepValueDynamic / 2;
+
+        const prevRightValue = Number(minValue) + stepIndexValue * stepValue;
+        const nextRightValue = prevRightValue + stepValueDynamic;
+        const betweenPrevNextValue = prevRightValue + halfStepValueDynamic;
+
+        if (value <= betweenPrevNextValue) return prevRightValue;
+        return nextRightValue;
+      };
+
+      this.settings.valueFrom = roundHandleValue(Number(valueFrom));
+      this.settings.valueTo = roundHandleValue(Number(valueTo));
+    }
+  }
+
   onHandlePositionChange(data: HandleMovingResult): void {
-    this.settings.onHandlePositionChange?.call({ ...this.settings }, data);
+    const { isFromHandle } = data;
+    const validatedRelValue = isFromHandle ? this.settings.valueFrom : this.settings.valueTo;
+    this.settings.onHandlePositionChange?.call({ ...this.settings }, { isFromHandle, relValue: validatedRelValue });
   }
 
   private validate(): void {
@@ -62,6 +100,8 @@ class TRSModel {
     const indexTo = items?.indexTo;
     const values = items?.values;
     const isUsingItems = items && items.values.length > 1;
+
+    this.isStepValueDefined();
 
     if (isUsingItems) {
       // eslint-disable-next-line prefer-destructuring

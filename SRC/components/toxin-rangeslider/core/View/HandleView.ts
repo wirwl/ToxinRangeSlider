@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import ObservableSubject from '../ObservableSubject';
 import DOMOperations from './DOMOperations';
 import LineView from './LineView';
@@ -56,8 +58,9 @@ export default class HandleView extends DOMOperations {
 
   private onMouseMoveHandle(e: JQuery.TriggeredEvent, shiftPos: number, line: LineView): void {
     e.preventDefault();
-    // const $target = $(e.target);
-    // const eOffset = this.isVertical() ? e.offsetY : e.offsetX;
+    const $target = $(e.target);
+    // if (!$target.is(this.$el)) return;
+    const eOffset = this.isVertical() ? e.offsetY : e.offsetX;
     // const offsetPos = eOffset || 0;
 
     // const targetOffsetCoord = $target.offset();
@@ -70,9 +73,15 @@ export default class HandleView extends DOMOperations {
     // const clientPos = eClient || 0;
     // if (newPos == null) newPos = clientPos - line.getOffset() - shiftPos;
 
+    //-----------------------------------------
     const eClient = this.isVertical() ? e.clientY : e.clientX;
     if (!eClient) return;
-    const newPos = eClient - line.getOffset() - shiftPos;
+    // const newPos = eClient - line.getOffset() - shiftPos;
+    const newPos = eClient - shiftPos;
+
+    // const newPos = eOffset;
+    // console.log(e.target);
+    // console.log(newPos);
 
     this.notifier.notify({
       value: newPos,
