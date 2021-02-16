@@ -1,8 +1,5 @@
-/* eslint-disable no-console */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import ObservableSubject from '../ObservableSubject';
 import DOMOperations from './DOMOperations';
-import LineView from './LineView';
 
 export default class HandleView extends DOMOperations {
   notifier!: ObservableSubject;
@@ -30,7 +27,7 @@ export default class HandleView extends DOMOperations {
     return this.$el.is(h.$el);
   }
 
-  public onMouseDownByHandle(e: JQuery.TriggeredEvent, line: LineView): void {
+  public onMouseDownByHandle(e: JQuery.TriggeredEvent): void {
     this.setMoving(true);
     const clientPos = this.isVertical() ? e.clientY : e.clientX;
     if (!clientPos) return;
@@ -65,54 +62,9 @@ export default class HandleView extends DOMOperations {
     });
   }
 
-  // public steppedMoveHandle(val: number, lineWidth: number, state: RangeSliderOptions): void {
-  //   const posXWithOutStep = this.convertRelativeValueToPixelValue(val, lineWidth, state);
-  //   const posXWithStep = this.getSteppedPos(posXWithOutStep, lineWidth, state);
-  //   this.moveHandle(posXWithStep === null ? posXWithOutStep : posXWithStep);
-  // }
-
   public moveHandle(pxPos: number): void {
     this.setPos(pxPos);
   }
-
-  // public getSteppedPos(pxValue: number, pxLineLength: number, state: RangeSliderOptions): number | null {
-  //   const { stepValue, items, maxValue, minValue } = state;
-  //   const values = items?.values;
-  //   const isDefinedStep = stepValue > 1;
-  //   const isDefinedSetOfValues = items && values && values.length > 1;
-  //   const isTooLongLine = pxLineLength > Number(maxValue) - Number(minValue);
-  //   const isHaveStep = isDefinedStep || isTooLongLine || isDefinedSetOfValues;
-
-  //   if (isHaveStep) {
-  //     let pxStep = 0;
-
-  //     if (isDefinedStep) {
-  //       const relLineLength = Number(maxValue) - Number(minValue);
-  //       pxStep = (pxLineLength / relLineLength) * stepValue;
-  //     }
-
-  //     if (isTooLongLine) {
-  //       const relativeLength = Number(maxValue) - Number(minValue);
-  //       pxStep = pxLineLength / relativeLength;
-  //       if (isDefinedStep) pxStep *= stepValue;
-  //     }
-
-  //     if (isDefinedSetOfValues) {
-  //       pxStep = pxLineLength / (values.length - 1);
-  //     }
-
-  //     const nStep = Math.round(pxValue / pxStep);
-  //     let newPos = nStep * pxStep;
-
-  //     if (pxValue / pxStep > Math.trunc(pxLineLength / pxStep)) {
-  //       const remainder = pxLineLength - newPos;
-  //       if (pxValue > newPos + remainder / 2) newPos += remainder;
-  //     }
-  //     if (newPos > pxLineLength) newPos = pxLineLength;
-  //     return newPos;
-  //   }
-  //   return null;
-  // }
 
   public convertPixelValueToRelativeValue(val: number, lineWidth: number, state: RangeSliderOptions): number | string {
     let result: number | string;

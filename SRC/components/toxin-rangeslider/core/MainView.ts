@@ -15,8 +15,6 @@ class TRSView {
 
   private el!: JQuery<Element>;
 
-  // private rangeslider!: Rangeslider;
-
   public handleFromView!: HandleView;
 
   public handleToView!: HandleView;
@@ -62,7 +60,6 @@ class TRSView {
 
     this.state = $.extend(true, {}, defaultRangeSliderState);
 
-    // this.rangeslider = new Rangeslider(el.find('.rangeslider'));
     this.$rangeslider = el.find('.rangeslider');
 
     this.initSubViews();
@@ -131,8 +128,8 @@ class TRSView {
 
   private addEventListeners(): void {
     this.lineView.$el.on('mousedown.line', this.lineView.onMouseDownByLine);
-    this.handleFromView.$el.on('mousedown.handle', e => this.handleFromView.onMouseDownByHandle(e, this.lineView));
-    this.handleToView.$el.on('mousedown.handle', e => this.handleToView.onMouseDownByHandle(e, this.lineView));
+    this.handleFromView.$el.on('mousedown.handle', e => this.handleFromView.onMouseDownByHandle(e));
+    this.handleToView.$el.on('mousedown.handle', e => this.handleToView.onMouseDownByHandle(e));
   }
 
   addObservers(observerModel: anyFunction): void {
@@ -244,9 +241,7 @@ class TRSView {
       if (currentIsTwoHandles) {
         if (!this.$rangeslider.find('.rangeslider__handle-from').length) {
           this.handleFromView.appendToDomTree();
-          this.handleFromView.$el.on('mousedown.handleFrom', e =>
-            this.handleFromView.onMouseDownByHandle(e, this.lineView),
-          );
+          this.handleFromView.$el.on('mousedown.handleFrom', e => this.handleFromView.onMouseDownByHandle(e));
           this.tipFromView.setText(currentValueFrom);
         }
       } else this.handleFromView.removeFromDomTree();
@@ -290,7 +285,6 @@ class TRSView {
       if (isNeedRedraw || valueFromChanged || minValueChanged || maxValueChanged || isItemValuesChanged) {
         const val = isUsingItemsCurrent ? currentIndexFrom : Number(currentValueFrom);
         const lineWidth = this.lineView.getSize() - this.offsetFrom - this.offsetTo;
-        // this.handleFromView.steppedMoveHandle(val, lineWidth, this.state);
         const newPxPos = this.handleFromView.convertRelativeValueToPixelValue(val, lineWidth, this.state);
         this.handleFromView.moveHandle(Number(newPxPos));
         this.tipFromView.setText(currentValueFrom);
@@ -300,7 +294,6 @@ class TRSView {
     if (isNeedRedraw || valueToChanged || minValueChanged || maxValueChanged || isItemValuesChanged) {
       const val = isUsingItemsCurrent ? currentIndexTo : Number(currentValueTo);
       const lineWidth = this.lineView.getSize() - this.offsetFrom - this.offsetTo;
-      // this.handleToView.steppedMoveHandle(val, lineWidth, this.state);
       const newPxPos = this.handleToView.convertRelativeValueToPixelValue(val, lineWidth, this.state);
       this.handleToView.moveHandle(Number(newPxPos));
       this.tipToView.setText(currentValueTo);
