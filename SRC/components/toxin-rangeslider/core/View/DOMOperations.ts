@@ -14,7 +14,6 @@ export default class DOMOperations {
   private initSubView({ domEntity, $parentElement }: SubViewData): void {
     this.$el = $(domEntity);
     this.$parentElement = $parentElement;
-
     this.appendToDomTree();
   }
 

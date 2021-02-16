@@ -1,6 +1,7 @@
 /* eslint-disable */
 
 import defaultRangeSliderState from './defaults';
+import { mergeSliderOptions } from './utils';
 
 /* eslint-disable no-console */
 class TRSModel {
@@ -8,9 +9,10 @@ class TRSModel {
 
   static readonly defaults: RangeSliderOptions = $.extend(true, {}, defaultRangeSliderState);
 
-  constructor(options?: RangeSliderOptions) {
+  constructor(options?: AnyObject) {
     this.settings = $.extend(true, {}, TRSModel.defaults);
-    $.extend(true, this.settings, options);
+    // $.extend(true, this.settings, options);
+    options && mergeSliderOptions(this.settings, options);
     this.validate();
   }
 
@@ -47,8 +49,8 @@ class TRSModel {
     return this.settings.items.values.length > 1;
   }
 
-  updateState(data = {}): void {
-    $.extend(true, this.settings, data);
+  updateState(data: AnyObject): void {
+    mergeSliderOptions(this.settings, data);
     this.validate();
   }
 

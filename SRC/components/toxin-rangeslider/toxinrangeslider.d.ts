@@ -75,3 +75,7 @@ interface SubViewData {
   domEntity: string;
   $parentElement: JQuery<HTMLElement>;
 }
+
+interface AnyObject {
+  [key: string]: any;
+}

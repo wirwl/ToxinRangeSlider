@@ -5,6 +5,7 @@ import LineView from './View/LineView';
 import HandleView from './View/HandleView';
 import ObservableSubject from './ObservableSubject';
 import defaultRangeSliderState, { SliderDomEntities } from './defaults';
+import { mergeSliderOptions } from './utils';
 
 class TRSView {
   private state!: RangeSliderOptions;
@@ -80,10 +81,10 @@ class TRSView {
     this.controls = controls;
   }
 
-  private setTwoHandles = (value: boolean): void => {
-    this._isTwoHandles = value;
+  private setTwoHandles = (isTwoHandles: boolean): void => {
+    this._isTwoHandles = isTwoHandles;
     this.$rangeslider.find('.rangeslider__line-selected').removeAttr('style');
-    if (this._isTwoHandles) this.$rangeslider.removeClass(this.CLASSES.modOneHandle);
+    if (isTwoHandles) this.$rangeslider.removeClass(this.CLASSES.modOneHandle);
     else this.$rangeslider.addClass(this.CLASSES.modOneHandle);
   };
 
@@ -185,8 +186,8 @@ class TRSView {
     this.drawSlider(state, true);
   }
 
-  drawSlider(newSettings = {}, forceRedraw = false): void {
-    const oldSettings = this.state;
+  drawSlider(newSettings: AnyObject, forceRedraw = false): void {
+    const oldSettings = $.extend(true, {}, this.state);
     const {
       minValue: oldMinValue,
       maxValue: oldMaxValue,
@@ -201,7 +202,12 @@ class TRSView {
     const oldIndexTo = oldSettings.items?.indexTo;
     const oldValues = oldSettings.items?.values;
 
-    $.extend(true, this.state, newSettings);
+    // const { items } = newSettings;
+    // const values = items && items.values;
+    // if (values?.length > 0) this.state.items.values = [];
+    // $.extend(true, this.state, newSettings);
+
+    mergeSliderOptions(this.state, newSettings);
 
     const {
       minValue: currentMinValue,
@@ -229,17 +235,131 @@ class TRSView {
     const indexFromChanged = currentIndexFrom !== oldIndexFrom;
     const indexToChanged = currentIndexTo !== oldIndexTo;
     let isNeedRedraw = forceRedraw;
+    //--------------------------------------------------------------------
+    isNeedRedraw = this.changeSliderOrientation(oldSettings, isNeedRedraw);
+    //---------------------------------------------------------------------
+    // if (isNeedRedraw || isTwoHandlesChanged) {
+    //   setTwoHandles(currentIsTwoHandles);
+    //   if (currentIsTwoHandles) {
+    //     const isHandleFromInDOMTree = this.$rangeslider.find('.rangeslider__handle-from').length;
+    //     if (!isHandleFromInDOMTree) {
+    //       this.handleFromView.appendToDomTree();
+    //       this.handleFromView.$el.on('mousedown.handleFrom', e => this.handleFromView.onMouseDownByHandle(e));
+    //       this.tipFromView.setText(currentValueFrom);
+    //     }
+    //   } else this.handleFromView.removeFromDomTree();
+    //   isNeedRedraw = true;
+    // }
+    isNeedRedraw = this.appendHandleFromToDOMTree(oldSettings, isNeedRedraw);
+    //------------------------------------------------------------------------
+    // if (isNeedRedraw || isTipChanged) {
+    //   if (currentIsTip) {
+    //     if (currentIsTwoHandles) this.tipFromView.appendToDomTree();
+    //     this.tipToView.appendToDomTree();
+    //     this.tipMinView.appendToDomTree();
+    //     this.tipMaxView.appendToDomTree();
+    //   } else {
+    //     if (currentIsTwoHandles) this.tipFromView.removeFromDomTree();
+    //     this.tipToView.removeFromDomTree();
+    //     this.tipMinView.removeFromDomTree();
+    //     this.tipMaxView.removeFromDomTree();
+    //   }
+    // }
+    this.appendTipsToDOMTree(oldSettings, isNeedRedraw);
+    //---------------------------------------------------------------------------
+    // if (isNeedRedraw || minValueChanged) {
+    //   this.tipMinView.setText(currentMinValue);
+    // }
+
+    // if (isNeedRedraw || maxValueChanged) {
+    //   this.tipMaxView.setText(currentMaxValue);
+    // }
+
+    // const isItemValuesChanged = !this.isEqualArrays(oldValues, currentValues);
+    // if (isNeedRedraw || isItemValuesChanged) {
+    //   if (currentValues) {
+    //     const count = currentValues.length;
+    //     if (count > 1) {
+    //       this.tipMinView.setText(currentValues[0]);
+    //       this.tipMaxView.setText(currentValues[count - 1]);
+    //     }
+    //   }
+    // }
+    this.drawTips(oldSettings, isNeedRedraw);
+    //------------------------------------------------------------------------------------
+    // if (currentIsTwoHandles) {
+    //   if (isNeedRedraw || valueFromChanged || minValueChanged || maxValueChanged || isItemValuesChanged) {
+    //     const val = isUsingItemsCurrent ? currentIndexFrom : Number(currentValueFrom);
+    //     const lineWidth = this.lineView.getSize() - this.offsetFrom - this.offsetTo;
+    //     const newPxPos = this.handleFromView.convertRelativeValueToPixelValue(val, lineWidth, this.state);
+    //     this.handleFromView.moveHandle(Number(newPxPos));
+    //     this.tipFromView.setText(currentValueFrom);
+    //   }
+    // }
+
+    // if (isNeedRedraw || valueToChanged || minValueChanged || maxValueChanged || isItemValuesChanged) {
+    //   const val = isUsingItemsCurrent ? currentIndexTo : Number(currentValueTo);
+    //   const lineWidth = this.lineView.getSize() - this.offsetFrom - this.offsetTo;
+    //   const newPxPos = this.handleToView.convertRelativeValueToPixelValue(val, lineWidth, this.state);
+    //   this.handleToView.moveHandle(Number(newPxPos));
+    //   this.tipToView.setText(currentValueTo);
+    // }
+
+    // if (isUsingItemsCurrent) {
+    //   const pxLength = this.lineView.getSize() - this.offsetFrom - this.offsetTo;
+    //   const pxStep = pxLength / (currentValues.length - 1);
+
+    //   if (currentIsTwoHandles && (isNeedRedraw || indexFromChanged)) {
+    //     const newPos = currentIndexFrom * pxStep;
+    //     this.handleFromView.moveHandle(newPos);
+    //     this.tipFromView.setText(currentValueFrom);
+    //   }
+
+    //   if (isNeedRedraw || indexToChanged) {
+    //     const newPos = currentIndexTo * pxStep;
+    //     this.handleToView.moveHandle(newPos);
+    //     this.tipToView.setText(currentValueTo);
+    //   }
+    // }
+    this.drawHandles(oldSettings, isNeedRedraw);
+    //------------------------------------------------------------------------------------------
+    // const pos = currentIsTwoHandles ? this.handleFromView.getPos() + this.offsetFrom : 0;
+    // const size = currentIsTwoHandles
+    //   ? this.handleToView.getPos() -
+    //     this.handleFromView.getPos() +
+    //     this.handleToView.getSize() -
+    //     this.offsetFrom -
+    //     this.offsetTo +
+    //     1
+    //   : this.handleToView.getPos() + this.handleToView.getSize() - this.offsetTo + 1;
+    // this.lineSelectedView.draw(pos, size);
+    this.drawLineSelected();
+  }
+
+  private changeSliderOrientation(oldSettings: RangeSliderOptions, forceRedraw: boolean): boolean {
+    const { isVertical: oldIsVertical } = oldSettings;
+    const { isVertical: currentIsVertical } = this.state;
+    const isVerticalChanged = currentIsVertical !== oldIsVertical;
+    let isNeedRedraw = forceRedraw;
 
     if (isVerticalChanged) {
-      setVertical(currentIsVertical);
+      this.setVertical(currentIsVertical);
       isNeedRedraw = true;
     }
+    return isNeedRedraw;
+  }
 
-    if (isNeedRedraw || isTwoHandlesChanged) {
-      setTwoHandles(currentIsTwoHandles);
+  private appendHandleFromToDOMTree(oldSettings: RangeSliderOptions, forceRedraw: boolean): boolean {
+    const { isTwoHandles: oldIsTwoHandles } = oldSettings;
+    const { isTwoHandles: currentIsTwoHandles, valueFrom: currentValueFrom } = this.state;
+    const isTwoHandlesChanged = currentIsTwoHandles !== oldIsTwoHandles;
+    let isNeedRedraw = forceRedraw;
 
+    if (forceRedraw || isTwoHandlesChanged) {
+      this.setTwoHandles(currentIsTwoHandles);
       if (currentIsTwoHandles) {
-        if (!this.$rangeslider.find('.rangeslider__handle-from').length) {
+        const isHandleFromInDOMTree = this.$rangeslider.find('.rangeslider__handle-from').length;
+        if (!isHandleFromInDOMTree) {
           this.handleFromView.appendToDomTree();
           this.handleFromView.$el.on('mousedown.handleFrom', e => this.handleFromView.onMouseDownByHandle(e));
           this.tipFromView.setText(currentValueFrom);
@@ -247,8 +367,15 @@ class TRSView {
       } else this.handleFromView.removeFromDomTree();
       isNeedRedraw = true;
     }
+    return isNeedRedraw;
+  }
 
-    if (isNeedRedraw || isTipChanged) {
+  private appendTipsToDOMTree(oldSettings: RangeSliderOptions, forceRedraw: boolean): void {
+    const { isTip: oldIsTip } = oldSettings;
+    const { isTip: currentIsTip, isTwoHandles: currentIsTwoHandles } = this.state;
+    const isTipChanged = currentIsTip !== oldIsTip;
+
+    if (forceRedraw || isTipChanged) {
       if (currentIsTip) {
         if (currentIsTwoHandles) this.tipFromView.appendToDomTree();
         this.tipToView.appendToDomTree();
@@ -261,17 +388,25 @@ class TRSView {
         this.tipMaxView.removeFromDomTree();
       }
     }
+  }
 
-    if (isNeedRedraw || minValueChanged) {
+  private drawTips(oldSettings: RangeSliderOptions, forceRedraw: boolean): void {
+    const { minValue: oldMinValue, maxValue: oldMaxValue } = oldSettings;
+    const { minValue: currentMinValue, maxValue: currentMaxValue } = this.state;
+    const minValueChanged = oldMinValue !== currentMinValue;
+    const maxValueChanged = oldMaxValue !== currentMaxValue;
+    const oldValues = oldSettings.items?.values;
+    const currentValues = this.state.items?.values;
+
+    if (forceRedraw || minValueChanged) {
       this.tipMinView.setText(currentMinValue);
     }
 
-    if (isNeedRedraw || maxValueChanged) {
+    if (forceRedraw || maxValueChanged) {
       this.tipMaxView.setText(currentMaxValue);
     }
-
     const isItemValuesChanged = !this.isEqualArrays(oldValues, currentValues);
-    if (isNeedRedraw || isItemValuesChanged) {
+    if (forceRedraw || isItemValuesChanged) {
       if (currentValues) {
         const count = currentValues.length;
         if (count > 1) {
@@ -280,6 +415,35 @@ class TRSView {
         }
       }
     }
+  }
+
+  private drawHandles(oldSettings: RangeSliderOptions, forceRedraw: boolean): void {
+    const { minValue: oldMinValue, maxValue: oldMaxValue, valueFrom: oldValueFrom, valueTo: oldValueTo } = oldSettings;
+
+    const oldIndexFrom = oldSettings.items?.indexFrom;
+    const oldIndexTo = oldSettings.items?.indexTo;
+    const oldValues = oldSettings.items?.values;
+
+    const {
+      minValue: currentMinValue,
+      maxValue: currentMaxValue,
+      valueFrom: currentValueFrom,
+      valueTo: currentValueTo,
+      isTwoHandles: currentIsTwoHandles,
+    } = this.state;
+
+    const currentIndexFrom = this.state.items?.indexFrom;
+    const currentIndexTo = this.state.items?.indexTo;
+    const currentValues = this.state.items?.values;
+    const isUsingItemsCurrent = currentValues?.length > 1;
+    const minValueChanged = oldMinValue !== currentMinValue;
+    const maxValueChanged = oldMaxValue !== currentMaxValue;
+    const valueFromChanged = oldValueFrom !== currentValueFrom;
+    const valueToChanged = oldValueTo !== currentValueTo;
+    const indexFromChanged = currentIndexFrom !== oldIndexFrom;
+    const indexToChanged = currentIndexTo !== oldIndexTo;
+    let isNeedRedraw = forceRedraw;
+    const isItemValuesChanged = !this.isEqualArrays(oldValues, currentValues);
 
     if (currentIsTwoHandles) {
       if (isNeedRedraw || valueFromChanged || minValueChanged || maxValueChanged || isItemValuesChanged) {
@@ -315,7 +479,10 @@ class TRSView {
         this.tipToView.setText(currentValueTo);
       }
     }
+  }
 
+  private drawLineSelected(): any {
+    const { isTwoHandles: currentIsTwoHandles } = this.state;
     const pos = currentIsTwoHandles ? this.handleFromView.getPos() + this.offsetFrom : 0;
     const size = currentIsTwoHandles
       ? this.handleToView.getPos() -
