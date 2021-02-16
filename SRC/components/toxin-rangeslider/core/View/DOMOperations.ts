@@ -4,30 +4,19 @@ export default class DOMOperations {
 
   $parentElement!: JQuery<HTMLElement>;
 
-  // state!: AnySubViewState;
-
   protected _isVertical = false;
 
-  constructor(data: ParentSubViewData) {
+  constructor(data: SubViewData) {
     this.initSubView(data);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private initSubView({ domEntities: { domEntity, $parentElement }, state }: ParentSubViewData): void {
+  private initSubView({ domEntity, $parentElement }: SubViewData): void {
     this.$el = $(domEntity);
     this.$parentElement = $parentElement;
-    // this.initState(state);
 
     this.appendToDomTree();
   }
-
-  // private initState(state: AnySubViewState): void {
-  //   this.state = { ...state };
-  // }
-
-  // updateState(state: AnySubViewState): void {
-  //   this.state = { ...this.state, ...state };
-  // }
 
   getParentElementWidth(): number {
     return parseFloat(this.$parentElement.css('width'));

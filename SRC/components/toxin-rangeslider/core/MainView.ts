@@ -1,6 +1,5 @@
 /* eslint-disable prefer-const */
 /* eslint-disable no-console */
-import Rangeslider from './entities/rangeslider';
 import TipView from './View/TipView';
 import LineView from './View/LineView';
 import HandleView from './View/HandleView';
@@ -16,7 +15,7 @@ class TRSView {
 
   private el!: JQuery<Element>;
 
-  private rangeslider!: Rangeslider;
+  // private rangeslider!: Rangeslider;
 
   public handleFromView!: HandleView;
 
@@ -36,6 +35,19 @@ class TRSView {
 
   public notifier!: ObservableSubject;
 
+  public controls: (TipView | HandleView | LineView)[] = [];
+
+  private _isTwoHandles = false;
+
+  private _isVertical = false;
+
+  private $rangeslider!: JQuery<HTMLElement>;
+
+  readonly CLASSES = {
+    modOneHandle: 'rangeslider_one-handle',
+    modIsVertical: 'rangeslider_is-vertical',
+  };
+
   constructor(el: JQuery<HTMLElement>) {
     this.bindThis();
     this.init(el);
@@ -50,10 +62,12 @@ class TRSView {
 
     this.state = $.extend(true, {}, defaultRangeSliderState);
 
-    this.rangeslider = new Rangeslider(el.find('.rangeslider'));
+    // this.rangeslider = new Rangeslider(el.find('.rangeslider'));
+    this.$rangeslider = el.find('.rangeslider');
+
     this.initSubViews();
 
-    this.rangeslider.addControls([
+    this.addControls([
       this.tipMinView,
       this.tipFromView,
       this.tipToView,
@@ -65,18 +79,32 @@ class TRSView {
     ]);
   }
 
+  private addControls(controls: (TipView | HandleView | LineView)[]): void {
+    this.controls = controls;
+  }
+
+  private setTwoHandles = (value: boolean): void => {
+    this._isTwoHandles = value;
+    this.$rangeslider.find('.rangeslider__line-selected').removeAttr('style');
+    if (this._isTwoHandles) this.$rangeslider.removeClass(this.CLASSES.modOneHandle);
+    else this.$rangeslider.addClass(this.CLASSES.modOneHandle);
+  };
+
+  private setVertical = (value: boolean): void => {
+    this._isVertical = value;
+    if (value) this.$rangeslider.addClass(this.CLASSES.modIsVertical);
+    else this.$rangeslider.removeClass(this.CLASSES.modIsVertical);
+    this.controls.forEach(val => val.setVertical(value));
+  };
+
   private initSubView<T>(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    SubView: new (...args: any[]) => T,
+    SubView: new (data: SubViewData) => T,
     domEntity: string,
-    $parentElement = this.rangeslider.$el,
+    $parentElement = this.$rangeslider,
   ): T {
     return new SubView({
-      domEntities: {
-        domEntity,
-        $parentElement,
-      },
-      state: this.state,
+      domEntity,
+      $parentElement,
     });
   }
 
@@ -111,65 +139,31 @@ class TRSView {
     this.notifier.addObserver(observerModel);
     this.handleFromView.notifier.addObserver(this.receiveDataAfterUserInput);
     this.handleToView.notifier.addObserver(this.receiveDataAfterUserInput);
-    this.lineView.notifierUserInput.addObserver(this.receiveDataAfterUserInput);
+    this.lineView.notifier.addObserver(this.receiveDataAfterUserInput);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private receiveDataAfterUserInput({ value, handle, event }: any): void {
     const isClickOnLine = handle === undefined;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const isHandleMoving = event === undefined;
-
-    if (isHandleMoving) value -= this.lineView.getOffset();
-
-    // if (isHandleMoving) {
-    //   if (value < 0) value = 0;
-    //   const lineWidth = this.lineView.getSize() - this.offsetFrom - this.offsetTo;
-    //   if (value > lineWidth) value = lineWidth;
-    // } else {
-    //   if (value < this.offsetFrom) value = this.offsetFrom;
-    //   if (value > this.lineView.getSize() - this.offsetTo) {
-    //     value = this.lineView.getSize() - this.offsetTo;
-    //   }
-    // }
-
+    const lineWidth = this.lineView.getSize() - this.offsetFrom - this.offsetTo;
     const currentHandle: HandleView = handle || this.getNearestHandle(value);
     const isFromHandle = currentHandle.is(this.handleFromView);
 
-    const isUsingItemsCurrent = this.state.items.values.length > 1;
-    let restoreIndex = -1;
-    if (isUsingItemsCurrent) {
-      const pxLineLength = this.lineView.getSize() - this.offsetFrom - this.offsetTo;
-      const pxStep = pxLineLength / (this.state.items.values.length - 1);
-      restoreIndex = Math.round(value / pxStep);
-    }
-
-    // let offset = 0;
-    // if (isClickOnLine) {
-    //   const pxLineLength = this.lineView.getSize() - this.offsetFrom - this.offsetTo;
-    //   const newPos = currentHandle.getSteppedPos(value - this.offsetFrom, pxLineLength);
-    //   if (newPos == null) {
-    //     offset = currentHandle.is(this.handleFromView) ? this.offsetFrom : this.handleToView.getSize() - this.offsetTo;
-    //   }
-    // }
-
-    const lineWidth = this.lineView.getSize() - this.offsetFrom - this.offsetTo;
-    let offset = 0;
+    if (isHandleMoving) value -= this.lineView.getOffset();
     if (isClickOnLine)
-      offset = currentHandle.is(this.handleFromView) ? this.offsetFrom : this.handleToView.getSize() - this.offsetTo;
+      value = isFromHandle ? value - this.offsetFrom : value - this.handleToView.getSize() + this.offsetTo;
+    const relValue = currentHandle.convertPixelValueToRelativeValue(value, lineWidth, this.state);
 
-    const relValue = isUsingItemsCurrent
-      ? this.state.items.values[restoreIndex]
-      : currentHandle.convertPixelValueToRelativeValue(value - offset, lineWidth);
+    if (relValue) {
+      // Notify model about user input
+      this.notifier.notify({ isFromHandle, relValue });
 
-    // Notify model about user input
-    this.notifier.notify({ isFromHandle, relValue });
-
-    // Immediately moving handles after LMB pressed on line
-    if (isClickOnLine) {
-      const newEvent: JQuery.TriggeredEvent = event;
-      newEvent.target = currentHandle.$el;
-      currentHandle.$el.trigger(newEvent, 'mousedown.handle');
+      // Immediately moving handles after LMB pressed on line
+      if (isClickOnLine) {
+        const newEvent: JQuery.TriggeredEvent = event;
+        currentHandle.$el.trigger(newEvent, 'mousedown.handle');
+      }
     }
   }
 
@@ -226,7 +220,7 @@ class TRSView {
     const currentIndexTo = this.state.items?.indexTo;
     const currentValues = this.state.items?.values;
 
-    const { setVertical, setTwoHandles } = this.rangeslider;
+    const { setVertical, setTwoHandles } = this;
     const isUsingItemsCurrent = currentValues?.length > 1;
     const isVerticalChanged = currentIsVertical !== oldIsVertical;
     const isTwoHandlesChanged = currentIsTwoHandles !== oldIsTwoHandles;
@@ -248,8 +242,8 @@ class TRSView {
       setTwoHandles(currentIsTwoHandles);
 
       if (currentIsTwoHandles) {
-        if (!this.rangeslider.$el.find('.rangeslider__handle-from').length) {
-          this.rangeslider.appendToDomTree(this.handleFromView);
+        if (!this.$rangeslider.find('.rangeslider__handle-from').length) {
+          this.handleFromView.appendToDomTree();
           this.handleFromView.$el.on('mousedown.handleFrom', e =>
             this.handleFromView.onMouseDownByHandle(e, this.lineView),
           );
@@ -296,7 +290,9 @@ class TRSView {
       if (isNeedRedraw || valueFromChanged || minValueChanged || maxValueChanged || isItemValuesChanged) {
         const val = isUsingItemsCurrent ? currentIndexFrom : Number(currentValueFrom);
         const lineWidth = this.lineView.getSize() - this.offsetFrom - this.offsetTo;
-        this.handleFromView.steppedMoveHandle(val, lineWidth);
+        // this.handleFromView.steppedMoveHandle(val, lineWidth, this.state);
+        const newPxPos = this.handleFromView.convertRelativeValueToPixelValue(val, lineWidth, this.state);
+        this.handleFromView.moveHandle(Number(newPxPos));
         this.tipFromView.setText(currentValueFrom);
       }
     }
@@ -304,7 +300,9 @@ class TRSView {
     if (isNeedRedraw || valueToChanged || minValueChanged || maxValueChanged || isItemValuesChanged) {
       const val = isUsingItemsCurrent ? currentIndexTo : Number(currentValueTo);
       const lineWidth = this.lineView.getSize() - this.offsetFrom - this.offsetTo;
-      this.handleToView.steppedMoveHandle(val, lineWidth);
+      // this.handleToView.steppedMoveHandle(val, lineWidth, this.state);
+      const newPxPos = this.handleToView.convertRelativeValueToPixelValue(val, lineWidth, this.state);
+      this.handleToView.moveHandle(Number(newPxPos));
       this.tipToView.setText(currentValueTo);
     }
 

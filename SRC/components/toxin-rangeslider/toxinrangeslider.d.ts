@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
 /**
  * Options for the rangeslider plugin.
  */
@@ -73,15 +72,6 @@ interface DomEntities {
 }
 
 interface SubViewData {
-  domEntities: DomEntities;
-  state: RangeSliderOptions;
-}
-
-interface ParentSubViewData {
-  domEntities: DomEntities;
-  state: AnySubViewState;
-}
-
-interface AnySubViewState {
-  [key: string]: boolean | (number | string) | RangeSliderItems | any;
+  domEntity: string;
+  $parentElement: JQuery<HTMLElement>;
 }

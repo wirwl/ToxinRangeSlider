@@ -15,13 +15,13 @@ class TRSPresenter {
   private init(): void {
     this.model.updateState(this.view.getDataOptions());
     this.view.addObservers(this.notifyModel);
-    this.view.drawSlider(this.getState(), true);
+    this.view.firstDrawSlider(this.getState());
   }
 
   private notifyModel(data: HandleMovingResult): void {
     this.model.updateHandleState(data);
     this.model.onHandlePositionChange(data);
-    this.view.drawSlider(this.getState(), true);
+    this.view.drawSlider(this.getState());
   }
 
   getState(): RangeSliderOptions {

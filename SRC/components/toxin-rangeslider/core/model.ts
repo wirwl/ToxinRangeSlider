@@ -20,6 +20,7 @@ class TRSModel {
     //   valueTo,
     //   items: { indexFrom, indexTo, values },
     // } = this.settings;
+
     let index = -1;
     if (this.isUsingItems()) {
       for (let i = 0; i < this.settings.items.values.length; i += 1) {
@@ -55,7 +56,7 @@ class TRSModel {
     return this.settings;
   }
 
-  isStepValueDefined(): void {
+  roundIsStepValueDefined(): void {
     const { stepValue } = this.settings;
 
     const isHasStepValue = stepValue > 1;
@@ -101,7 +102,7 @@ class TRSModel {
     const values = items?.values;
     const isUsingItems = items && items.values.length > 1;
 
-    this.isStepValueDefined();
+    this.roundIsStepValueDefined();
 
     if (isUsingItems) {
       // eslint-disable-next-line prefer-destructuring

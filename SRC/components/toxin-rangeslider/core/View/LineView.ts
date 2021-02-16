@@ -1,18 +1,11 @@
 import ObservableSubject from '../ObservableSubject';
 import DOMOperations from './DOMOperations';
 
-// interface StateLineView {
-//   isVertical: boolean;
-// }
-
 export default class LineView extends DOMOperations {
-  notifierUserInput: ObservableSubject = new ObservableSubject();
+  notifier: ObservableSubject = new ObservableSubject();
 
-  constructor({ domEntities, state: { isVertical } }: SubViewData) {
-    super({
-      domEntities,
-      state: { isVertical },
-    });
+  constructor(data: SubViewData) {
+    super(data);
     this.bindThis();
   }
 
@@ -27,6 +20,6 @@ export default class LineView extends DOMOperations {
 
   public onMouseDownByLine(event: JQuery.TriggeredEvent): void {
     const eOffset = this.isVertical() ? event.offsetY : event.offsetX;
-    if (eOffset) this.notifierUserInput.notify({ value: eOffset, event });
+    if (eOffset) this.notifier.notify({ value: eOffset, event });
   }
 }

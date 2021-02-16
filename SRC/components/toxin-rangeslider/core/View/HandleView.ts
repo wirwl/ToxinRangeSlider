@@ -5,22 +5,19 @@ import DOMOperations from './DOMOperations';
 import LineView from './LineView';
 
 export default class HandleView extends DOMOperations {
-  private currentSettings!: RangeSliderOptions;
-
   notifier!: ObservableSubject;
 
   constructor(data: SubViewData) {
     super(data);
     this.bindThis();
-    this.init(data.state);
+    this.init();
   }
 
   private bindThis(): void {
     this.onMouseDownByHandle = this.onMouseDownByHandle.bind(this);
   }
 
-  private init(state: RangeSliderOptions): void {
-    this.currentSettings = state;
+  private init(): void {
     this.notifier = new ObservableSubject();
   }
 
@@ -39,10 +36,10 @@ export default class HandleView extends DOMOperations {
     if (!clientPos) return;
     const shiftPos: number = clientPos - this.getOffset();
 
-    this.$parentElement.on('mousemove.rangeslider', e => this.onMouseMoveHandle(e, shiftPos, line));
+    this.$parentElement.on('mousemove.rangeslider', e => this.onMouseMoveHandle(e, shiftPos));
 
     const $document = $(document);
-    $document.on('mousemove.document', e => this.onMouseMoveHandle(e, shiftPos, line));
+    $document.on('mousemove.document', e => this.onMouseMoveHandle(e, shiftPos));
 
     this.$parentElement.on('mouseup.handle', e => this.onMouseUp(e, this));
     $document.on('mouseup.document', e => this.onMouseUp(e, this));
@@ -56,32 +53,11 @@ export default class HandleView extends DOMOperations {
     $(document).off('mouseup.document');
   }
 
-  private onMouseMoveHandle(e: JQuery.TriggeredEvent, shiftPos: number, line: LineView): void {
+  private onMouseMoveHandle(e: JQuery.TriggeredEvent, shiftPos: number): void {
     e.preventDefault();
-    const $target = $(e.target);
-    // if (!$target.is(this.$el)) return;
-    const eOffset = this.isVertical() ? e.offsetY : e.offsetX;
-    // const offsetPos = eOffset || 0;
-
-    // const targetOffsetCoord = $target.offset();
-    // if (!targetOffsetCoord) return;
-    // const targetOffset: number = this.isVertical() ? targetOffsetCoord.top : targetOffsetCoord.left;
-    // const pxLineLength = line.getSize() - 8 - 8;
-    // let newPos = this.getSteppedPos(offsetPos + targetOffset - line.getOffset() - 8, pxLineLength);
-
-    // const eClient = this.isVertical() ? e.clientY : e.clientX;
-    // const clientPos = eClient || 0;
-    // if (newPos == null) newPos = clientPos - line.getOffset() - shiftPos;
-
-    //-----------------------------------------
     const eClient = this.isVertical() ? e.clientY : e.clientX;
     if (!eClient) return;
-    // const newPos = eClient - line.getOffset() - shiftPos;
     const newPos = eClient - shiftPos;
-
-    // const newPos = eOffset;
-    // console.log(e.target);
-    // console.log(newPos);
 
     this.notifier.notify({
       value: newPos,
@@ -89,64 +65,75 @@ export default class HandleView extends DOMOperations {
     });
   }
 
-  public steppedMoveHandle(val: number, lineWidth: number): void {
-    const posXWithOutStep = this.convertRelativeValueToPixelValue(val, lineWidth);
-    const posXWithStep = this.getSteppedPos(posXWithOutStep, lineWidth);
-    this.moveHandle(posXWithStep === null ? posXWithOutStep : posXWithStep);
-  }
+  // public steppedMoveHandle(val: number, lineWidth: number, state: RangeSliderOptions): void {
+  //   const posXWithOutStep = this.convertRelativeValueToPixelValue(val, lineWidth, state);
+  //   const posXWithStep = this.getSteppedPos(posXWithOutStep, lineWidth, state);
+  //   this.moveHandle(posXWithStep === null ? posXWithOutStep : posXWithStep);
+  // }
 
   public moveHandle(pxPos: number): void {
     this.setPos(pxPos);
   }
 
-  public getSteppedPos(pxValue: number, pxLineLength: number): number | null {
-    const { stepValue, items, maxValue, minValue } = this.currentSettings;
+  // public getSteppedPos(pxValue: number, pxLineLength: number, state: RangeSliderOptions): number | null {
+  //   const { stepValue, items, maxValue, minValue } = state;
+  //   const values = items?.values;
+  //   const isDefinedStep = stepValue > 1;
+  //   const isDefinedSetOfValues = items && values && values.length > 1;
+  //   const isTooLongLine = pxLineLength > Number(maxValue) - Number(minValue);
+  //   const isHaveStep = isDefinedStep || isTooLongLine || isDefinedSetOfValues;
+
+  //   if (isHaveStep) {
+  //     let pxStep = 0;
+
+  //     if (isDefinedStep) {
+  //       const relLineLength = Number(maxValue) - Number(minValue);
+  //       pxStep = (pxLineLength / relLineLength) * stepValue;
+  //     }
+
+  //     if (isTooLongLine) {
+  //       const relativeLength = Number(maxValue) - Number(minValue);
+  //       pxStep = pxLineLength / relativeLength;
+  //       if (isDefinedStep) pxStep *= stepValue;
+  //     }
+
+  //     if (isDefinedSetOfValues) {
+  //       pxStep = pxLineLength / (values.length - 1);
+  //     }
+
+  //     const nStep = Math.round(pxValue / pxStep);
+  //     let newPos = nStep * pxStep;
+
+  //     if (pxValue / pxStep > Math.trunc(pxLineLength / pxStep)) {
+  //       const remainder = pxLineLength - newPos;
+  //       if (pxValue > newPos + remainder / 2) newPos += remainder;
+  //     }
+  //     if (newPos > pxLineLength) newPos = pxLineLength;
+  //     return newPos;
+  //   }
+  //   return null;
+  // }
+
+  public convertPixelValueToRelativeValue(val: number, lineWidth: number, state: RangeSliderOptions): number | string {
+    let result: number | string;
+    const { items, maxValue, minValue } = state;
     const values = items?.values;
-    const isDefinedStep = stepValue > 1;
-    const isDefinedSetOfValues = items && values && values.length > 1;
-    const isTooLongLine = pxLineLength > Number(maxValue) - Number(minValue);
-    const isHaveStep = isDefinedStep || isTooLongLine || isDefinedSetOfValues;
+    const isUsingItemsCurrent = items && values && values.length > 1;
+    let restoreIndex = -1;
 
-    if (isHaveStep) {
-      let pxStep = 0;
-
-      if (isDefinedStep) {
-        const relLineLength = Number(maxValue) - Number(minValue);
-        pxStep = (pxLineLength / relLineLength) * stepValue;
-      }
-
-      if (isTooLongLine) {
-        const relativeLength = Number(maxValue) - Number(minValue);
-        pxStep = pxLineLength / relativeLength;
-        if (isDefinedStep) pxStep *= stepValue;
-      }
-
-      if (isDefinedSetOfValues) {
-        pxStep = pxLineLength / (values.length - 1);
-      }
-
-      const nStep = Math.round(pxValue / pxStep);
-      let newPos = nStep * pxStep;
-
-      if (pxValue / pxStep > Math.trunc(pxLineLength / pxStep)) {
-        const remainder = pxLineLength - newPos;
-        if (pxValue > newPos + remainder / 2) newPos += remainder;
-      }
-      if (newPos > pxLineLength) newPos = pxLineLength;
-      return newPos;
+    if (isUsingItemsCurrent) {
+      const pxStep = lineWidth / (items.values.length - 1);
+      restoreIndex = Math.round(val / pxStep);
+      result = values[restoreIndex];
+    } else {
+      const percent = val / lineWidth;
+      result = Math.round(Number(minValue) + percent * (Number(maxValue) - Number(minValue)));
     }
-    return null;
-  }
-
-  public convertPixelValueToRelativeValue(val: number, lineWidth: number): number {
-    const { maxValue, minValue } = this.currentSettings;
-    const percent = val / lineWidth;
-    const result = Math.round(Number(minValue) + percent * (Number(maxValue) - Number(minValue)));
     return result;
   }
 
-  private convertRelativeValueToPixelValue(val: number, lineWidth: number): number {
-    const { items, minValue, maxValue } = this.currentSettings;
+  convertRelativeValueToPixelValue(val: number, lineWidth: number, state: RangeSliderOptions): number {
+    const { items, minValue, maxValue } = state;
     const values = items?.values;
     const isHasValues = items && values && values.length > 1;
     let result;
