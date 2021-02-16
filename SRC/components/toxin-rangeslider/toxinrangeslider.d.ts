@@ -66,16 +66,6 @@ interface JQuery {
 
 type anyFunction = (data?: any) => void;
 
-interface DomEntities {
-  domEntity: string;
-  $parentElement: JQuery<HTMLElement>;
-}
-
-interface SubViewData {
-  domEntity: string;
-  $parentElement: JQuery<HTMLElement>;
-}
-
 interface AnyObject {
   [key: string]: any;
 }

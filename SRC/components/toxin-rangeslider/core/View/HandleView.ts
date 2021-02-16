@@ -1,4 +1,5 @@
 import ObservableSubject from '../ObservableSubject';
+import { SubViewData } from '../types';
 import DOMOperations from './DOMOperations';
 
 export default class HandleView extends DOMOperations {
@@ -8,6 +9,7 @@ export default class HandleView extends DOMOperations {
     super(data);
     this.bindThis();
     this.init();
+    this.addEventListeners();
   }
 
   private bindThis(): void {
@@ -16,6 +18,10 @@ export default class HandleView extends DOMOperations {
 
   private init(): void {
     this.notifier = new ObservableSubject();
+  }
+
+  private addEventListeners(): void {
+    this.$el.on('mousedown.handle', e => this.onMouseDownByHandle(e));
   }
 
   setMoving(value: boolean): void {
@@ -64,39 +70,5 @@ export default class HandleView extends DOMOperations {
 
   public moveHandle(pxPos: number): void {
     this.setPos(pxPos);
-  }
-
-  public convertPixelValueToRelativeValue(val: number, lineWidth: number, state: RangeSliderOptions): number | string {
-    let result: number | string;
-    const { items, maxValue, minValue } = state;
-    const values = items?.values;
-    const isUsingItemsCurrent = items && values && values.length > 1;
-    let restoreIndex = -1;
-
-    if (isUsingItemsCurrent) {
-      const pxStep = lineWidth / (items.values.length - 1);
-      restoreIndex = Math.round(val / pxStep);
-      result = values[restoreIndex];
-    } else {
-      const percent = val / lineWidth;
-      result = Math.round(Number(minValue) + percent * (Number(maxValue) - Number(minValue)));
-    }
-    return result;
-  }
-
-  convertRelativeValueToPixelValue(val: number, lineWidth: number, state: RangeSliderOptions): number {
-    const { items, minValue, maxValue } = state;
-    const values = items?.values;
-    const isHasValues = items && values && values.length > 1;
-    let result;
-    if (isHasValues) {
-      const pxStep = lineWidth / (values.length - 1);
-      result = val * pxStep;
-    } else {
-      const relLength = Number(maxValue) - Number(minValue);
-      const relPercent = (val - Number(minValue)) / relLength;
-      result = lineWidth * relPercent;
-    }
-    return result;
   }
 }

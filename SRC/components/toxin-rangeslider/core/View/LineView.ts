@@ -1,4 +1,5 @@
 import ObservableSubject from '../ObservableSubject';
+import { SubViewData } from '../types';
 import DOMOperations from './DOMOperations';
 
 export default class LineView extends DOMOperations {
@@ -7,10 +8,15 @@ export default class LineView extends DOMOperations {
   constructor(data: SubViewData) {
     super(data);
     this.bindThis();
+    this.addEventListeners();
   }
 
   private bindThis(): void {
     this.onMouseDownByLine = this.onMouseDownByLine.bind(this);
+  }
+
+  private addEventListeners(): void {
+    this.$el.on('mousedown.line', this.onMouseDownByLine);
   }
 
   public draw(pos: number | false, size: number): void {

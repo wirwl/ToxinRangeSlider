@@ -14,6 +14,11 @@ export const SliderDomEntities = {
   handleTo: `<div class='${b('handle')} ${b('handle-to')}'>`,
 };
 
+export const SliderModificators = {
+  oneHandle: 'rangeslider_one-handle',
+  isVertical: 'rangeslider_is-vertical',
+};
+
 const defaultRangeSliderState = {
   isVertical: false,
   isTwoHandles: true,
