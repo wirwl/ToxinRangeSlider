@@ -1,9 +1,6 @@
-/* eslint-disable */
-
 import defaultRangeSliderState from './defaults';
 import { mergeSliderOptions } from './utils';
 
-/* eslint-disable no-console */
 class TRSModel {
   private settings: RangeSliderOptions;
 
@@ -11,7 +8,7 @@ class TRSModel {
 
   constructor(options?: AnyObject) {
     this.settings = $.extend(true, {}, TRSModel.defaults);
-    options && mergeSliderOptions(this.settings, options);
+    mergeSliderOptions(this.settings, options || {});
     this.validate();
   }
 
@@ -58,7 +55,7 @@ class TRSModel {
   }
 
   private isUsingItems(): boolean {
-    return this.settings.items.values.length > 1;
+    return this.settings.items?.values?.length > 1;
   }
 
   private validateIsStepValueDefined(): void {
@@ -73,9 +70,9 @@ class TRSModel {
       const remainderValue = relLengthTotal % stepValue;
       const isHasRemainder = remainderValue > 0;
 
-      const roundHandleValue = (value: number) => {
+      const roundHandleValue = (value: number): number => {
         const relLengthValue = Number(value) - Number(minValue);
-        //Index started from 0
+        // Index started from 0
         const stepIndexValue = Math.trunc(relLengthValue / stepValue);
         const stepValueDynamic = isHasRemainder && stepIndexValue >= stepCountTotal - 1 ? remainderValue : stepValue;
         const halfStepValueDynamic = stepValueDynamic / 2;
@@ -94,13 +91,12 @@ class TRSModel {
   }
 
   private validateItemsValues(): void {
-    const { items, stepValue, isTwoHandles, isVertical, isTip } = this.settings;
+    const { items, isTwoHandles } = this.settings;
     const indexFrom = items?.indexFrom;
     const indexTo = items?.indexTo;
     const values = items?.values;
 
-    // eslint-disable-next-line prefer-destructuring
-    this.settings.minValue = values[0];
+    [this.settings.minValue] = values;
     this.settings.maxValue = values[values.length - 1];
     this.settings.valueFrom = values[indexFrom];
     this.settings.valueTo = values[indexTo];
@@ -120,13 +116,8 @@ class TRSModel {
     }
   }
 
-  private applyDefaultValuesForUndefinedValues() {
+  private applyDefaultValuesForUndefinedValues(): void {
     const { items, stepValue, isTwoHandles, isVertical, isTip, minValue, maxValue, valueFrom, valueTo } = this.settings;
-
-    const indexFrom = items?.indexFrom;
-    const indexTo = items?.indexTo;
-    const values = items?.values;
-    const isUsingItems = items && items.values.length > 1;
 
     if (typeof isVertical !== 'boolean') this.settings.isVertical = TRSModel.defaults.isVertical;
     if (typeof isTwoHandles !== 'boolean') this.settings.isTwoHandles = TRSModel.defaults.isTwoHandles;
@@ -139,13 +130,10 @@ class TRSModel {
     if (typeof items !== 'object') this.settings.items = TRSModel.defaults.items;
   }
 
-  validateMinAndMaxValues(): void {
-    const { items, stepValue, isTwoHandles, isVertical, isTip } = this.settings;
+  private validateMinAndMaxValues(): void {
+    const { items } = this.settings;
     let { valueFrom, valueTo } = this.settings;
 
-    const indexFrom = items?.indexFrom;
-    const indexTo = items?.indexTo;
-    const values = items?.values;
     const isUsingItems = items && items.values.length > 1;
 
     let maxValue = Number(isUsingItems ? items.values[items.values?.length - 1] : this.settings.maxValue);
@@ -180,7 +168,7 @@ class TRSModel {
   }
 
   private validateHandlesValue(): void {
-    const { items, stepValue, isTwoHandles, isVertical, isTip, minValue, maxValue } = this.settings;
+    const { isTwoHandles, minValue, maxValue } = this.settings;
     let { valueFrom, valueTo } = this.settings;
 
     if (isTwoHandles) {
