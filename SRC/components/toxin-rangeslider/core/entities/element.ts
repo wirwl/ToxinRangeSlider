@@ -1,5 +1,5 @@
 /* eslint-disable import/no-cycle */
-import HandleView from '../View/HandleView';
+import HandleView from '../View/SubViews/HandleView';
 
 class TRSElement {
   $parentElement: JQuery<HTMLElement>;

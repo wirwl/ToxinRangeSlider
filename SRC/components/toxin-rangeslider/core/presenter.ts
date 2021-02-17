@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import TRSView from './MainView';
+import TRSView from './View/MainView';
 import TRSModel from './model';
 
 class TRSPresenter {

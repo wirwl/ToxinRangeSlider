@@ -1,15 +1,15 @@
-import TipView from './View/TipView';
-import LineView from './View/LineView';
-import HandleView from './View/HandleView';
-import ObservableSubject from './ObservableSubject';
-import defaultRangeSliderState, { SliderDomEntities, SliderModificators } from './defaults';
+import TipView from './SubViews/TipView';
+import LineView from './SubViews/LineView';
+import HandleView from './SubViews/HandleView';
+import ObservableSubject from '../ObservableSubject';
+import defaultRangeSliderState, { SliderDomEntities, SliderModificators } from '../defaults';
 import {
   convertPixelValueToRelativeValue,
   convertRelativeValueToPixelValue,
   isEqualArrays,
   mergeSliderOptions,
-} from './utils';
-import { SubViewData, UserInputData } from './types';
+} from '../utils';
+import { SubViewData, UserInputData } from '../types';
 
 class TRSView {
   private state!: RangeSliderOptions;
@@ -126,7 +126,6 @@ class TRSView {
     this.lineView.notifier.addObserver(this.receiveDataAfterUserInput);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private receiveDataAfterUserInput({ value, handle, event }: UserInputData): void {
     const isClickOnLine = handle === undefined;
     const isHandleMoving = event === undefined;

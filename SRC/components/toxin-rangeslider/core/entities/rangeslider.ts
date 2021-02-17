@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import TRSElement from './element';
 import Tip from './tip';
 import Handle from './handle';
@@ -10,7 +9,7 @@ class Rangeslider extends TRSElement {
     modIsVertical: 'rangeslider_is-vertical',
   };
 
-  public controls: (Tip | Handle | Line | any)[] = [];
+  public controls: (Tip | Handle | Line)[] = [];
 
   private _isTwoHandles = false;
 
@@ -46,7 +45,7 @@ class Rangeslider extends TRSElement {
     el.on('dragstart', e => e.preventDefault());
   }
 
-  addControls(controls: (Tip | Handle | Line | any)[]): void {
+  addControls(controls: (Tip | Handle | Line)[]): void {
     this.controls = controls;
   }
 }

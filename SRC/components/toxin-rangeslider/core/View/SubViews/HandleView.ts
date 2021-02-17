@@ -1,6 +1,6 @@
-import ObservableSubject from '../ObservableSubject';
-import { SubViewData } from '../types';
-import DOMOperations from './DOMOperations';
+import ObservableSubject from '../../ObservableSubject';
+import { SubViewData } from '../../types';
+import DOMOperations from '../DOMOperations';
 
 export default class HandleView extends DOMOperations {
   notifier!: ObservableSubject;

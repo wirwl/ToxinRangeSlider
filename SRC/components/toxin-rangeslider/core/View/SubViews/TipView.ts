@@ -1,4 +1,4 @@
-import DOMOperations from './DOMOperations';
+import DOMOperations from '../DOMOperations';
 
 export default class TipView extends DOMOperations {
   setText(value: string | number): void {

@@ -1,6 +1,5 @@
 import { SubViewData } from '../types';
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 export default class DOMOperations {
   $el!: JQuery<HTMLElement>;
 

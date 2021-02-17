@@ -3,10 +3,10 @@
     "rootDir": "./SRC",
     "outDir": "./Result/",
     "sourceMap": true,
-    "moduleResolution": "node",        
+    "moduleResolution": "node",
     "module": "ES6",
-    "target": "ES5",    
+    "target": "ES6",
     "removeComments": true,
-    "strict": true        
-  },
+    "strict": true
+  }
 }

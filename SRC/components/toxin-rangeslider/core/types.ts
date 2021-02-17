@@ -1,4 +1,4 @@
-import HandleView from './View/HandleView';
+import HandleView from './View/SubViews/HandleView';
 
 export interface DomEntities {
   domEntity: string;
