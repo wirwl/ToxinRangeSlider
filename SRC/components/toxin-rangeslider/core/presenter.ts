@@ -12,7 +12,7 @@ class TRSPresenter {
   }
 
   private init(): void {
-    this.model.updateState(this.view.getDataOptions());
+    this.model.setState(this.view.getDataOptions());
     this.view.addObservers(this.notifyModel);
     this.view.firstDrawSlider(this.getState());
   }
@@ -27,7 +27,7 @@ class TRSPresenter {
   }
 
   update(data = {}): void {
-    this.model.updateState(data);
+    this.model.setState(data);
     this.view.drawSlider(this.getState());
   }
 

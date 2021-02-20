@@ -1,10 +1,45 @@
-// import TRSModel from '../core/model';
+import TRSModel from '../core/model';
+import defaultRangeSliderState from '../core/defaults';
 
-// let model: TRSModel;
+let model: TRSModel;
 
-// beforeAll(async () => {
-//   model = new TRSModel();
-// });
+beforeAll(async () => {
+  model = new TRSModel();
+});
+
+describe('Check getState and setState methods', () => {
+  test('Check that return getState method', () => {
+    expect(model.getState()).toStrictEqual(defaultRangeSliderState);
+  });
+
+  test('Check that return setState method', () => {
+    const newValues = {
+      isVertical: true,
+      isTwoHandles: false,
+      isTip: false,
+      minValue: 110,
+      maxValue: 2234,
+      stepValue: 10,
+      valueFrom: 110,
+      valueTo: 2234,
+      items: { indexFrom: 0, indexTo: 0, values: [] },
+    };
+    model.setState(newValues);
+    expect(model.getState()).toStrictEqual(newValues);
+  });
+});
+
+describe('Check set and get methods for each rangeslider state values, such as isVertical, isTwoHandles, isTip, minValue, maxValue, stepValue, valueFrom, valueTo, items, indexFrom, indexTo, values', () => {
+  test('Check what return setIsVertical method', () => {
+    model.setIsVertical(false);
+    expect(model.getIsVertical()).toBe(false);
+  });
+
+  test('Check what return isTwoHandles method', () => {
+    model.setIsTwoHandles(true);
+    expect(model.getIsTwoHandles()).toBe(true);
+  });
+});
 
 // describe('Check correctness of validate() function, that correct invalid values', () => {
 //   describe('If rangeslider has set of values', () => {

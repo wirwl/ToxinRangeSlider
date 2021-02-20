@@ -108,10 +108,9 @@ class TRSModel {
       this.state.maxValue = minValue;
       minValue = maxValue;
       maxValue = minValue;
-      if (valueFrom < minValue || valueFrom > maxValue) this.state.valueFrom = minValue;
-
-      if (valueTo < minValue || valueTo > maxValue) this.state.valueTo = maxValue;
     }
+    if (valueFrom < minValue || valueFrom > maxValue) this.state.valueFrom = minValue;
+    if (valueTo < minValue || valueTo > maxValue) this.state.valueTo = maxValue;
   }
 
   private validateStepValue(): void {
@@ -144,17 +143,14 @@ class TRSModel {
   private validate(): void {
     this.applyDefaultValuesForUndefinedValues();
 
-    this.validateIsStepValueDefined();
-
     if (this.isUsingItems()) {
       this.validateItemsValues();
-    } else {
-      this.validateMinAndMaxValues();
-
-      this.validateStepValue();
-
-      this.validateHandlesValue();
     }
+
+    this.validateMinAndMaxValues();
+    this.validateHandlesValue();
+    this.validateStepValue();
+    this.validateIsStepValueDefined();
   }
 
   private getIndex(relValue: number | string): number {
@@ -173,15 +169,6 @@ class TRSModel {
     return index;
   }
 
-  updateState(data: AnyObject): void {
-    mergeSliderOptions(this.state, data);
-    this.validate();
-  }
-
-  getState(): RangeSliderOptions {
-    return this.state;
-  }
-
   onHandlePositionChange(data: HandleMovingResult): void {
     const { isFromHandle, relValue } = data;
 
@@ -190,6 +177,15 @@ class TRSModel {
 
     const validatedRelValue = isFromHandle ? this.getValueFrom() : this.getValueTo();
     this.state.onHandlePositionChange?.call({ ...this.state }, { isFromHandle, relValue: validatedRelValue });
+  }
+
+  getState(): RangeSliderOptions {
+    return this.state;
+  }
+
+  setState(data: AnyObject): void {
+    mergeSliderOptions(this.state, data);
+    this.validate();
   }
 
   getIsVertical(): boolean {
