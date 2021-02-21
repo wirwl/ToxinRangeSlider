@@ -13,12 +13,15 @@ class TRSModel {
   }
 
   private validateIsStepValueDefined(): void {
-    const { stepValue } = this.state;
-
+    const { stepValue, maxValue, minValue } = this.state;
     const isHasStepValue = stepValue > 1;
+    const size = Number(maxValue) - Number(minValue);
+
+    if (stepValue < 1) this.state.stepValue = 1;
+    if (this.state.stepValue > size) this.state.stepValue = size;
 
     if (isHasStepValue) {
-      const { valueFrom, valueTo, minValue, maxValue } = this.state;
+      const { valueFrom, valueTo } = this.state;
       const relLengthTotal = Number(maxValue) - Number(minValue);
       const stepCountTotal = Math.ceil(relLengthTotal / stepValue);
       const remainderValue = relLengthTotal % stepValue;
@@ -113,14 +116,6 @@ class TRSModel {
     if (valueTo < minValue || valueTo > maxValue) this.state.valueTo = maxValue;
   }
 
-  private validateStepValue(): void {
-    const { maxValue, minValue, stepValue } = this.state;
-
-    const size = Number(maxValue) - Number(minValue);
-    if (stepValue < 1) this.state.stepValue = 1;
-    if (this.state.stepValue > size) this.state.stepValue = size;
-  }
-
   private validateHandlesValue(): void {
     const { isTwoHandles, minValue, maxValue } = this.state;
     let { valueFrom, valueTo } = this.state;
@@ -149,7 +144,6 @@ class TRSModel {
 
     this.validateMinAndMaxValues();
     this.validateHandlesValue();
-    this.validateStepValue();
     this.validateIsStepValueDefined();
   }
 
@@ -217,8 +211,10 @@ class TRSModel {
   }
 
   setMinValue(newMinValue: number | string): void {
-    const newValueIndex = this.getIndex(newMinValue);
-    if (newValueIndex !== -1) this.state.minValue = this.state.items.values[newValueIndex];
+    if (this.isUsingItems()) {
+      const newValueIndex = this.getIndex(newMinValue);
+      if (newValueIndex !== -1) this.state.minValue = this.state.items.values[newValueIndex];
+    } else this.state.minValue = newMinValue;
     this.validate();
   }
 
@@ -227,11 +223,11 @@ class TRSModel {
   }
 
   setMaxValue(newMaxValue: number | string): void {
-    const newValueIndex = this.getIndex(newMaxValue);
-    if (newValueIndex !== -1) {
-      this.state.maxValue = this.state.items.values[newValueIndex];
-      this.validate();
-    }
+    if (this.isUsingItems()) {
+      const newValueIndex = this.getIndex(newMaxValue);
+      if (newValueIndex !== -1) this.state.maxValue = this.state.items.values[newValueIndex];
+    } else this.state.maxValue = newMaxValue;
+    this.validate();
   }
 
   getStepValue(): number {
