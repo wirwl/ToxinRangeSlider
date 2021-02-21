@@ -112,14 +112,18 @@ class TRSModel {
       minValue = maxValue;
       maxValue = minValue;
     }
-    if (valueFrom < minValue || valueFrom > maxValue) this.state.valueFrom = minValue;
-    if (valueTo < minValue || valueTo > maxValue) this.state.valueTo = maxValue;
+    if (valueFrom < minValue) this.state.valueFrom = minValue;
+    if (valueFrom > maxValue) this.state.valueFrom = maxValue;
+    if (valueTo > maxValue) this.state.valueTo = maxValue;
+    if (valueTo < minValue) this.state.valueTo = this.getIsTwoHandles() ? valueFrom : minValue;
   }
 
   private validateHandlesValue(): void {
     const { isTwoHandles, minValue, maxValue } = this.state;
     let { valueFrom, valueTo } = this.state;
-
+    if (valueTo < 1000) {
+      console.log(valueTo);
+    }
     if (isTwoHandles) {
       if (valueFrom > valueTo) {
         this.state.valueFrom = valueTo;

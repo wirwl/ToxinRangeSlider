@@ -91,4 +91,8 @@ describe('Check set and get methods for each rangeslider state values, such as i
     model.setItemsValues(values);
     expect(model.getItemsValues()).toBe(values);
   });
+
+  test('Check what return isUsingItems method', () => {
+    expect(model.isUsingItems()).toBe(true);
+  });
 });
