@@ -142,11 +142,11 @@ class TRSModel {
 
     if (this.isUsingItems()) {
       this.validateItemsValues();
+    } else {
+      this.validateMinAndMaxValues();
+      this.validateHandlesValue();
+      this.validateIsStepValueDefined();
     }
-
-    this.validateMinAndMaxValues();
-    this.validateHandlesValue();
-    this.validateIsStepValueDefined();
   }
 
   private getIndex(relValue: number | string): number {

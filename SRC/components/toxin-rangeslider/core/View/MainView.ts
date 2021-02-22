@@ -294,34 +294,30 @@ class TRSView {
 
     if (currentIsTwoHandles) {
       if (forceRedraw || valueFromChanged || minValueChanged || maxValueChanged || isItemValuesChanged) {
-        const val = currentValueFrom;
         const lineWidth = this.lineView.getSize() - this.offsetFrom - this.offsetTo;
-        const newPxPos = convertRelativeValueToPixelValue(val, lineWidth, this.state);
-        this.handleFromView.moveHandle(Number(newPxPos));
+        const newPxPos = convertRelativeValueToPixelValue(currentValueFrom, lineWidth, this.state);
+        this.handleFromView.moveHandle(newPxPos);
         this.tipFromView.setText(currentValueFrom);
       }
     }
 
     if (forceRedraw || valueToChanged || minValueChanged || maxValueChanged || isItemValuesChanged) {
-      const val = currentValueTo;
       const lineWidth = this.lineView.getSize() - this.offsetFrom - this.offsetTo;
-      const newPxPos = convertRelativeValueToPixelValue(val, lineWidth, this.state);
-      this.handleToView.moveHandle(Number(newPxPos));
+      const newPxPos = convertRelativeValueToPixelValue(currentValueTo, lineWidth, this.state);
+      this.handleToView.moveHandle(newPxPos);
       this.tipToView.setText(currentValueTo);
     }
 
     if (isUsingItemsCurrent) {
-      const pxLength = this.lineView.getSize() - this.offsetFrom - this.offsetTo;
-      const pxStep = pxLength / (currentValues.length - 1);
-
+      const lineWidth = this.lineView.getSize() - this.offsetFrom - this.offsetTo;
       if (currentIsTwoHandles && (forceRedraw || indexFromChanged)) {
-        const newPos = currentIndexFrom * pxStep;
+        const newPos = convertRelativeValueToPixelValue(currentValueFrom, lineWidth, this.state);
         this.handleFromView.moveHandle(newPos);
         this.tipFromView.setText(currentValueFrom);
       }
 
       if (forceRedraw || indexToChanged) {
-        const newPos = currentIndexTo * pxStep;
+        const newPos = convertRelativeValueToPixelValue(currentValueTo, lineWidth, this.state);
         this.handleToView.moveHandle(newPos);
         this.tipToView.setText(currentValueTo);
       }
