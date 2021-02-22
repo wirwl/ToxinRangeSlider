@@ -52,7 +52,7 @@ class TRSPresenter {
   }
 
   setIsTip(isTip: boolean): void {
-    this.setIsTip(isTip);
+    this.model.setIsTip(isTip);
   }
 
   getMinValue(): number | string {
@@ -60,7 +60,7 @@ class TRSPresenter {
   }
 
   setMinValue(newMinValue: number | string): void {
-    this.setMinValue(newMinValue);
+    this.model.setMinValue(newMinValue);
   }
 
   getMaxValue(): number | string {
@@ -72,19 +72,19 @@ class TRSPresenter {
   }
 
   getStepValue(): number {
-    return this.getStepValue();
+    return this.model.getStepValue();
   }
 
   setStepValue(newStepValue: number): void {
-    this.setStepValue(newStepValue);
+    this.model.setStepValue(newStepValue);
   }
 
   getValueFrom(): number | string {
-    return this.getValueFrom();
+    return this.model.getValueFrom();
   }
 
   setValueFrom(newValueFrom: number | string): void {
-    this.setValueFrom(newValueFrom);
+    this.model.setValueFrom(newValueFrom);
   }
 
   getValueTo(): number | string {

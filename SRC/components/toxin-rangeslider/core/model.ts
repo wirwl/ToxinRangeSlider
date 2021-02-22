@@ -121,9 +121,7 @@ class TRSModel {
   private validateHandlesValue(): void {
     const { isTwoHandles, minValue, maxValue } = this.state;
     let { valueFrom, valueTo } = this.state;
-    if (valueTo < 1000) {
-      console.log(valueTo);
-    }
+
     if (isTwoHandles) {
       if (valueFrom > valueTo) {
         this.state.valueFrom = valueTo;
@@ -182,8 +180,10 @@ class TRSModel {
   }
 
   setState(data: AnyObject): void {
-    mergeSliderOptions(this.state, data);
-    this.validate();
+    if (data) {
+      mergeSliderOptions(this.state, data);
+      this.validate();
+    }
   }
 
   getIsVertical(): boolean {
