@@ -35,17 +35,22 @@ export const convertPixelValueToRelativeValue = (
   return result;
 };
 
-export const convertRelativeValueToPixelValue = (val: number, lineWidth: number, state: RangeSliderOptions): number => {
+export const convertRelativeValueToPixelValue = (
+  val: string | number,
+  lineWidth: number,
+  state: RangeSliderOptions,
+): number => {
   const { items, minValue, maxValue } = state;
   const values = items?.values;
   const isHasValues = items && values && values.length > 1;
   let result;
   if (isHasValues) {
     const pxStep = lineWidth / (values.length - 1);
-    result = val * pxStep;
+    const index = values.indexOf(val);
+    result = index === -1 ? 0 : index * pxStep;
   } else {
     const relLength = Number(maxValue) - Number(minValue);
-    const relPercent = (val - Number(minValue)) / relLength;
+    const relPercent = (Number(val) - Number(minValue)) / relLength;
     result = lineWidth * relPercent;
   }
   return result;

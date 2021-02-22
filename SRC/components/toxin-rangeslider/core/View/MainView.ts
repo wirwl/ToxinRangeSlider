@@ -294,7 +294,7 @@ class TRSView {
 
     if (currentIsTwoHandles) {
       if (forceRedraw || valueFromChanged || minValueChanged || maxValueChanged || isItemValuesChanged) {
-        const val = isUsingItemsCurrent ? currentIndexFrom : Number(currentValueFrom);
+        const val = currentValueFrom;
         const lineWidth = this.lineView.getSize() - this.offsetFrom - this.offsetTo;
         const newPxPos = convertRelativeValueToPixelValue(val, lineWidth, this.state);
         this.handleFromView.moveHandle(Number(newPxPos));
@@ -303,7 +303,7 @@ class TRSView {
     }
 
     if (forceRedraw || valueToChanged || minValueChanged || maxValueChanged || isItemValuesChanged) {
-      const val = isUsingItemsCurrent ? currentIndexTo : Number(currentValueTo);
+      const val = currentValueTo;
       const lineWidth = this.lineView.getSize() - this.offsetFrom - this.offsetTo;
       const newPxPos = convertRelativeValueToPixelValue(val, lineWidth, this.state);
       this.handleToView.moveHandle(Number(newPxPos));
