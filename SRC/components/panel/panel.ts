@@ -110,13 +110,8 @@ export default class Panel {
     this.$isShowTips.on('change.isShowTips', this.handleIsShowTipsChange);
     this.$minValue.on('input.minValue', this.handleMinValueInput);
     this.$maxValue.on('input.maxValue', this.handleMaxValueInput);
-
     this.$valueFrom.on('input.valueFrom', this.handleValueFromInput);
     this.$valueTo.on('input.valueTo', this.handleValueToInput);
-
-    this.$valueFrom.on('focusout.valueFrom', this.handleValueFromFocusout);
-    // this.$valueTo.on('focusout.valueTo', this.handleValueFromFocusout);
-
     this.$indexFrom.on('input.indexFrom', this.handleIndexFromInput);
     this.$indexTo.on('input.indexTo', this.handleIndexToInput);
     this.$stepValue.on('input.stepValue', this.handleStepValueInput);
@@ -126,10 +121,6 @@ export default class Panel {
     this.$inputs.on('focusout.inputs', this.handleInputsFocusout);
     this.$buttonAdd.on('click.buttonAdd', this.handleButtonAddClick);
     this.$buttonRemove.on('click.buttonRemove', this.handleButtonRemoveClick);
-  }
-
-  private handleValueFromFocusout(event: JQuery.TriggeredEvent): void {
-    console.log('focusout');
   }
 
   private handleInputsFocusout(event: JQuery.TriggeredEvent): void {
