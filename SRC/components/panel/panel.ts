@@ -110,8 +110,13 @@ export default class Panel {
     this.$isShowTips.on('change.isShowTips', this.handleIsShowTipsChange);
     this.$minValue.on('input.minValue', this.handleMinValueInput);
     this.$maxValue.on('input.maxValue', this.handleMaxValueInput);
+
     this.$valueFrom.on('input.valueFrom', this.handleValueFromInput);
     this.$valueTo.on('input.valueTo', this.handleValueToInput);
+
+    this.$valueFrom.on('focusout.valueFrom', this.handleValueFromFocusout);
+    // this.$valueTo.on('focusout.valueTo', this.handleValueFromFocusout);
+
     this.$indexFrom.on('input.indexFrom', this.handleIndexFromInput);
     this.$indexTo.on('input.indexTo', this.handleIndexToInput);
     this.$stepValue.on('input.stepValue', this.handleStepValueInput);
@@ -121,6 +126,10 @@ export default class Panel {
     this.$inputs.on('focusout.inputs', this.handleInputsFocusout);
     this.$buttonAdd.on('click.buttonAdd', this.handleButtonAddClick);
     this.$buttonRemove.on('click.buttonRemove', this.handleButtonRemoveClick);
+  }
+
+  private handleValueFromFocusout(event: JQuery.TriggeredEvent): void {
+    console.log('focusout');
   }
 
   private handleInputsFocusout(event: JQuery.TriggeredEvent): void {
@@ -271,19 +280,15 @@ export default class Panel {
       items: { values },
     } = this.rangeslider.getState();
     const el = event.target as HTMLInputElement;
-
     if (values.length > 1) {
       const indexFrom = this.findIndexByItem(values, el.value);
-
       if (indexFrom === -1) return;
-
       this.rangeslider.update({ items: { indexFrom } });
       this.$indexFrom.val(indexFrom);
     } else {
       if (Number.isNaN(Number(el.value))) return;
       this.rangeslider.update({ valueFrom: Number(el.value) });
     }
-    this.updatePanelValues();
   }
 
   private handleValueToInput(event: JQuery.TriggeredEvent): void {
@@ -309,7 +314,6 @@ export default class Panel {
       }
       this.rangeslider.update({ valueTo: newValueTo });
     }
-    this.updatePanelValues();
   }
 
   private handleMinValueInput(event: JQuery.TriggeredEvent): void {
