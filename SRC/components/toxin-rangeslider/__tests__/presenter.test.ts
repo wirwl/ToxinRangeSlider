@@ -54,7 +54,7 @@ describe('Check getState and setState methods', () => {
       valueTo: 2234,
       items: { indexFrom: 0, indexTo: 0, values: [] },
     };
-    presenter.update(newValues);
+    presenter.setState(newValues);
     expect(presenter.getState()).toStrictEqual(newValues);
   });
 });

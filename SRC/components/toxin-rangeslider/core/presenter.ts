@@ -26,7 +26,7 @@ class TRSPresenter {
     return this.model.getState();
   }
 
-  update(data = {}): void {
+  setState(data = {}): void {
     this.model.setState(data);
     this.view.drawSlider(this.getState());
   }

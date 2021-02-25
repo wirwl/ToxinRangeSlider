@@ -91,7 +91,7 @@ export default class Panel {
     const indexFrom = this.$indexFrom;
     const indexTo = this.$indexTo;
 
-    this.rangeslider.update({
+    this.rangeslider.setState({
       onHandlePositionChange(this: RangeSliderOptions, data: HandleMovingResult) {
         const { isFromHandle, relValue } = data;
         const isUsingItems = this.items.values.length > 1;
@@ -199,7 +199,7 @@ export default class Panel {
       const value = parseInt(el.value, 10);
       if (value < 1) el.value = '1';
       if (!this.isStepValid()) el.value = this.getRangeLength().toString();
-      this.rangeslider.update({ stepValue: parseInt(el.value, 10) });
+      this.rangeslider.setState({ stepValue: parseInt(el.value, 10) });
     }
   }
 
@@ -214,7 +214,7 @@ export default class Panel {
       options.push(el);
     });
     const newValues = $.map(options, (option: HTMLOptionElement) => option.value);
-    this.rangeslider.update({ items: { values: newValues } });
+    this.rangeslider.setState({ items: { values: newValues } });
     this.updatePanelValues();
   }
 
@@ -229,7 +229,7 @@ export default class Panel {
       options.push(el);
     });
     const newValues = $.map(options, (option: HTMLOptionElement) => option.value);
-    this.rangeslider.update({ items: { values: newValues } });
+    this.rangeslider.setState({ items: { values: newValues } });
     this.updatePanelValues();
   }
 
@@ -240,7 +240,7 @@ export default class Panel {
       const indexFrom = parseInt(el.value, 10);
       const indexTo = parseInt(String(this.$indexTo.val()), 10);
       if (indexFrom > indexTo) el.value = indexTo.toString();
-      this.rangeslider.update({ items: { indexFrom: parseInt(el.value, 10) } });
+      this.rangeslider.setState({ items: { indexFrom: parseInt(el.value, 10) } });
       this.$valueFrom.val(valueFrom);
     }
   }
@@ -257,7 +257,7 @@ export default class Panel {
       const indexTo = parseInt(el.value, 10);
       if (indexTo < indexFrom) el.value = indexFrom.toString();
       if (indexTo > maxIndex) el.value = maxIndex.toString();
-      this.rangeslider.update({ items: { indexTo: parseInt(el.value, 10) } });
+      this.rangeslider.setState({ items: { indexTo: parseInt(el.value, 10) } });
       this.$valueTo.val(valueTo);
     }
   }
@@ -274,11 +274,11 @@ export default class Panel {
     if (values.length > 1) {
       const indexFrom = this.findIndexByItem(values, el.value);
       if (indexFrom === -1) return;
-      this.rangeslider.update({ items: { indexFrom } });
+      this.rangeslider.setState({ items: { indexFrom } });
       this.$indexFrom.val(indexFrom);
     } else {
       if (Number.isNaN(Number(el.value))) return;
-      this.rangeslider.update({ valueFrom: Number(el.value) });
+      this.rangeslider.setState({ valueFrom: Number(el.value) });
     }
   }
 
@@ -294,7 +294,7 @@ export default class Panel {
 
       if (indexTo === -1) return;
 
-      this.rangeslider.update({ items: { indexTo } });
+      this.rangeslider.setState({ items: { indexTo } });
       this.$indexTo.val(indexTo);
     } else {
       if (Number.isNaN(Number(el.value))) return;
@@ -303,7 +303,7 @@ export default class Panel {
         const valueFrom = Number(this.$valueFrom.val());
         if (newValueTo < valueFrom) newValueTo = valueFrom;
       }
-      this.rangeslider.update({ valueTo: newValueTo });
+      this.rangeslider.setState({ valueTo: newValueTo });
     }
   }
 
@@ -326,7 +326,7 @@ export default class Panel {
         this.$valueFrom.val(el.value);
       }
       if (!this.isStepValid()) this.$stepValue.val(this.getRangeLength().toString());
-      this.rangeslider.update({
+      this.rangeslider.setState({
         minValue: el.value,
         valueFrom: Number(this.$valueFrom.val()),
         valueTo: Number(this.$valueTo.val()),
@@ -356,7 +356,7 @@ export default class Panel {
       if (!this.isStepValid()) {
         this.$stepValue.val(this.getRangeLength().toString());
       }
-      this.rangeslider.update({
+      this.rangeslider.setState({
         maxValue: el.value,
         valueFrom: Number(this.$valueFrom.val()),
         valueTo: Number(this.$valueTo.val()),
@@ -366,7 +366,7 @@ export default class Panel {
 
   private handleIsShowTipsChange(event: JQuery.TriggeredEvent): void {
     const el = event.target as HTMLInputElement;
-    this.rangeslider.update({ isTip: el.checked });
+    this.rangeslider.setState({ isTip: el.checked });
   }
 
   private updatePanelValues(): void {
@@ -420,7 +420,7 @@ export default class Panel {
     const checkbox = event.target as HTMLInputElement;
     if (checkbox.checked) this.$panel.addClass(this.CLASSES.modIsVertical);
     else this.$panel.removeClass(this.CLASSES.modIsVertical);
-    this.rangeslider.update({ isVertical: checkbox.checked });
+    this.rangeslider.setState({ isVertical: checkbox.checked });
   }
 
   private handleIsTwoHandlesChange(event: JQuery.TriggeredEvent): void {
@@ -428,7 +428,7 @@ export default class Panel {
       items: { values },
     } = this.rangeslider.getState();
     const checkbox = event.target as HTMLInputElement;
-    this.rangeslider.update({ isTwoHandles: checkbox.checked });
+    this.rangeslider.setState({ isTwoHandles: checkbox.checked });
     const isUsingItems = values.length > 1;
     if (!checkbox.checked) {
       this.$valueFrom.prop('disabled', true);
@@ -443,7 +443,7 @@ export default class Panel {
         if (Number.isNaN(Number(valueFrom))) valueFrom = minValue;
         const valueTo: number = parseInt(String(this.$valueTo.val()), 10);
         if (valueFrom < minValue || valueFrom > valueTo || valueFrom > maxValue) valueFrom = minValue;
-        this.rangeslider.update({ valueFrom });
+        this.rangeslider.setState({ valueFrom });
       }
     }
     this.updatePanelValues();
