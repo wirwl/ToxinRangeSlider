@@ -1,9 +1,9 @@
 # ToxinRangeSlider
 
 [![tested with jest](https://img.shields.io/badge/tested_with-jest-99424f.svg)](https://github.com/facebook/jest)  
-**ToxinRangeSlider** - this is jquery plugin that allows you to select a value or range of values. This is pet project, that being part of [FSD](https://www.fullstack-development.com) education program (task №4).
+**ToxinRangeSlider** - this is jquery plugin that allows you to select a value or range of values. This is pet project, that being part of [MetaLamp](https://www.metalamp.io) education program (task №4).
 
-> Read more about of education program follow this link: www.fullstack-development.com/#system
+> Read more about of education program follow this link: https://www.metalamp.io/education
 
 > Read more about of frontend education program tasks follow this link: [rizzoma.com](https://rizzoma.com/topic/d5c429337bcaa70548fb5aeedee6d92b)
 
