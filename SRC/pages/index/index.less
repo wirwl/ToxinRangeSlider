@@ -88,60 +88,20 @@ each(@colors, {
 );
 
 .panels {
-  display: grid;
-  max-width: 1200px;
-  grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: repeat(4, 1fr);
-  grid-template-areas:
-    'column1-1 column2-1 column3-1 column4-1'
-    'column1-2 column2-1 column3-1 column4-1'
-    'column1-3 column2-2 column3-2 column4-2'
-    'column1-4 column2-2 column3-2 column4-2';
-  justify-items: center;
-  gap: 15px 0px;
   padding: 20px;
 
-  &__column:not(:last-of-type) {
-    padding-right: 20px;
+  &__row1 {
+    margin-bottom: 10px;
   }
 
-  &__column1-1 {
-    grid-area: column1-1;
+  &__row1, &__row2 {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
   }
 
-  &__column1-2 {
-    grid-area: column1-2;
-  }
-
-  &__column1-3 {
-    grid-area: column1-3;
-  }
-
-  &__column1-4 {
-    grid-area: column1-4;
-  }
-
-  &__column2-1 {
-    grid-area: column2-1;
-  }
-
-  &__column2-2 {
-    grid-area: column2-2;
-  }
-
-  &__column3-1 {
-    grid-area: column3-1;
-  }
-
-  &__column3-2 {
-    grid-area: column3-2;
-  }
-
-  &__column4-1 {
-    grid-area: column4-1;
-  }
-
-  &__column4-2 {
-    grid-area: column4-2;
+  &__column {
+    padding: 10px;
+    margin-right: 10px;
   }
 }
