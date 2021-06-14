@@ -11,10 +11,12 @@ const merge = require('webpack-merge');
 const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const { WebpackPluginServe: Serve } = require('webpack-plugin-serve');
 
 let devServer;
 process.noDeprecation = true;
 process.traceDeprecation = true;
+const outputPath = path.join(process.cwd(), '/Result');
 
 module.exports = (env, argv) => {
   const isDev = argv.mode === 'development';
@@ -39,10 +41,20 @@ module.exports = (env, argv) => {
 
   // ------------common values for all configs--------------------------------
   const common = {
+    target: isDev ? 'web' : 'browserslist',
+    mode: argv.mode,
+
+    watch: true,
     devServer: {
       stats: 'errors-only',
       before(app, server) {
         devServer = server;
+      },
+      contentBase: outputPath,
+      inline: false,
+      hot: {
+        port: 55555,
+        host: 'localhost',
       },
     },
     performance: { hints: false },
@@ -171,14 +183,14 @@ module.exports = (env, argv) => {
         },
       ], // rules
     },
-    plugins: [new FriendlyErrorsWebpackPlugin()],
+    plugins: [new FriendlyErrorsWebpackPlugin(), new Serve({ static: outputPath })],
   };
 
   function AddHTMLPage(data) {
     const commonPath = data.inputPath.substring(data.inputPath.indexOf('/') + 1);
     data.outputPath = data.outputPath ? data.outputPath : commonPath;
     const result = merge({}, common, {
-      entry: `./${data.inputPath}/${data.commonFilename}.ts`,
+      entry: ['webpack-plugin-serve/client', `./${data.inputPath}/${data.commonFilename}.ts`],
       output: {
         path: path.resolve(__dirname, pathOutput),
         filename: `${data.outputPath}/${data.commonFilename}.js`,
@@ -200,6 +212,7 @@ module.exports = (env, argv) => {
   const pluginCFG = merge({}, common, {
     entry: {
       plugin: [
+        'webpack-plugin-serve/client',
         './SRC/components/toxin-rangeslider/toxin-rangeslider.ts',
         './SRC/components/toxin-rangeslider/toxin-rangeslider.less',
       ],
