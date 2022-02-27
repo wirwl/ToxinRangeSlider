@@ -7,7 +7,7 @@ class ObservableSubject {
     this.observers.push(func);
   }
 
-  public detach(func: anyFunction): void {
+  public removeObserver(func: anyFunction): void {
     this.observers = this.observers.filter(subscriber => subscriber !== func);
   }
 
