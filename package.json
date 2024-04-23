@@ -76,7 +76,7 @@
   },
   "dependencies": {
     "bem-cn": "^3.0.1",
-    "gh-pages": "^3.0.0",
+    "gh-pages": "^5.0.0",
     "jquery": "^3.5.1",
     "less": "^3.10.3"
   }
